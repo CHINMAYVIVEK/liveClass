@@ -30,4 +30,4 @@ LiveClass is a modern Learning Management System (LMS) designed to facilitate on
 1. Clone the repository
 
 ### DB Export
-`pg_dump -U postgres liveclass > /path/to/directory/liveclass.sql`
+`pg_dump -U postgres liveclass > /liveClass/db/liveclass.sql`
