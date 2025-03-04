@@ -194,3 +194,4 @@ logs
 vendor
 .qodo
 .env
+tmp
