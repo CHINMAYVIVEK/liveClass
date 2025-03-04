@@ -1,0 +1,70 @@
+{
+	"info": {
+		"_postman_id": "eefad86e-4e3c-4f27-8a6e-7863bad73284",
+		"name": "LiveClass",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28466571"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/health",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetStudentByID",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": []
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/students/get?id=245dfbc8-63ed-44b2-808d-ab96cee358f2",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"students",
+						"get"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "245dfbc8-63ed-44b2-808d-ab96cee358f2"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
