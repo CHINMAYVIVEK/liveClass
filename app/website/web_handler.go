@@ -2,7 +2,6 @@ package website
 
 // Add encoding/json to imports
 import (
-	"encoding/json"
 	"html/template"
 	"liveClass/helper"
 	"net/http"
@@ -23,16 +22,7 @@ func init() {
 		templates = make(map[string]*template.Template)
 	}
 
-	// Create template function map
-	funcMap := template.FuncMap{
-		"marshal": func(v interface{}) template.JS {
-			a, _ := json.Marshal(v)
-			return template.JS(a)
-		},
-	}
-
-	// Parse all templates together with the function map
-	t, err := template.New("index.html").Funcs(funcMap).ParseFiles(
+	t, err := helper.LoadTemplate("index.html",
 		"template/website/index.html",
 		"template/website/_header.html",
 		"template/website/_footer.html",

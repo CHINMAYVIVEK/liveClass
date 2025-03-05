@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
+	"html/template"
 )
 
 func JSONMarshal(v map[string]string, safeEncoding bool) ([]byte, error) {
@@ -32,4 +33,15 @@ func CheckString(statuscreatedat sql.NullString) string {
 		statuscreatedat_ = statuscreatedat.String
 	}
 	return statuscreatedat_
+}
+
+func LoadTemplate(name string, files ...string) (*template.Template, error) {
+	funcMap := template.FuncMap{
+		"marshal": func(v interface{}) template.JS {
+			a, _ := json.Marshal(v)
+			return template.JS(a)
+		},
+	}
+
+	return template.New(name).Funcs(funcMap).ParseFiles(files...)
 }
