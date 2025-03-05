@@ -32,7 +32,8 @@ func (r *WebRepository) GetCourses() ([]Course, error) {
         FROM courses c
         LEFT JOIN course_types ct ON c.course_type_id = ct.type_id
         WHERE c.is_active = true
-        ORDER BY c.sequence_no ASC`
+        ORDER BY c.sequence_no ASC
+		LIMIT 6`
 
 	rows, err := r.db.Query(ctx, query)
 	if err != nil {

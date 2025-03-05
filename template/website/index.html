@@ -88,7 +88,7 @@
                 courses: null,
                 init() {
                     try {
-                        const coursesData = {{ if .Courses }}{{ .Courses }}{{ else }}[]{{ end }};
+                        const coursesData = {{ if .Courses }}{{ marshal .Courses }}{{ else }}[]{{ end }};
                         this.courses = Array.isArray(coursesData) ? coursesData : [];
                         console.log('Courses loaded:', this.courses);
                     } catch (error) {

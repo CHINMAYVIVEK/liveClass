@@ -1,6 +1,8 @@
 package website
 
+// Add encoding/json to imports
 import (
+	"encoding/json"
 	"html/template"
 	"liveClass/helper"
 	"net/http"
@@ -21,8 +23,16 @@ func init() {
 		templates = make(map[string]*template.Template)
 	}
 
-	// Parse all templates together
-	t, err := template.ParseFiles(
+	// Create template function map
+	funcMap := template.FuncMap{
+		"marshal": func(v interface{}) template.JS {
+			a, _ := json.Marshal(v)
+			return template.JS(a)
+		},
+	}
+
+	// Parse all templates together with the function map
+	t, err := template.New("index.html").Funcs(funcMap).ParseFiles(
 		"template/website/index.html",
 		"template/website/_header.html",
 		"template/website/_footer.html",
@@ -50,6 +60,11 @@ func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// jsonData, err := json.Marshal(courses)
+	// if err != nil {
+	// 	logger.Error("Error executing template:", err)
+	// 	helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
+	// }
 	err = templates["index"].ExecuteTemplate(w, "index", map[string]interface{}{
 		"Courses": courses,
 		"Error":   false,
