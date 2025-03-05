@@ -42,12 +42,12 @@ cd liveClass
 
 <div align="center">
 
-| ![Website HomePage-1](screenshots/Screenshot-1.png) |
-|:--:|
-| *LiveClass Website HomePage-1* |
+| ![Website HomePage-1](screenshots/Screenshot-1.png) | ![Website HomePage-2](screenshots/Screenshot-2.png) |
+|:--:|:--:|
+| *LiveClass Website HomePage-1* | *LiveClass Website HomePage-2* |
 
-| ![CourWebsite HomePage-2](screenshots/Screenshot-2.png) |
-|:--:|
-| *LiveClass Website HomePage-2*  |
+| ![Website SignupPage](screenshots/Screenshot-3.png) | ![Website LoginPage](screenshots/Screenshot-4.png) |
+|:--:|:--:|
+| *LiveClass Website Signup Page* | *LiveClass Website Login Page* |
 
 </div>
