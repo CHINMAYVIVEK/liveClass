@@ -2,13 +2,15 @@ package helper
 
 import (
 	"crypto/rand"
+	"fmt"
 	"math/big"
 	"regexp"
+	"strings"
 )
 
 const (
-	patternTypeMobile = "Mobile"
-	patternTypeEmail  = "Email"
+	PatternTypeMobile = "Mobile"
+	PatternTypeEmail  = "Email"
 
 	emailPattern  = `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
 	mobilePattern = `^\+\d{1,3}\d{10}$`
@@ -18,9 +20,15 @@ const (
 )
 
 var (
+	ErrDuplicateEmail      = fmt.Errorf("email already exists")
+	ErrStudentRoleNotFound = fmt.Errorf("student role not found")
+	ErrInvalidInput        = fmt.Errorf("invalid input")
+)
+
+var (
 	patterns = map[string]*regexp.Regexp{
-		patternTypeMobile: regexp.MustCompile(mobilePattern),
-		patternTypeEmail:  regexp.MustCompile(emailPattern),
+		PatternTypeMobile: regexp.MustCompile(mobilePattern),
+		PatternTypeEmail:  regexp.MustCompile(emailPattern),
 	}
 )
 
@@ -70,4 +78,20 @@ func GenerateRandomPassword() string {
 		password[i] = passwordChars[index.Int64()]
 	}
 	return string(password)
+}
+
+func IsValidGender(gender string) bool {
+	validGenders := map[string]bool{
+		"male":        true,
+		"female":      true,
+		"transgender": true,
+	}
+	return validGenders[gender]
+}
+
+func IsPgUniqueViolation(err error) bool {
+	// Implement PostgreSQL unique violation error check
+	// This will depend on your PostgreSQL driver
+	return strings.Contains(err.Error(), "unique constraint") ||
+		strings.Contains(err.Error(), "duplicate key")
 }

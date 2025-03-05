@@ -1,11 +1,7 @@
 package website
 
-import (
-	"github.com/google/uuid"
-)
-
 type Course struct {
-	CourseID    uuid.UUID  `json:"course_id" db:"course_id"`
+	CourseID    string     `json:"course_id" db:"course_id"`
 	Title       string     `json:"title" db:"title"`
 	Description string     `json:"description" db:"description"`
 	Image       string     `json:"image" db:"image"`
@@ -17,8 +13,8 @@ type Course struct {
 }
 
 type CourseType struct {
-	CourseTypeID uuid.UUID `json:"course_type_id" db:"course_type_id"`
-	CourseType   string    `json:"course_type" db:"course_type"`
+	CourseTypeID string `json:"course_type_id" db:"course_type_id"`
+	CourseType   string `json:"course_type" db:"course_type"`
 }
 
 var CourseLevels = map[string]string{

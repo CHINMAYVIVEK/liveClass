@@ -2,6 +2,7 @@ package website
 
 import (
 	"context"
+	"fmt"
 	"liveClass/helper"
 )
 
@@ -34,20 +35,15 @@ func (r *WebRepository) GetCourses(ctx context.Context) ([]Course, error) {
 
 	rows, err := r.db.Query(ctx, query)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
-
-	if ctx.Err() != nil {
-		return nil, ctx.Err()
-	}
+	// fmt.Printf("rows: %+v\n", rows)
 
 	for rows.Next() {
-		if ctx.Err() != nil {
-			return nil, ctx.Err()
-		}
-
 		var course Course
+		typeID := ""
+		typeName := ""
 		err := rows.Scan(
 			&course.CourseID,
 			&course.Title,
@@ -57,17 +53,26 @@ func (r *WebRepository) GetCourses(ctx context.Context) ([]Course, error) {
 			&course.SequenceNo,
 			&course.CoursePrice,
 			&course.CourseLevel,
-			&course.CourseType.CourseTypeID,
-			&course.CourseType.CourseType,
+			&typeID,
+			&typeName,
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed to scan course: %w", err)
 		}
+		course.CourseType = CourseType{
+			CourseTypeID: typeID,
+			CourseType:   typeName,
+		}
+		// fmt.Printf("course: %+v\n", course)
+
 		courses = append(courses, course)
 	}
 
+	// fmt.Printf("courses: %+v\n", courses)
+
+	// Check for errors from iterating over rows
 	if err = rows.Err(); err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error iterating over rows: %w", err)
 	}
 
 	return courses, nil

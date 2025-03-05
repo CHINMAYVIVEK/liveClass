@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"liveClass/helper"
-	"regexp"
 	"strings"
 	"time"
 
@@ -68,8 +67,8 @@ func (r *StudentRepository) Create(ctx context.Context, student *Student) error 
 		student.Nationality, student.PreferredLanguage,
 	).Scan(&userID)
 	if err != nil {
-		if isPgUniqueViolation(err) {
-			return ErrDuplicateEmail
+		if helper.IsPgUniqueViolation(err) {
+			return helper.ErrDuplicateEmail
 		}
 		return fmt.Errorf("failed to insert user: %w", err)
 	}
@@ -100,65 +99,32 @@ func (r *StudentRepository) Create(ctx context.Context, student *Student) error 
 		return fmt.Errorf("failed to get affected rows: %w", err)
 	}
 	if rowsAffected == 0 {
-		return ErrStudentRoleNotFound
+		return helper.ErrStudentRoleNotFound
 	}
 
 	return nil
 }
 
 // Add these helper functions and types
-var (
-	ErrDuplicateEmail      = fmt.Errorf("email already exists")
-	ErrStudentRoleNotFound = fmt.Errorf("student role not found")
-	ErrInvalidInput        = fmt.Errorf("invalid input")
-)
 
 func (r *StudentRepository) validateStudentInput(student *Student) error {
 	if student == nil {
-		return fmt.Errorf("%w: student is nil", ErrInvalidInput)
+		return fmt.Errorf("%w: student is nil", helper.ErrInvalidInput)
 	}
 
 	// Validate required fields
 	if strings.TrimSpace(student.Email) == "" {
-		return fmt.Errorf("%w: email is required", ErrInvalidInput)
+		return fmt.Errorf("%w: email is required", helper.ErrInvalidInput)
 	}
-	if !isValidEmail(student.Email) {
-		return fmt.Errorf("%w: invalid email format", ErrInvalidInput)
+	if !helper.PatternValidation(helper.PatternTypeEmail, student.Email) {
+		return fmt.Errorf("%w: invalid email format", helper.ErrInvalidInput)
 	}
 
 	if strings.TrimSpace(student.FirstName) == "" {
-		return fmt.Errorf("%w: first name is required", ErrInvalidInput)
+		return fmt.Errorf("%w: first name is required", helper.ErrInvalidInput)
 	}
 
 	return nil
-}
-
-func isValidEmail(email string) bool {
-	// Basic email validation using regex
-	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-	return emailRegex.MatchString(email)
-}
-
-func isValidPhoneNumber(phone string) bool {
-	// Basic phone number validation - allows digits, spaces, hyphens, and parentheses
-	phoneRegex := regexp.MustCompile(`^[\d\s\-()]+$`)
-	return phoneRegex.MatchString(phone)
-}
-
-func isValidGender(gender string) bool {
-	validGenders := map[string]bool{
-		"male":        true,
-		"female":      true,
-		"transgender": true,
-	}
-	return validGenders[gender]
-}
-
-func isPgUniqueViolation(err error) bool {
-	// Implement PostgreSQL unique violation error check
-	// This will depend on your PostgreSQL driver
-	return strings.Contains(err.Error(), "unique constraint") ||
-		strings.Contains(err.Error(), "duplicate key")
 }
 
 func (r *StudentRepository) GetByID(ctx context.Context, id uuid.UUID) (*Student, error) {
