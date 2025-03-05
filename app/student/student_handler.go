@@ -71,8 +71,8 @@ func (h *Handler) DashboardPage(w http.ResponseWriter, r *http.Request) {
 		templates = make(map[string]*template.Template)
 	}
 
-	t, err := helper.LoadTemplate(true, "dashboard.html",
-		"template/lms_panel/dashboard.html",
+	t, err := helper.LoadTemplate(helper.StudentView, "dashboard.html",
+		"template/lms_panel/student/dashboard.html",
 	)
 	if err != nil {
 		logger.Error(err)

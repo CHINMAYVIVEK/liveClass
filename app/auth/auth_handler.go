@@ -24,7 +24,7 @@ func init() {
 		templates = make(map[string]*template.Template)
 	}
 
-	t, err := helper.LoadTemplate(false, "login.html",
+	t, err := helper.LoadTemplate(helper.WebsiteView, "login.html",
 		"template/website/login.html",
 	)
 	if err != nil {

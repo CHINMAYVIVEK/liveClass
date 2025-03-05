@@ -1,0 +1,26 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LiveClass LMS - {{ template "title" . }}</title>
+    
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex">
+        {{ template "sidebar" . }}
+        <div class="flex-1">
+            {{ template "header" . }}
+            {{ template "content" . }}
+        </div>
+    </div>
+</body>
+</html>
+{{ end }}

@@ -7,6 +7,12 @@ import (
 	"html/template"
 )
 
+var (
+	StudentView    = "student"
+	WebsiteView    = "website"
+	InstructorView = "instructor"
+)
+
 func JSONMarshal(v map[string]string, safeEncoding bool) ([]byte, error) {
 	b, err := json.Marshal(v)
 
@@ -35,14 +41,19 @@ func CheckString(statuscreatedat sql.NullString) string {
 	return statuscreatedat_
 }
 
-func LoadTemplate(isPanel bool, name string, files ...string) (*template.Template, error) {
-	// Add layout.html to all templates
+func LoadTemplate(view string, name string, files ...string) (*template.Template, error) {
 
-	if isPanel {
+	if view == StudentView {
 		files = append([]string{
-			"template/lms_panel/base.html",
-			"template/lms_panel/header.html",
-			"template/lms_panel/sidebar.html",
+			"template/lms_panel/student/base.html",
+			"template/lms_panel/student/header.html",
+			"template/lms_panel/student/sidebar.html",
+		}, files...)
+	} else if view == InstructorView {
+		files = append([]string{
+			"template/lms_panel/instructor/base.html",
+			"template/lms_panel/instructor/header.html",
+			"template/lms_panel/instructor/sidebar.html",
 		}, files...)
 	} else {
 		files = append([]string{
