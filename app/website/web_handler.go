@@ -28,7 +28,7 @@ func init() {
 	// 	"template/website/_footer.html",
 	// )
 
-	t, err := helper.LoadTemplate("index.html",
+	t, err := helper.LoadTemplate(false, "index.html",
 		"template/website/index.html",
 	)
 

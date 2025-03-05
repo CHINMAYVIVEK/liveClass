@@ -35,13 +35,22 @@ func CheckString(statuscreatedat sql.NullString) string {
 	return statuscreatedat_
 }
 
-func LoadTemplate(name string, files ...string) (*template.Template, error) {
+func LoadTemplate(isPanel bool, name string, files ...string) (*template.Template, error) {
 	// Add layout.html to all templates
-	files = append([]string{
-		"template/website/layout.html",
-		"template/website/_header.html",
-		"template/website/_footer.html",
-	}, files...)
+
+	if isPanel {
+		files = append([]string{
+			"template/lms_panel/base.html",
+			"template/lms_panel/header.html",
+			"template/lms_panel/sidebar.html",
+		}, files...)
+	} else {
+		files = append([]string{
+			"template/website/layout.html",
+			"template/website/_header.html",
+			"template/website/_footer.html",
+		}, files...)
+	}
 
 	funcMap := template.FuncMap{
 		"marshal": func(v interface{}) template.JS {

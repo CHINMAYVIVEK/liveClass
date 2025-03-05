@@ -17,6 +17,7 @@ func (s *Server) SetupRoutes() {
 
 	s.mux.HandleFunc("/api/students", studentHandler.CreateStudent)
 	s.mux.HandleFunc("/api/students/get", studentHandler.GetStudent)
+	s.mux.HandleFunc("/dashboard", studentHandler.DashboardPage)
 
 	// Add more routes as needed
 	webRepo := website.NewRepository(s.db)
@@ -28,4 +29,7 @@ func (s *Server) SetupRoutes() {
 	authHandler := auth.NewHandler(authRepo)
 
 	s.mux.HandleFunc("/signup", authHandler.LoginPage)
+	s.mux.HandleFunc("/api/login", authHandler.Login)
+	s.mux.HandleFunc("/api/logout", authHandler.Logout)
+
 }

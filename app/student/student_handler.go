@@ -3,6 +3,7 @@ package student
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 
 	"liveClass/helper"
@@ -17,6 +18,9 @@ type Handler struct {
 func NewHandler(repo *StudentRepository) *Handler {
 	return &Handler{repo: repo}
 }
+
+var logger = helper.GetLogger()
+var templates map[string]*template.Template
 
 func (h *Handler) CreateStudent(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
@@ -60,5 +64,25 @@ func (h *Handler) GetStudent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	helper.NewSuccessResponse(w, student, "Student retrieved successfully", http.StatusOK)
+}
 
+func (h *Handler) DashboardPage(w http.ResponseWriter, r *http.Request) {
+	if templates == nil {
+		templates = make(map[string]*template.Template)
+	}
+
+	t, err := helper.LoadTemplate(true, "dashboard.html",
+		"template/lms_panel/dashboard.html",
+	)
+	if err != nil {
+		logger.Error(err)
+		panic(err)
+	}
+	templates["dashboard"] = t
+
+	err = templates["dashboard"].ExecuteTemplate(w, "dashboard", nil)
+	if err != nil {
+		logger.Error("Error executing template:", err)
+		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
+	}
 }

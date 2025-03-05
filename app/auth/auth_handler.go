@@ -24,7 +24,7 @@ func init() {
 		templates = make(map[string]*template.Template)
 	}
 
-	t, err := helper.LoadTemplate("login.html",
+	t, err := helper.LoadTemplate(false, "login.html",
 		"template/website/login.html",
 	)
 	if err != nil {
@@ -63,4 +63,12 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	helper.NewSuccessResponse(w, token, "Login successful", http.StatusOK)
+}
+
+func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		helper.NewErrorResponse(w, http.StatusMethodNotAllowed, "Method not allowed")
+		return
+	}
+	helper.NewSuccessResponse(w, nil, "Logout successful", http.StatusOK)
 }
