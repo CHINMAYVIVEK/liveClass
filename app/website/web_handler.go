@@ -14,8 +14,6 @@ func NewHandler(repo *WebRepository) *Handler {
 	return &Handler{repo: repo}
 }
 
-var logger = helper.GetLogger()
-
 var templates map[string]*template.Template
 
 func init() {
@@ -38,7 +36,7 @@ func init() {
 
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
 
-	courses, err := h.repo.GetCourses(r.Context())
+	courses, err := h.repo.GetCourses()
 	if err != nil {
 		logger.Error("Error getting courses:", err)
 		// Still render the template but with error state

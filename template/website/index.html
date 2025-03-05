@@ -85,36 +85,35 @@
     <!-- Latest Courses Section -->
     <section class="py-12 bg-gray-50 rounded-lg" 
              x-data="{ 
-                courses: {{ if and (not .Error) (.Courses) }}{{ .Courses }}{{ else }}[]{{ end }},
+                courses: null,
+                init() {
+                    try {
+                        const coursesData = {{ if .Courses }}{{ .Courses }}{{ else }}[]{{ end }};
+                        this.courses = Array.isArray(coursesData) ? coursesData : [];
+                        console.log('Courses loaded:', this.courses);
+                    } catch (error) {
+                        console.error('Error loading courses:', error);
+                        this.courses = [];
+                    }
+                },
                 hasValidCourses() {
-                    return Array.isArray(this.courses) && this.courses.length > 0 && !this.courses.success === false;
+                    return this.courses && Array.isArray(this.courses) && this.courses.length > 0;
                 }
              }">
         <div class="text-center mb-8">
             <h2 class="text-3xl font-bold mb-4">Latest Courses</h2>
             <p class="text-gray-600">Explore our newest additions to start learning today</p>
         </div>
-        
-        <!-- Error State -->
-        <div x-show="!hasValidCourses() && courses.success === false" class="max-w-2xl mx-auto">
-            <div class="bg-white p-6 rounded-lg shadow-lg border border-red-100">
-                <div class="flex items-center space-x-4">
-                    <div class="flex-shrink-0">
-                        <svg class="h-8 w-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium text-gray-900">Unable to Load Courses</h3>
-                        <p class="mt-1 text-sm text-gray-600" x-text="courses.message || 'Please try again later.'"></p>
-                        <div class="mt-3">
-                            <button @click="window.location.reload()" 
-                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                                Retry Loading
-                            </button>
+
+        <!-- Loading State -->
+        <div x-show="!courses" class="max-w-2xl mx-auto">
+            <div class="bg-white p-6 rounded-lg shadow-lg">
+                <div class="animate-pulse flex space-x-4">
+                    <div class="flex-1 space-y-4 py-1">
+                        <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                        <div class="space-y-2">
+                            <div class="h-4 bg-gray-200 rounded"></div>
+                            <div class="h-4 bg-gray-200 rounded w-5/6"></div>
                         </div>
                     </div>
                 </div>
@@ -122,12 +121,12 @@
         </div>
 
         <!-- No Courses State -->
-        <div x-show="!hasValidCourses() && !courses.success !== false" class="max-w-2xl mx-auto">
+        <div x-show="courses && !hasValidCourses()" class="max-w-2xl mx-auto">
             <div class="bg-white p-6 rounded-lg shadow-lg border border-gray-100">
                 <div class="flex items-center space-x-4">
                     <div class="flex-shrink-0">
                         <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
                         </svg>
                     </div>
                     <div>
@@ -141,19 +140,20 @@
         <!-- Courses Grid -->
         <div x-show="hasValidCourses()" class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <template x-for="course in courses" :key="course.course_id">
-                <!-- Course card content remains the same -->
                 <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300">
-                    <img :src="course.image || 'https://placehold.co/600x400'" :alt="course.title" class="w-full h-48 object-cover">
+                    <img :src="course.image || 'https://placehold.co/600x400'" 
+                         :alt="course.title" 
+                         class="w-full h-48 object-cover">
                     <div class="p-6">
                         <h3 class="text-xl font-semibold mb-2" x-text="course.title"></h3>
-                        <p class="text-gray-600 mb-4" x-text="course.description"></p>
+                        <p class="text-gray-600 mb-4 line-clamp-2" x-text="course.description"></p>
                         <div class="flex flex-col space-y-3">
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-600 text-sm" x-text="'Level: ' + course.course_level"></span>
                                 <span class="text-gray-600 text-sm" x-text="'Type: ' + course.course_type.course_type"></span>
                             </div>
                             <div class="flex justify-between items-center">
-                                <span class="text-blue-600 font-semibold" x-text="'₹' + course.price"></span>
+                                <span class="text-blue-600 font-semibold" x-text="'₹' + course.course_price"></span>
                                 <a :href="'/course/' + course.course_id" 
                                    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
                                    hx-get="'/course/' + course.course_id"

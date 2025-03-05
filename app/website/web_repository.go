@@ -14,8 +14,9 @@ func NewRepository(db *helper.PostgresWrapper) *WebRepository {
 	return &WebRepository{db: db}
 }
 
-func (r *WebRepository) GetCourses(ctx context.Context) ([]Course, error) {
+func (r *WebRepository) GetCourses() ([]Course, error) {
 	var courses []Course
+	ctx := context.Context(context.Background())
 	query := `
         SELECT 
             c.course_id,
@@ -35,10 +36,10 @@ func (r *WebRepository) GetCourses(ctx context.Context) ([]Course, error) {
 
 	rows, err := r.db.Query(ctx, query)
 	if err != nil {
+		logger.Error(err)
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
-	fmt.Printf("rows: %+v\n", rows)
 
 	for rows.Next() {
 		var course Course
@@ -57,21 +58,22 @@ func (r *WebRepository) GetCourses(ctx context.Context) ([]Course, error) {
 			&typeName,
 		)
 		if err != nil {
+			logger.Error(err)
 			return nil, fmt.Errorf("failed to scan course: %w", err)
 		}
 		course.CourseType = CourseType{
 			CourseTypeID: typeID,
 			CourseType:   typeName,
 		}
-		fmt.Printf("course: %+v\n", course)
 
 		courses = append(courses, course)
 	}
 
-	fmt.Printf("courses: %+v\n", courses)
+	// fmt.Printf("courses: %+v\n", courses)
 
 	// Check for errors from iterating over rows
 	if err = rows.Err(); err != nil {
+		logger.Error(err)
 		return nil, fmt.Errorf("error iterating over rows: %w", err)
 	}
 

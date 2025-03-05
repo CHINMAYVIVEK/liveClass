@@ -57,8 +57,6 @@ func (t *txWrapper) Exec(ctx context.Context, query string, args ...interface{})
 }
 
 func (w *PostgresWrapper) QueryRow(ctx context.Context, query string, args ...interface{}) (*sql.Row, error) {
-	ctx, cancel := w.withTimeout(ctx)
-	defer cancel()
 
 	db, err := w.getDB()
 	if err != nil {
@@ -68,8 +66,6 @@ func (w *PostgresWrapper) QueryRow(ctx context.Context, query string, args ...in
 }
 
 func (w *PostgresWrapper) Query(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
-	ctx, cancel := w.withTimeout(ctx)
-	defer cancel()
 
 	db, err := w.getDB()
 	if err != nil {
@@ -79,8 +75,6 @@ func (w *PostgresWrapper) Query(ctx context.Context, query string, args ...inter
 }
 
 func (w *PostgresWrapper) exec(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
-	ctx, cancel := w.withTimeout(ctx)
-	defer cancel()
 
 	db, err := w.getDB()
 	if err != nil {

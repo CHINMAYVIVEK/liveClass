@@ -1,20 +1,24 @@
 package website
 
+import "liveClass/helper"
+
+var logger = helper.GetLogger()
+
 type Course struct {
-	CourseID    string     `json:"course_id" db:"course_id"`
-	Title       string     `json:"title" db:"title"`
-	Description string     `json:"description" db:"description"`
-	Image       string     `json:"image" db:"image"`
-	IsActive    bool       `json:"is_active" db:"is_active"`
-	SequenceNo  int        `json:"sequence_no" db:"sequence_no"`
-	CoursePrice string     `json:"price" db:"course_price"`
-	CourseType  CourseType `json:"course_type" db:"course_type"`
-	CourseLevel string     `json:"course_level" db:"course_level"`
+	CourseID    string     `json:"course_id"`
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	Image       string     `json:"image"`
+	IsActive    bool       `json:"is_active"`
+	SequenceNo  int        `json:"sequence_no"`
+	CoursePrice string     `json:"course_price"`
+	CourseType  CourseType `json:"course_type"`
+	CourseLevel string     `json:"course_level"`
 }
 
 type CourseType struct {
-	CourseTypeID string `json:"course_type_id" db:"course_type_id"`
-	CourseType   string `json:"course_type" db:"course_type"`
+	CourseTypeID string `json:"course_type_id"`
+	CourseType   string `json:"course_type"`
 }
 
 var CourseLevels = map[string]string{
