@@ -1,0 +1,59 @@
+{{ define "title" }}Assignments{{ end }}
+{{ define "page-title" }}Assignments{{ end }}
+
+{{ define "content" }}
+<main class="p-6">
+    <div class="grid grid-cols-1 gap-6">
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow p-4">
+            <div class="flex space-x-4">
+                <select class="px-4 py-2 border rounded-lg"
+                    hx-get="/assignments/filter"
+                    hx-target="#assignments-list">
+                    <option value="all">All Assignments</option>
+                    <option value="pending">Pending</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="graded">Graded</option>
+                </select>
+                <input type="text" 
+                    placeholder="Search assignments..." 
+                    class="flex-1 px-4 py-2 border rounded-lg"
+                    hx-get="/assignments/search"
+                    hx-trigger="keyup changed delay:500ms"
+                    hx-target="#assignments-list">
+            </div>
+        </div>
+
+        <!-- Assignments List -->
+        <div id="assignments-list" class="space-y-4">
+            {{ range $i := seq 4 }}
+            <div class="bg-white rounded-lg shadow p-6">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900">Data Structures Implementation</h3>
+                        <p class="text-sm text-gray-500 mt-1">Due: Jan 20, 2024 at 11:59 PM</p>
+                        <div class="mt-2 flex items-center space-x-2">
+                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                            <span class="text-sm text-gray-500">Points: 100</span>
+                        </div>
+                    </div>
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-700">
+                        Submit
+                    </button>
+                </div>
+                <div class="mt-4 text-sm text-gray-600">
+                    <p>Implement the following data structures:</p>
+                    <ul class="list-disc list-inside mt-2">
+                        <li>Binary Search Tree</li>
+                        <li>Red-Black Tree</li>
+                        <li>Hash Table</li>
+                    </ul>
+                </div>
+            </div>
+            {{ end }}
+        </div>
+    </div>
+</main>
+{{ end }}
+
+{{ template "base" . }}

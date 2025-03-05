@@ -1,0 +1,127 @@
+{{ define "schedule" }}
+{{ template "base" . }}
+{{ end }}
+
+{{ define "title" }}Schedule{{ end }}
+{{ define "page-title" }}Class Schedule{{ end }}
+
+{{ define "content" }}
+<main class="p-6">
+    <div class="bg-white rounded-lg shadow">
+        <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-800">March 2024</h3>
+            <div class="flex space-x-2">
+                <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    hx-get="/schedule/prev-month"
+                    hx-target="#schedule-content">
+                    Previous Month
+                </button>
+                <button class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                    hx-get="/schedule/next-month"
+                    hx-target="#schedule-content">
+                    Next Month
+                </button>
+            </div>
+        </div>
+        <div id="schedule-content" class="p-6">
+            <!-- Calendar Header -->
+            <div class="grid grid-cols-7 gap-4 mb-4">
+                <div class="text-center font-semibold text-gray-600">Sun</div>
+                <div class="text-center font-semibold text-gray-600">Mon</div>
+                <div class="text-center font-semibold text-gray-600">Tue</div>
+                <div class="text-center font-semibold text-gray-600">Wed</div>
+                <div class="text-center font-semibold text-gray-600">Thu</div>
+                <div class="text-center font-semibold text-gray-600">Fri</div>
+                <div class="text-center font-semibold text-gray-600">Sat</div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="grid grid-cols-7 gap-4">
+                <!-- Week 1 -->
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">25</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">26</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">27</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">28</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">29</div>
+                <div class="min-h-[120px] border rounded-lg p-2">1
+                    <div class="mt-2">
+                        <div class="bg-blue-100 text-blue-800 text-xs p-1 rounded mb-1">
+                            09:00 - Data Structures
+                        </div>
+                    </div>
+                </div>
+                <div class="min-h-[120px] border rounded-lg p-2">2</div>
+
+                <!-- Week 2 -->
+                <div class="min-h-[120px] border rounded-lg p-2">3</div>
+                <div class="min-h-[120px] border rounded-lg p-2">4
+                    <div class="mt-2">
+                        <div class="bg-green-100 text-green-800 text-xs p-1 rounded mb-1">
+                            11:30 - Algorithms
+                        </div>
+                    </div>
+                </div>
+                <div class="min-h-[120px] border rounded-lg p-2">5</div>
+                <div class="min-h-[120px] border rounded-lg p-2">6</div>
+                <div class="min-h-[120px] border rounded-lg p-2">7
+                    <div class="mt-2">
+                        <div class="bg-purple-100 text-purple-800 text-xs p-1 rounded mb-1">
+                            14:00 - Database Systems
+                        </div>
+                    </div>
+                </div>
+                <div class="min-h-[120px] border rounded-lg p-2">8</div>
+                <div class="min-h-[120px] border rounded-lg p-2">9</div>
+
+                <!-- Week 3 -->
+                <div class="min-h-[120px] border rounded-lg p-2">10</div>
+                <div class="min-h-[120px] border rounded-lg p-2">11
+                    <div class="mt-2">
+                        <div class="bg-blue-100 text-blue-800 text-xs p-1 rounded mb-1">
+                            09:00 - Data Structures
+                        </div>
+                    </div>
+                </div>
+                <div class="min-h-[120px] border rounded-lg p-2">12</div>
+                <div class="min-h-[120px] border rounded-lg p-2">13</div>
+                <div class="min-h-[120px] border rounded-lg p-2">14</div>
+                <div class="min-h-[120px] border rounded-lg p-2">15</div>
+                <div class="min-h-[120px] border rounded-lg p-2">16</div>
+
+                <!-- Week 4 -->
+                <div class="min-h-[120px] border rounded-lg p-2">17</div>
+                <div class="min-h-[120px] border rounded-lg p-2">18</div>
+                <div class="min-h-[120px] border rounded-lg p-2">19</div>
+                <div class="min-h-[120px] border rounded-lg p-2">20</div>
+                <div class="min-h-[120px] border rounded-lg p-2">21
+                    <div class="mt-2">
+                        <div class="bg-green-100 text-green-800 text-xs p-1 rounded mb-1">
+                            11:30 - Algorithms
+                        </div>
+                    </div>
+                </div>
+                <div class="min-h-[120px] border rounded-lg p-2">22</div>
+                <div class="min-h-[120px] border rounded-lg p-2">23</div>
+
+                <!-- Week 5 -->
+                <div class="min-h-[120px] border rounded-lg p-2">24</div>
+                <div class="min-h-[120px] border rounded-lg p-2">25</div>
+                <div class="min-h-[120px] border rounded-lg p-2">26</div>
+                <div class="min-h-[120px] border rounded-lg p-2">27</div>
+                <div class="min-h-[120px] border rounded-lg p-2">28</div>
+                <div class="min-h-[120px] border rounded-lg p-2">29</div>
+                <div class="min-h-[120px] border rounded-lg p-2">30</div>
+
+                <!-- Week 6 (partial) -->
+                <div class="min-h-[120px] border rounded-lg p-2">31</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">1</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">2</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">3</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">4</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">5</div>
+                <div class="min-h-[120px] border rounded-lg p-2 bg-gray-50 text-gray-400">6</div>
+            </div>
+        </div>
+    </div>
+</main>
+{{ end }}

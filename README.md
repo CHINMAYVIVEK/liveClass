@@ -50,8 +50,12 @@ cd liveClass
 |:--:|:--:|
 | *LiveClass Website Signup Page* | *LiveClass Website Login Page* |
 
-| ![Student Dashboard](screenshots/Screenshot-5.png) |  |
+| ![Student Dashboard](screenshots/Screenshot-5.png) | ![Student Schedule](screenshots/Screenshot-6.png) |
 |:--:|:--:|
-| *LiveClass Student Dashboard Page* | |
+| *LiveClass Student Dashboard Page* | *LiveClass Student Lecture Schedule Page* |
+
+| ![Student Recorded Lecture](screenshots/Screenshot-7.png) |  |
+|:--:|:--:|
+| *LiveClass Student Recorded Lecture Page* |  |
 
 </div>
