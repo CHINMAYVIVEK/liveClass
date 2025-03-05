@@ -13,12 +13,45 @@ type PostgresWrapper struct {
 	postgres *config.PostgresDB
 }
 
+type Tx interface {
+	QueryRow(ctx context.Context, query string, args ...interface{}) *sql.Row
+	Exec(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
+	Commit() error
+	Rollback() error
+}
+
 func NewPostgresWrapper(postgres *config.PostgresDB) *PostgresWrapper {
 	return &PostgresWrapper{
 		postgres: postgres,
 	}
 }
 
+// Add this type to wrap sql.Tx
+type txWrapper struct {
+	*sql.Tx
+}
+
+// Implement the Tx interface methods for txWrapper
+func (t *txWrapper) QueryRow(ctx context.Context, query string, args ...interface{}) *sql.Row {
+	return t.Tx.QueryRowContext(ctx, query, args...)
+}
+
+func (t *txWrapper) Exec(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	return t.Tx.ExecContext(ctx, query, args...)
+}
+
+// Update BeginTx to use the wrapper
+func (w *PostgresWrapper) BeginTx(ctx context.Context) (Tx, error) {
+	db, err := w.getDB()
+	if err != nil {
+		return nil, err
+	}
+	tx, err := db.BeginTx(ctx, nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin transaction: %w", err)
+	}
+	return &txWrapper{tx}, nil
+}
 func (w *PostgresWrapper) getDB() (*sql.DB, error) {
 	return w.postgres.GetDB()
 }
@@ -67,17 +100,23 @@ func (w *PostgresWrapper) Exec(ctx context.Context, query string, args ...interf
 	return result, nil
 }
 
-func (w *PostgresWrapper) Insert(ctx context.Context, query string, args ...interface{}) (int64, error) {
+// InsertReturning returns a Row that can be scanned for returning values
+func (w *PostgresWrapper) InsertReturning(ctx context.Context, query string, args ...interface{}) *sql.Row {
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
 	defer cancel()
 
 	db, err := w.getDB()
 	if err != nil {
-		return 0, err
+		return nil
 	}
 
+	return db.QueryRowContext(ctx, query, args...)
+}
+
+// Update the existing Insert method to use the new InsertReturning
+func (w *PostgresWrapper) Insert(ctx context.Context, query string, args ...interface{}) (int64, error) {
 	var id int64
-	err = db.QueryRowContext(ctx, query, args...).Scan(&id)
+	err := w.InsertReturning(ctx, query, args...).Scan(&id)
 	if err != nil {
 		return 0, fmt.Errorf("failed to insert record: %w", err)
 	}

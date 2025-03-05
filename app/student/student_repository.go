@@ -6,6 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"liveClass/helper"
+	"regexp"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -20,51 +22,172 @@ func NewRepository(db *helper.PostgresWrapper) *StudentRepository {
 }
 
 func (r *StudentRepository) Create(ctx context.Context, student *Student) error {
-	query := `
-        INSERT INTO students (
-             first_name, last_name, email, phone_number,
+	// Input validation
+	if err := r.validateStudentInput(student); err != nil {
+		return fmt.Errorf("invalid student data: %w", err)
+	}
+
+	// Start transaction
+	tx, err := r.db.BeginTx(ctx)
+	if err != nil {
+		return fmt.Errorf("failed to start transaction: %w", err)
+	}
+	defer func() {
+		if err != nil {
+			if rbErr := tx.Rollback(); rbErr != nil {
+				err = fmt.Errorf("tx failed: %v, rollback failed: %v", err, rbErr)
+			}
+			return
+		}
+		if err = tx.Commit(); err != nil {
+			err = fmt.Errorf("failed to commit transaction: %w", err)
+		}
+	}()
+
+	// Insert into users table
+	userQuery := `
+        INSERT INTO users (
+            first_name, last_name, email, phone_number,
             password_hash, sso_provider, sso_provider_id, profile_picture_url,
             bio, date_of_birth, address, gender, social_media_handles,
             nationality, preferred_language
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
-        RETURNING student_id`
+        RETURNING user_id`
 
 	socialMediaJSON, err := json.Marshal(student.SocialMediaLinks)
 	if err != nil {
 		return fmt.Errorf("failed to marshal social media handles: %w", err)
 	}
 
-	_, err = r.db.Insert(ctx, query,
+	var userID uuid.UUID
+	err = tx.QueryRow(ctx, userQuery,
 		student.FirstName, student.LastName, student.Email,
 		student.PhoneNumber, student.PasswordHash, student.SSOProvider,
 		student.SSOProviderID, student.ProfilePictureURL, student.Bio,
 		student.DateOfBirth, student.Address, student.Gender, socialMediaJSON,
 		student.Nationality, student.PreferredLanguage,
-	)
-	return err
+	).Scan(&userID)
+	if err != nil {
+		if isPgUniqueViolation(err) {
+			return ErrDuplicateEmail
+		}
+		return fmt.Errorf("failed to insert user: %w", err)
+	}
+
+	// Insert into students table
+	studentQuery := `
+        INSERT INTO students (user_id)
+        VALUES ($1)
+        RETURNING student_id`
+
+	err = tx.QueryRow(ctx, studentQuery, userID).Scan(&student.ID)
+	if err != nil {
+		return fmt.Errorf("failed to insert student: %w", err)
+	}
+
+	// Assign student role
+	roleQuery := `
+        INSERT INTO user_roles (user_id, role_id)
+        SELECT $1, role_id FROM roles WHERE role_name = 'student'`
+
+	result, err := tx.Exec(ctx, roleQuery, userID)
+	if err != nil {
+		return fmt.Errorf("failed to assign student role: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get affected rows: %w", err)
+	}
+	if rowsAffected == 0 {
+		return ErrStudentRoleNotFound
+	}
+
+	return nil
+}
+
+// Add these helper functions and types
+var (
+	ErrDuplicateEmail      = fmt.Errorf("email already exists")
+	ErrStudentRoleNotFound = fmt.Errorf("student role not found")
+	ErrInvalidInput        = fmt.Errorf("invalid input")
+)
+
+func (r *StudentRepository) validateStudentInput(student *Student) error {
+	if student == nil {
+		return fmt.Errorf("%w: student is nil", ErrInvalidInput)
+	}
+
+	// Validate required fields
+	if strings.TrimSpace(student.Email) == "" {
+		return fmt.Errorf("%w: email is required", ErrInvalidInput)
+	}
+	if !isValidEmail(student.Email) {
+		return fmt.Errorf("%w: invalid email format", ErrInvalidInput)
+	}
+
+	if strings.TrimSpace(student.FirstName) == "" {
+		return fmt.Errorf("%w: first name is required", ErrInvalidInput)
+	}
+
+	return nil
+}
+
+func isValidEmail(email string) bool {
+	// Basic email validation using regex
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	return emailRegex.MatchString(email)
+}
+
+func isValidPhoneNumber(phone string) bool {
+	// Basic phone number validation - allows digits, spaces, hyphens, and parentheses
+	phoneRegex := regexp.MustCompile(`^[\d\s\-()]+$`)
+	return phoneRegex.MatchString(phone)
+}
+
+func isValidGender(gender string) bool {
+	validGenders := map[string]bool{
+		"male":        true,
+		"female":      true,
+		"transgender": true,
+	}
+	return validGenders[gender]
+}
+
+func isPgUniqueViolation(err error) bool {
+	// Implement PostgreSQL unique violation error check
+	// This will depend on your PostgreSQL driver
+	return strings.Contains(err.Error(), "unique constraint") ||
+		strings.Contains(err.Error(), "duplicate key")
 }
 
 func (r *StudentRepository) GetByID(ctx context.Context, id uuid.UUID) (*Student, error) {
-	// Create a context with timeout
 	queryCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	query := `SELECT 
-        student_id,
-        COALESCE(first_name, ''),
-        COALESCE(last_name, ''),
-        COALESCE(email, ''),
-        COALESCE(phone_number, ''),
-        COALESCE(bio, ''),
-        COALESCE(date_of_birth, NULL),
-        COALESCE(address, ''),
-        COALESCE(gender, ''),
-        COALESCE(social_media_handles, '{}'),
-        COALESCE(nationality, ''),
-        COALESCE(preferred_language, ''),
-        created_at,
-        updated_at
-    FROM students WHERE student_id = $1`
+	query := `
+        SELECT 
+            s.student_id,
+            COALESCE(u.first_name, ''),
+            COALESCE(u.last_name, ''),
+            COALESCE(u.email, ''),
+            COALESCE(u.phone_number, ''),
+            COALESCE(u.bio, ''),
+            COALESCE(u.date_of_birth, NULL),
+            COALESCE(u.address, ''),
+            COALESCE(u.gender, ''),
+            COALESCE(u.social_media_handles, '{}'),
+            COALESCE(u.nationality, ''),
+            COALESCE(u.preferred_language, ''),
+            u.created_at,
+            u.updated_at,
+            u.password_hash,
+            u.sso_provider,
+            u.sso_provider_id,
+            u.profile_picture_url
+        FROM students s
+        JOIN users u ON s.user_id = u.user_id
+        WHERE s.student_id = $1`
 
 	// Use queryCtx instead of ctx
 	row, err := r.db.QueryRow(queryCtx, query, id)
