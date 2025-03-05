@@ -1,4 +1,4 @@
-package auth
+package website
 
 import (
 	"fmt"
@@ -7,10 +7,10 @@ import (
 )
 
 type Handler struct {
-	repo *AuthRepository
+	repo *WebRepository
 }
 
-func NewHandler(repo *AuthRepository) *Handler {
+func NewHandler(repo *WebRepository) *Handler {
 	return &Handler{repo: repo}
 }
 
