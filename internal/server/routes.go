@@ -1,6 +1,7 @@
 package server
 
 import (
+	"liveClass/app/auth"
 	"liveClass/app/student"
 	"liveClass/app/website"
 )
@@ -18,8 +19,13 @@ func (s *Server) SetupRoutes() {
 	s.mux.HandleFunc("/api/students/get", studentHandler.GetStudent)
 
 	// Add more routes as needed
-	WebRepo := website.NewRepository(s.db)
-	WebHandler := website.NewHandler(WebRepo)
+	webRepo := website.NewRepository(s.db)
+	webHandler := website.NewHandler(webRepo)
 
-	s.mux.HandleFunc("/", WebHandler.Index)
+	s.mux.HandleFunc("/", webHandler.Index)
+
+	authRepo := auth.NewRepository(s.db)
+	authHandler := auth.NewHandler(authRepo)
+
+	s.mux.HandleFunc("/signup", authHandler.Login)
 }
