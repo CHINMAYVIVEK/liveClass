@@ -36,7 +36,7 @@ cd liveClass
 ```
 
 ### DB Export
-`pg_dump -U postgres liveclass > /liveClass/db/liveclass.sql`
+`pg_dump -U postgres liveclass > db/liveclass.sql`
 
 ### Screenshots
 
