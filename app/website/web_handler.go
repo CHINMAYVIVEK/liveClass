@@ -22,11 +22,16 @@ func init() {
 		templates = make(map[string]*template.Template)
 	}
 
+	// t, err := helper.LoadTemplate("index.html",
+	// 	"template/website/index.html",
+	// 	"template/website/_header.html",
+	// 	"template/website/_footer.html",
+	// )
+
 	t, err := helper.LoadTemplate("index.html",
 		"template/website/index.html",
-		"template/website/_header.html",
-		"template/website/_footer.html",
 	)
+
 	if err != nil {
 		logger.Error(err)
 		panic(err)

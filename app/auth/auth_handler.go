@@ -2,9 +2,9 @@ package auth
 
 import (
 	"encoding/json"
+	"html/template"
 	"liveClass/helper"
 	"net/http"
-	"text/template"
 )
 
 type Handler struct {
@@ -24,17 +24,26 @@ func init() {
 		templates = make(map[string]*template.Template)
 	}
 
-	// Parse all templates together
-	t, err := template.ParseFiles(
+	t, err := helper.LoadTemplate("login.html",
 		"template/website/login.html",
-		"template/website/_header.html",
-		"template/website/_footer.html",
 	)
 	if err != nil {
 		logger.Error(err)
 		panic(err)
 	}
 	templates["login"] = t
+}
+
+func (h *Handler) LoginPage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		helper.NewErrorResponse(w, http.StatusMethodNotAllowed, "Method not allowed")
+		return
+	}
+	err := templates["login"].ExecuteTemplate(w, "login", nil)
+	if err != nil {
+		logger.Error("Error executing template:", err)
+		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
+	}
 }
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
