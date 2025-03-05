@@ -17,17 +17,24 @@ func NewHandler(repo *AuthRepository) *Handler {
 var templates map[string]*template.Template
 
 func init() {
-	fmt.Println("init auth handler")
 	if templates == nil {
 		templates = make(map[string]*template.Template)
 	}
-	// Parse template with a name
-	templates["index.html"] = template.Must(template.New("index.html").ParseFiles("template/index.html"))
+
+	// Parse all templates together
+	t, err := template.ParseFiles(
+		"template/website/index.html",
+		"template/website/_header.html",
+		"template/website/_footer.html",
+	)
+	if err != nil {
+		panic(err)
+	}
+	templates["index"] = t
 }
 
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
-	// Use the template name "index" instead of the full path
-	err := templates["index.html"].ExecuteTemplate(w, "index.html", map[string]template.JS{})
+	err := templates["index"].ExecuteTemplate(w, "index", nil)
 	if err != nil {
 		fmt.Println("Error executing template:", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)

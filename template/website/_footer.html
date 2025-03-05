@@ -1,0 +1,53 @@
+
+{{ define "footer" }}
+<!-- Footer -->
+<footer class="bg-gray-800 text-white">
+    <div class="container mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Company Info -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">LiveClass</h3>
+                <p class="text-gray-400">Empowering education through technology</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                <ul class="space-y-2">
+                    <li><a href="/privacy" class="text-gray-400 hover:text-white" hx-get="/privacy" hx-target="#main-content" hx-push-url="true">Privacy Policy</a></li>
+                    <li><a href="/terms" class="text-gray-400 hover:text-white" hx-get="/terms" hx-target="#main-content" hx-push-url="true">Terms of Service</a></li>
+                    <li><a href="/faq" class="text-gray-400 hover:text-white" hx-get="/faq" hx-target="#main-content" hx-push-url="true">FAQ</a></li>
+                </ul>
+            </div>
+
+            <!-- Contact Info -->
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                <ul class="space-y-2 text-gray-400">
+                    <li>Email: info@liveclass.com</li>
+                    <li>Phone: +1 (555) 123-4567</li>
+                    <li>Address: 123 Education St, Learning City</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="mt-8 pt-4 border-t border-gray-700 text-center text-gray-400">
+            <p>&copy; <span x-text="new Date().getFullYear()"></span> LiveClass. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+{{ end }}
+
+    <!-- Additional Scripts -->
+    <script>
+        // Add any additional JavaScript here
+        document.body.addEventListener('htmx:afterSwap', function(evt) {
+            // Scroll to top after content swap
+            window.scrollTo(0, 0);
+            // Close mobile menu if open
+            Alpine.store('mobileMenuOpen', false);
+        });
+    </script>
+</body>
+</html>

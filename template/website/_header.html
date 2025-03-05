@@ -1,0 +1,38 @@
+{{ define "header" }}
+<!-- Header -->
+<header class="bg-blue-600 text-white">
+    <nav class="container mx-auto px-4 py-3">
+        <div class="flex justify-between items-center">
+            <!-- Logo -->
+            <a href="/" class="text-2xl font-bold">LiveClass</a>
+
+            <!-- Mobile Menu Button -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex space-x-4">
+                <a href="/" class="hover:text-blue-200" hx-get="/home" hx-target="#main-content" hx-push-url="true">Home</a>
+                <a href="/about" class="hover:text-blue-200" hx-get="/about" hx-target="#main-content" hx-push-url="true">About</a>
+                <a href="/courses" class="hover:text-blue-200" hx-get="/courses" hx-target="#main-content" hx-push-url="true">Courses</a>
+                <a href="/contact" class="hover:text-blue-200" hx-get="/contact" hx-target="#main-content" hx-push-url="true">Contact</a>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation -->
+        <div x-show="mobileMenuOpen" class="md:hidden mt-4 space-y-2">
+            <a href="/" class="block hover:text-blue-200" hx-get="/home" hx-target="#main-content" hx-push-url="true">Home</a>
+            <a href="/about" class="block hover:text-blue-200" hx-get="/about" hx-target="#main-content" hx-push-url="true">About</a>
+            <a href="/courses" class="block hover:text-blue-200" hx-get="/courses" hx-target="#main-content" hx-push-url="true">Courses</a>
+            <a href="/contact" class="block hover:text-blue-200" hx-get="/contact" hx-target="#main-content" hx-push-url="true">Contact</a>
+        </div>
+    </nav>
+</header>
+{{ end }}
+
+
+ 

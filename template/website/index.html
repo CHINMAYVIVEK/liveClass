@@ -1,11 +1,147 @@
+{{ define "index" }}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+    <title>LiveClass - {{ template "title" . }}</title>
     
+    <!-- Styles -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Scripts -->
+    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+</head>
+<body class="flex flex-col min-h-screen">
+    {{ template "header" . }}
+    
+    <main id="main-content" class="flex-grow container mx-auto px-4 py-8">
+        {{ template "content" . }}
+    </main>
+
+    {{ template "footer" . }}
 </body>
 </html>
+{{ end }}
+
+{{ define "title" }}Home{{ end }}
+
+{{ define "content" }}
+    
+<div class="space-y-8">
+    <!-- Hero Section -->
+    <section class="text-center py-12 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg">
+        <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to LiveClass</h1>
+        <p class="text-xl mb-8">Transform your learning experience with interactive online classes</p>
+        <div class="space-x-4">
+            <a href="/signup" 
+               class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300"
+               hx-get="/signup" 
+               hx-target="#main-content" 
+               hx-push-url="true">
+                Get Started
+            </a>
+            <a href="/courses" 
+               class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300"
+               hx-get="/courses" 
+               hx-target="#main-content" 
+               hx-push-url="true">
+                Browse Courses
+            </a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-12">
+        <h2 class="text-3xl font-bold text-center mb-8">Why Choose LiveClass?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8" x-data="{ features: [
+            {
+                title: 'Interactive Learning',
+                description: 'Engage in real-time with instructors and fellow students',
+                icon: '🎓'
+            },
+            {
+                title: 'Expert Instructors',
+                description: 'Learn from industry professionals and experienced educators',
+                icon: '👨‍🏫'
+            },
+            {
+                title: 'Flexible Schedule',
+                description: 'Access courses anytime, anywhere at your convenience',
+                icon: '⏰'
+            }
+        ]}">
+            <template x-for="feature in features" :key="feature.title">
+                <div class="p-6 bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-300">
+                    <div class="text-4xl mb-4" x-text="feature.icon"></div>
+                    <h3 class="text-xl font-semibold mb-2" x-text="feature.title"></h3>
+                    <p class="text-gray-600" x-text="feature.description"></p>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- Latest Courses Section -->
+    <section class="py-12 bg-gray-50 rounded-lg">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold mb-4">Latest Courses</h2>
+            <p class="text-gray-600">Explore our newest additions to start learning today</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6"
+             x-data="{ 
+                 courses: [
+                     {
+                         title: 'Web Development Fundamentals',
+                         instructor: 'John Doe',
+                         price: '$49.99',
+                         image: 'https://placehold.co/600x400'
+                     },
+                     {
+                         title: 'Data Science Basics',
+                         instructor: 'Jane Smith',
+                         price: '$59.99',
+                         image: 'https://placehold.co/600x400'
+                     },
+                     {
+                         title: 'Mobile App Development',
+                         instructor: 'Mike Johnson',
+                         price: '$69.99',
+                         image: 'https://placehold.co/600x400'
+                     }
+                 ]
+             }">
+            <template x-for="course in courses" :key="course.title">
+                <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300">
+                    <img :src="course.image" :alt="course.title" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold mb-2" x-text="course.title"></h3>
+                        <p class="text-gray-600 mb-4" x-text="'Instructor: ' + course.instructor"></p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-blue-600 font-bold" x-text="course.price"></span>
+                            <button class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
+                                    @click="window.location.href='/course-details'">
+                                Learn More
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="text-center py-12 bg-blue-600 text-white rounded-lg">
+        <h2 class="text-3xl font-bold mb-4">Ready to Start Learning?</h2>
+        <p class="text-xl mb-8">Join thousands of students already learning with LiveClass</p>
+        <a href="/signup" 
+           class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300"
+           hx-get="/signup" 
+           hx-target="#main-content" 
+           hx-push-url="true">
+            Sign Up Now
+        </a>
+    </section>
+</div>
+
+{{ end }}
