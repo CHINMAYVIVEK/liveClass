@@ -25,9 +25,29 @@ LiveClass is a modern Learning Management System (LMS) designed to facilitate on
 ### Prerequisites
 - Go 1.21 or higher
 - PostgreSQL
+- Air (Live reload for Go apps)
 
-### Installation
+### Installation Steps
+
 1. Clone the repository
+```bash
+git clone https://github.com/chinmayvivek/liveClass.git
+cd liveClass
+```
 
 ### DB Export
 `pg_dump -U postgres liveclass > /liveClass/db/liveclass.sql`
+
+### Screenshots
+
+<div align="center">
+
+| ![Website HomePage-1](screenshots/Screenshot-1.png) |
+|:--:|
+| *LiveClass Website HomePage-1* |
+
+| ![CourWebsite HomePage-2](screenshots/Screenshot-2.png) |
+|:--:|
+| *LiveClass Website HomePage-2*  |
+
+</div>
