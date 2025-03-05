@@ -113,7 +113,19 @@
                     </div>
 
                     <!-- Form -->
-                    <form @submit.prevent="handleSubmit" class="space-y-6">
+                    <form @submit.prevent="handleSubmit" 
+                          :hx-post="isLogin ? '/api/login' : '/api/signup'"
+                          hx-trigger="submit"
+                          hx-target="#main-content"
+                          class="space-y-6">
+                        <!-- Error Message -->
+                        <div id="form-error"
+                             x-show="errorMessage" 
+                             x-transition
+                             class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6"
+                             role="alert">
+                            <span x-text="errorMessage"></span>
+                        </div>
                         <!-- Name Input (Signup only) -->
                         <div x-show="!isLogin">
                             <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
@@ -183,7 +195,7 @@
                                hx-push-url="true">Forgot password?</a>
                         </div>
 
-                        <!-- Submit Button with updated styling -->
+                        <!-- Submit Button -->
                         <button type="submit" 
                                 class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150"
                                 :disabled="loading">
