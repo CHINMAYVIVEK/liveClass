@@ -1,11 +1,9 @@
 package website
 
 import (
-	"context"
 	"html/template"
 	"liveClass/helper"
 	"net/http"
-	"time"
 )
 
 type Handler struct {
@@ -39,11 +37,8 @@ func init() {
 }
 
 func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
-	// Create a new context with timeout
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
 
-	courses, err := h.repo.GetCourses(ctx)
+	courses, err := h.repo.GetCourses(r.Context())
 	if err != nil {
 		logger.Error("Error getting courses:", err)
 		// Still render the template but with error state

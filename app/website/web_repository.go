@@ -38,7 +38,7 @@ func (r *WebRepository) GetCourses(ctx context.Context) ([]Course, error) {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 	defer rows.Close()
-	// fmt.Printf("rows: %+v\n", rows)
+	fmt.Printf("rows: %+v\n", rows)
 
 	for rows.Next() {
 		var course Course
@@ -63,12 +63,12 @@ func (r *WebRepository) GetCourses(ctx context.Context) ([]Course, error) {
 			CourseTypeID: typeID,
 			CourseType:   typeName,
 		}
-		// fmt.Printf("course: %+v\n", course)
+		fmt.Printf("course: %+v\n", course)
 
 		courses = append(courses, course)
 	}
 
-	// fmt.Printf("courses: %+v\n", courses)
+	fmt.Printf("courses: %+v\n", courses)
 
 	// Check for errors from iterating over rows
 	if err = rows.Err(); err != nil {
