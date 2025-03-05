@@ -31,163 +31,182 @@
 {{ define "title" }}Login{{ end }}
 
 {{ define "content" }}
-<div class="min-h-screen flex items-center justify-center" 
-     x-data="{ 
-        isLogin: false,
-        email: '', 
-        phone: '',
-        name: '',
-        password: '', 
-        showPassword: false, 
-        loading: false, 
-        errorMessage: '',
-        loginType: 'email', // 'email' or 'phone'
-        handleSubmit() {
-            this.loading = true;
-            this.errorMessage = '';
-            // Add your login/signup logic here
-        },
-        handleGoogleSuccess(response) {
-            console.log('Google SSO success:', response);
-        },
-        toggleForm() {
-            this.isLogin = !this.isLogin;
-            this.errorMessage = '';
-            this.email = '';
-            this.password = '';
-            this.phone = '';
-            this.name = '';
-        }
-     }">
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-900" x-text="isLogin ? 'Welcome Back' : 'Create Account'"></h2>
-            <p class="text-gray-600 mt-2" x-text="isLogin ? 'Please sign in to continue' : 'Get started with your account'"></p>
-        </div>
-
-        <!-- Error Message -->
-        <div x-show="errorMessage" 
-             x-transition
-             class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6"
-             role="alert">
-            <span x-text="errorMessage"></span>
-        </div>
-
-        <!-- Social Login -->
-        <div class="space-y-4 mb-6">
-            <div id="g_id_onload"
-                 data-client_id="YOUR_GOOGLE_CLIENT_ID"
-                 data-callback="handleGoogleSuccess"
-                 data-auto_prompt="false">
-            </div>
-            <div class="g_id_signin w-full"
-                 data-type="standard"
-                 data-size="large"
-                 data-theme="outline"
-                 data-text="sign_in_with"
-                 data-shape="rectangular"
-                 data-logo_alignment="left">
-            </div>
-        </div>
-
-        <div class="relative flex items-center justify-center mb-6">
-            <div class="border-t border-gray-200 w-full"></div>
-            <div class="bg-white px-4 text-sm text-gray-500">or continue with</div>
-            <div class="border-t border-gray-200 w-full"></div>
-        </div>
-
-        <!-- Signup/Login Form -->
-        <form @submit.prevent="handleSubmit" class="space-y-6">
-            <!-- Name Input (Signup only) -->
-            <div x-show="!isLogin">
-                <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                <input type="text" 
-                       id="name" 
-                       x-model="name"
-                       class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
-                       required>
-            </div>
-
-            <!-- Email Input -->
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-                <input type="email" 
-                       id="email" 
-                       x-model="email"
-                       class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
-                       required>
-            </div>
-
-            <!-- Phone Input (Signup only) -->
-            <div x-show="!isLogin">
-                <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                <input type="tel" 
-                       id="phone" 
-                       x-model="phone"
-                       pattern="[0-9]{10}"
-                       class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
-                       required>
-            </div>
-
-            <!-- Password Input -->
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <div class="relative">
-                    <input :type="showPassword ? 'text' : 'password'"
-                           id="password" 
-                           x-model="password"
-                           class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
-                           required>
-                    <button type="button" 
-                            @click="showPassword = !showPassword"
-                            class="absolute inset-y-0 right-0 pr-3 flex items-center">
-                        <svg x-show="!showPassword" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                        <svg x-show="showPassword" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                        </svg>
-                    </button>
+<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl w-full bg-white rounded-2xl shadow-xl overflow-hidden">
+        <div class="flex flex-col md:flex-row" x-data="{ 
+            isLogin: false,
+            email: '', 
+            phone: '',
+            name: '',
+            password: '', 
+            showPassword: false, 
+            loading: false, 
+            errorMessage: '',
+            handleSubmit() {
+                this.loading = true;
+                this.errorMessage = '';
+            },
+            handleGoogleSuccess(response) {
+                console.log('Google SSO success:', response);
+            },
+            toggleForm() {
+                this.isLogin = !this.isLogin;
+                this.errorMessage = '';
+                this.email = '';
+                this.password = '';
+                this.phone = '';
+                this.name = '';
+            }
+        }">
+            <!-- Left Side - SSO -->
+            <div class="md:w-5/12 bg-gradient-to-br from-blue-600 to-blue-700 p-8 text-white">
+                <div class="h-full flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-3xl font-bold mb-6">Welcome to LiveClass</h2>
+                        <p class="text-blue-100 mb-8">Join our community of learners and educators</p>
+                    </div>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-lg p-4">
+                            <div id="g_id_onload"
+                                data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                                data-callback="handleGoogleSuccess"
+                                data-auto_prompt="false">
+                            </div>
+                            <div class="g_id_signin w-full"
+                                data-type="standard"
+                                data-size="large"
+                                data-theme="outline"
+                                data-text="sign_in_with"
+                                data-shape="rectangular"
+                                data-logo_alignment="left">
+                            </div>
+                        </div>
+                        
+                        <div class="text-center text-sm text-blue-200">
+                            <p>By continuing, you agree to our</p>
+                            <div class="mt-2">
+                                <a href="#" class="underline">Terms of Service</a>
+                                <span class="mx-2">•</span>
+                                <a href="#" class="underline">Privacy Policy</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Remember Me & Forgot Password (Login only) -->
-            <div x-show="isLogin" class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <input type="checkbox" 
-                           id="remember-me" 
-                           class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
-                    <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+            <!-- Right Side - Forms -->
+            <div class="md:w-7/12 p-8">
+                <div class="max-w-md mx-auto">
+                    <!-- Header -->
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-900" x-text="isLogin ? 'Welcome Back' : 'Create Account'"></h2>
+                        <p class="text-gray-600 mt-2" x-text="isLogin ? 'Please sign in to continue' : 'Get started with your account'"></p>
+                    </div>
+
+                    <!-- Error Message -->
+                    <div x-show="errorMessage" 
+                         x-transition
+                         class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6"
+                         role="alert">
+                        <span x-text="errorMessage"></span>
+                    </div>
+
+                    <!-- Form -->
+                    <form @submit.prevent="handleSubmit" class="space-y-6">
+                        <!-- Name Input (Signup only) -->
+                        <div x-show="!isLogin">
+                            <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" 
+                                   id="name" 
+                                   x-model="name"
+                                   class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
+                                   required>
+                        </div>
+
+                        <!-- Email Input -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                            <input type="email" 
+                                   id="email" 
+                                   x-model="email"
+                                   class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
+                                   required>
+                        </div>
+
+                        <!-- Phone Input (Signup only) -->
+                        <div x-show="!isLogin">
+                            <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                            <input type="tel" 
+                                   id="phone" 
+                                   x-model="phone"
+                                   pattern="[0-9]{10}"
+                                   class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
+                                   required>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                            <div class="relative">
+                                <input :type="showPassword ? 'text' : 'password'"
+                                       id="password" 
+                                       x-model="password"
+                                       class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
+                                       required>
+                                <button type="button" 
+                                        @click="showPassword = !showPassword"
+                                        class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <svg x-show="!showPassword" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    <svg x-show="showPassword" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Remember Me & Forgot Password (Login only) -->
+                        <div x-show="isLogin" class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" 
+                                       id="remember-me" 
+                                       class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                                <label for="remember-me" class="ml-2 block text-sm text-gray-900">Remember me</label>
+                            </div>
+                            <a href="/forgot-password" 
+                               class="text-sm font-medium text-blue-600 hover:text-blue-500 transition duration-150"
+                               hx-get="/forgot-password"
+                               hx-target="#main-content"
+                               hx-push-url="true">Forgot password?</a>
+                        </div>
+
+                        <!-- Submit Button with updated styling -->
+                        <button type="submit" 
+                                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150"
+                                :disabled="loading">
+                            <svg x-show="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <span x-text="isLogin ? (loading ? 'Signing in...' : 'Sign in') : (loading ? 'Creating account...' : 'Create account')"></span>
+                        </button>
+
+                        <!-- Toggle Link with updated styling -->
+                        <div class="text-center mt-6">
+                            <span class="text-gray-600" x-text="isLogin ? 'Don\'t have an account?' : 'Already have an account?'"></span>
+                            <button type="button" 
+                                    @click="toggleForm"
+                                    class="font-medium text-blue-600 hover:text-blue-500 ml-1 transition duration-150"
+                                    x-text="isLogin ? 'Create an account' : 'Sign in'">
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <a href="/forgot-password" 
-                   class="text-sm font-medium text-blue-600 hover:text-blue-500 transition duration-150"
-                   hx-get="/forgot-password"
-                   hx-target="#main-content"
-                   hx-push-url="true">Forgot password?</a>
             </div>
-
-            <!-- Submit Button -->
-            <button type="submit" 
-                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150"
-                    :disabled="loading">
-                <svg x-show="loading" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                <span x-text="isLogin ? (loading ? 'Signing in...' : 'Sign in') : (loading ? 'Creating account...' : 'Create account')"></span>
-            </button>
-
-            <!-- Toggle Link -->
-            <div class="text-center mt-6">
-                <span class="text-gray-600" x-text="isLogin ? 'Don\'t have an account?' : 'Already have an account?'"></span>
-                <button type="button" 
-                        @click="toggleForm"
-                        class="font-medium text-blue-600 hover:text-blue-500 ml-1 transition duration-150"
-                        x-text="isLogin ? 'Create an account' : 'Sign in'">
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 {{ end }}
