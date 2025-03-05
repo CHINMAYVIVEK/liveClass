@@ -36,7 +36,7 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: batches; Type: TABLE; Schema: public; Owner: chinmayvivek
+-- Name: batches; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.batches (
@@ -50,10 +50,10 @@ CREATE TABLE public.batches (
 );
 
 
-ALTER TABLE public.batches OWNER TO chinmayvivek;
+ALTER TABLE public.batches OWNER TO postgres;
 
 --
--- Name: class_recordings; Type: TABLE; Schema: public; Owner: chinmayvivek
+-- Name: class_recordings; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.class_recordings (
@@ -64,10 +64,10 @@ CREATE TABLE public.class_recordings (
 );
 
 
-ALTER TABLE public.class_recordings OWNER TO chinmayvivek;
+ALTER TABLE public.class_recordings OWNER TO postgres;
 
 --
--- Name: classes; Type: TABLE; Schema: public; Owner: chinmayvivek
+-- Name: classes; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.classes (
@@ -80,52 +80,58 @@ CREATE TABLE public.classes (
 );
 
 
-ALTER TABLE public.classes OWNER TO chinmayvivek;
+ALTER TABLE public.classes OWNER TO postgres;
 
 --
--- Name: courses; Type: TABLE; Schema: public; Owner: chinmayvivek
+-- Name: course_types; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.course_types (
+    type_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    type_name character varying(255) NOT NULL,
+    description text
+);
+
+
+ALTER TABLE public.course_types OWNER TO postgres;
+
+--
+-- Name: courses; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.courses (
     course_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     title character varying(255) NOT NULL,
     description text,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    image character varying(255) DEFAULT 'default_image_path.jpg'::character varying NOT NULL,
+    is_active boolean DEFAULT false,
+    sequence_no integer DEFAULT 0,
+    course_price character varying DEFAULT 0,
+    course_level character varying(50) DEFAULT 'beginner'::character varying NOT NULL,
+    course_type_id uuid,
+    CONSTRAINT courses_course_level_check CHECK (((course_level)::text = ANY ((ARRAY['beginner'::character varying, 'intermediate'::character varying, 'advanced'::character varying])::text[])))
 );
 
 
-ALTER TABLE public.courses OWNER TO chinmayvivek;
+ALTER TABLE public.courses OWNER TO postgres;
 
 --
--- Name: instructors; Type: TABLE; Schema: public; Owner: chinmayvivek
+-- Name: instructors; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.instructors (
     instructor_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    first_name character varying(100) NOT NULL,
-    last_name character varying(100),
-    email character varying(150) NOT NULL,
-    phone_number character varying(15),
-    password_hash text,
-    sso_provider character varying(50),
-    sso_provider_id character varying(255),
-    profile_picture_url text,
-    bio text,
-    date_of_birth date,
-    address text,
-    gender character varying(20),
-    social_media_handles jsonb,
+    user_id uuid NOT NULL,
     qualifications text,
-    years_of_experience integer,
-    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    years_of_experience integer
 );
 
 
-ALTER TABLE public.instructors OWNER TO chinmayvivek;
+ALTER TABLE public.instructors OWNER TO postgres;
 
 --
--- Name: notes; Type: TABLE; Schema: public; Owner: chinmayvivek
+-- Name: notes; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.notes (
@@ -137,14 +143,65 @@ CREATE TABLE public.notes (
 );
 
 
-ALTER TABLE public.notes OWNER TO chinmayvivek;
+ALTER TABLE public.notes OWNER TO postgres;
 
 --
--- Name: students; Type: TABLE; Schema: public; Owner: chinmayvivek
+-- Name: roles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.roles (
+    role_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    role_name character varying(50) NOT NULL,
+    description text
+);
+
+
+ALTER TABLE public.roles OWNER TO postgres;
+
+--
+-- Name: students; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.students (
     student_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    user_id uuid NOT NULL
+);
+
+
+ALTER TABLE public.students OWNER TO postgres;
+
+--
+-- Name: students_enrolled; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.students_enrolled (
+    enrollment_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
+    student_id uuid NOT NULL,
+    batch_id uuid NOT NULL,
+    enrollment_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+);
+
+
+ALTER TABLE public.students_enrolled OWNER TO postgres;
+
+--
+-- Name: user_roles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_roles (
+    user_id uuid NOT NULL,
+    role_id uuid NOT NULL
+);
+
+
+ALTER TABLE public.user_roles OWNER TO postgres;
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    user_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
     first_name character varying(100) NOT NULL,
     last_name character varying(100),
     email character varying(150) NOT NULL,
@@ -161,56 +218,23 @@ CREATE TABLE public.students (
     nationality character varying(50),
     preferred_language character varying(50),
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT users_gender_check CHECK (((gender)::text = ANY ((ARRAY['male'::character varying, 'female'::character varying, 'other'::character varying])::text[])))
 );
 
 
-ALTER TABLE public.students OWNER TO chinmayvivek;
+ALTER TABLE public.users OWNER TO postgres;
 
 --
--- Name: students_enrolled; Type: TABLE; Schema: public; Owner: chinmayvivek
---
-
-CREATE TABLE public.students_enrolled (
-    enrollment_id uuid DEFAULT public.uuid_generate_v4() NOT NULL,
-    student_id uuid NOT NULL,
-    batch_id uuid NOT NULL,
-    enrollment_date timestamp without time zone DEFAULT CURRENT_TIMESTAMP
-);
-
-
-ALTER TABLE public.students_enrolled OWNER TO chinmayvivek;
-
---
--- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: chinmayvivek
+-- Data for Name: batches; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.batches (batch_id, course_id, batch_name, instructor_id, start_date, end_date, created_at) FROM stdin;
-16803052-76df-47f5-b20f-3dc6a5f1da8e	a0e8f6a9-8cb2-4cb2-bbc4-133fcce4418e	DSA Batch 1	111d7c66-0541-4712-967f-3f586834ca80	2025-03-10	2025-06-10	2025-03-04 15:31:18.864173
-eff2f223-48e8-4a45-87d7-7757859ccd11	bfc774d9-ad68-439b-b61b-399a319e29a8	Hindustani Classical Vocal Batch 1	a264b4d1-2090-47df-8678-62a3b7275f91	2025-04-01	2025-07-01	2025-03-04 15:31:18.864173
-d6d6ce87-0094-48d1-beb9-2a7b774b6772	d81d4bf6-b6cc-45b2-9c80-d3dfe0b0408f	Vedic Astrology Batch 1	55d31bd8-3f21-48de-9688-87fc9e81bada	2025-03-15	2025-06-15	2025-03-04 15:31:18.864173
-ccc5850c-5b95-48e8-b6d9-00f36805aef9	7da5aed3-23b4-438a-a296-8c4e70f48bcb	Web Development Batch 1	ae365955-0bcf-4766-96ec-65b15ebe2464	2025-03-20	2025-06-20	2025-03-04 15:31:18.864173
-fd70a9a1-334d-4924-9ca1-62ee2153ee10	72e35ada-ae9e-4d49-a869-d6a538a8fae7	Machine Learning Batch 1	69abd674-83bd-48ac-9836-35c82e87aa4a	2025-03-25	2025-06-25	2025-03-04 15:31:18.864173
-8f45e16d-0856-46e9-8bf7-2e7405adb6b9	09f85481-2596-4ca2-a942-ed4a1d610868	Photography Basics Batch 1	8e26af9f-6f97-41c2-aac3-d482af993449	2025-04-05	2025-07-05	2025-03-04 15:31:18.864173
-bda99212-4b3c-4cd8-ba19-da9f5d384359	987c94d2-efa9-46dc-90ae-835f4e0be0d2	Creative Writing Batch 1	57f92096-3a7b-440b-899a-5ea811699888	2025-03-30	2025-06-30	2025-03-04 15:31:18.864173
-e6f6d1a6-872d-4516-be03-e5749e34380a	8692643e-ae1e-47c8-99be-3df0bc5fc549	Personal Finance Batch 1	933a7e90-4873-4d9c-a480-ffeb02480af5	2025-03-18	2025-06-18	2025-03-04 15:31:18.864173
-9e90077e-d666-4cda-848b-3d3011767fd8	42e52d6d-d010-441b-b1b8-6fbfb65e732c	Public Speaking Batch 1	2bd2f411-c397-4d20-a734-32c0432bdb68	2025-04-10	2025-07-10	2025-03-04 15:31:18.864173
-7c0724ea-5c3f-44cf-b31b-8aa925ae6f93	38fd7790-3886-40e1-911b-fc8b7ed0f15f	Fitness and Weight Loss Batch 1	fdfa098a-8812-4096-b62f-2c86bccf7436	2025-04-01	2025-06-01	2025-03-04 15:31:18.864173
-51ad8e8a-14d0-4aba-81e8-ae466b21e87d	071e82d5-fcf7-4d31-9f2c-ac5f02fa4a2a	Yoga for Beginners Batch 1	111d7c66-0541-4712-967f-3f586834ca80	2025-04-15	2025-07-15	2025-03-04 15:31:18.864173
-8a35c338-90ae-4962-ae4a-84c556ec8943	e2dfd6dc-6c55-41fd-a258-263adb97755f	Entrepreneurship and Startups Batch 1	a264b4d1-2090-47df-8678-62a3b7275f91	2025-03-05	2025-06-05	2025-03-04 15:31:18.864173
-388ddfcc-2e58-4c95-b3c6-6034ef2e3df9	1268c870-784d-4560-afec-0d0e1d1de4bb	Meditation and Mindfulness Batch 1	55d31bd8-3f21-48de-9688-87fc9e81bada	2025-03-22	2025-06-22	2025-03-04 15:31:18.864173
-d292e265-1be8-4f1b-a677-21963c8e5bb9	c3fd5628-21d1-4e48-89c8-c7c4fc8b5735	Culinary Arts Batch 1	69abd674-83bd-48ac-9836-35c82e87aa4a	2025-04-20	2025-07-20	2025-03-04 15:31:18.864173
-797f60bb-f93b-4229-a864-cdc6db5e7057	a7fbc32f-40f2-401f-8438-69a092f434d9	Graphic Design Batch 1	8e26af9f-6f97-41c2-aac3-d482af993449	2025-03-28	2025-06-28	2025-03-04 15:31:18.864173
-fb0a1103-88be-4b62-a9ba-b9eb917fda08	6d792c1b-6fc0-4681-9f9e-f87ddac71a81	Advanced Excel Batch 1	57f92096-3a7b-440b-899a-5ea811699888	2025-03-12	2025-06-12	2025-03-04 15:31:18.864173
-0bef73ed-14cf-47c2-b324-7d0eb85d303b	b3db5b7d-8e97-457f-89f7-fbf85f410241	Music Theory and Composition Batch 1	933a7e90-4873-4d9c-a480-ffeb02480af5	2025-03-17	2025-06-17	2025-03-04 15:31:18.864173
-ef5b13f9-c8c0-4d1a-9059-c58004351e66	8258c893-173e-48cc-8b71-a5f73bd7cf65	Film Making and Video Production Batch 1	2bd2f411-c397-4d20-a734-32c0432bdb68	2025-04-08	2025-07-08	2025-03-04 15:31:18.864173
-2a2d45ad-2756-4284-a788-30749f5be965	3c47155d-8b3f-44cc-8087-f3a836d7636a	Artificial Intelligence Batch 1	fdfa098a-8812-4096-b62f-2c86bccf7436	2025-04-02	2025-07-02	2025-03-04 15:31:18.864173
-8e0fd4f4-7103-4718-af7a-7822b05cb770	eac68131-7cbe-4eaa-9918-cc99b8f55196	Digital Marketing Batch 1	111d7c66-0541-4712-967f-3f586834ca80	2025-04-18	2025-07-18	2025-03-04 15:31:18.864173
 \.
 
 
 --
--- Data for Name: class_recordings; Type: TABLE DATA; Schema: public; Owner: chinmayvivek
+-- Data for Name: class_recordings; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.class_recordings (recording_id, class_id, recording_url, recorded_at) FROM stdin;
@@ -218,7 +242,7 @@ COPY public.class_recordings (recording_id, class_id, recording_url, recorded_at
 
 
 --
--- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: chinmayvivek
+-- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.classes (class_id, batch_id, title, scheduled_at, live_url, created_at) FROM stdin;
@@ -226,53 +250,71 @@ COPY public.classes (class_id, batch_id, title, scheduled_at, live_url, created_
 
 
 --
--- Data for Name: courses; Type: TABLE DATA; Schema: public; Owner: chinmayvivek
+-- Data for Name: course_types; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.courses (course_id, title, description, created_at) FROM stdin;
-a0e8f6a9-8cb2-4cb2-bbc4-133fcce4418e	Data Structures and Algorithms (DSA)	Learn the fundamentals of DSA, including arrays, trees, graphs, sorting algorithms, and more.	2025-03-04 12:03:44.975693
-bfc774d9-ad68-439b-b61b-399a319e29a8	Hindustani Classical Vocal	An in-depth course focusing on ragas, classical techniques, and the history of Hindustani vocal music.	2025-03-04 12:03:44.975693
-d81d4bf6-b6cc-45b2-9c80-d3dfe0b0408f	Falit Jyotish (Vedic Astrology)	Explore the ancient science of astrology, learn how to interpret horoscopes, and understand planetary influences.	2025-03-04 12:03:44.975693
-7da5aed3-23b4-438a-a296-8c4e70f48bcb	Web Development with HTML, CSS, and JavaScript	A beginner-friendly course to learn the basics of web development including front-end technologies.	2025-03-04 12:03:44.975693
-72e35ada-ae9e-4d49-a869-d6a538a8fae7	Introduction to Machine Learning	Dive into machine learning concepts, algorithms, and techniques for data prediction and analysis.	2025-03-04 12:03:44.975693
-09f85481-2596-4ca2-a942-ed4a1d610868	Photography Basics	Learn the principles of photography, camera settings, lighting techniques, and editing.	2025-03-04 12:03:44.975693
-987c94d2-efa9-46dc-90ae-835f4e0be0d2	Creative Writing	Enhance your writing skills, explore various styles, and develop your voice as a writer.	2025-03-04 12:03:44.975693
-8692643e-ae1e-47c8-99be-3df0bc5fc549	Personal Finance and Investment Strategies	Learn how to manage personal finances, save, and make informed investment decisions.	2025-03-04 12:03:44.975693
-42e52d6d-d010-441b-b1b8-6fbfb65e732c	Public Speaking and Communication Skills	Improve your public speaking, presentation techniques, and interpersonal communication skills.	2025-03-04 12:03:44.975693
-38fd7790-3886-40e1-911b-fc8b7ed0f15f	Fitness and Weight Loss	A comprehensive guide to fitness routines, nutrition, and effective weight loss strategies.	2025-03-04 12:03:44.975693
-071e82d5-fcf7-4d31-9f2c-ac5f02fa4a2a	Yoga for Beginners	Understand the basics of yoga, including poses, breathing exercises, and relaxation techniques.	2025-03-04 12:03:44.975693
-e2dfd6dc-6c55-41fd-a258-263adb97755f	Entrepreneurship and Business Startups	Gain insights into launching and running a successful startup, including business plans, marketing, and operations.	2025-03-04 12:03:44.975693
-1268c870-784d-4560-afec-0d0e1d1de4bb	Art of Meditation and Mindfulness	Learn various meditation techniques, mindfulness practices, and how they benefit mental health.	2025-03-04 12:03:44.975693
-c3fd5628-21d1-4e48-89c8-c7c4fc8b5735	Culinary Arts: Basics of Cooking	Learn the fundamental techniques of cooking, knife skills, and how to prepare meals from scratch.	2025-03-04 12:03:44.975693
-a7fbc32f-40f2-401f-8438-69a092f434d9	Introduction to Graphic Design	Learn the basics of graphic design, including design principles, tools, and typography.	2025-03-04 12:03:44.975693
-6d792c1b-6fc0-4681-9f9e-f87ddac71a81	Advanced Excel for Data Analysis	Take your Excel skills to the next level, focusing on data analysis, pivot tables, and complex formulas.	2025-03-04 12:03:44.975693
-b3db5b7d-8e97-457f-89f7-fbf85f410241	Music Theory and Composition	Understand the foundational principles of music theory, including scales, chords, and how to compose music.	2025-03-04 12:03:44.975693
-8258c893-173e-48cc-8b71-a5f73bd7cf65	Film Making and Video Production	Explore the world of filmmaking, from scripting to shooting, editing, and post-production techniques.	2025-03-04 12:03:44.975693
-3c47155d-8b3f-44cc-8087-f3a836d7636a	Artificial Intelligence for Beginners	Get started with AI, covering fundamental concepts like neural networks, deep learning, and natural language processing.	2025-03-04 12:03:44.975693
-eac68131-7cbe-4eaa-9918-cc99b8f55196	Digital Marketing and Social Media Strategies	Learn how to use digital platforms, social media, and SEO techniques to grow businesses and brands online.	2025-03-04 12:03:44.975693
+COPY public.course_types (type_id, type_name, description) FROM stdin;
+bfbe9aa7-3329-4749-ae68-206dacb58901	Technical	Courses focused on technical skills like programming, data science, and engineering.
+e8b28ce5-1c30-49c2-98ac-9c2dc3fe1039	Music	Courses dedicated to music theory, instruments, and performance skills.
+437817d3-a279-42eb-bd81-516fbe8f422c	History	Courses on historical events, ancient civilizations, and world history.
+14840f11-e038-4f3b-910b-3263cddf4510	Arts	Courses exploring different forms of visual and performing arts.
+58a530fb-e16f-422e-9161-f9db87b2d4c6	Literature	Courses related to reading, analyzing, and interpreting literature across various genres.
+055f7e8a-3658-44c4-ad64-7acee6c39b80	Business	Courses that cover business management, entrepreneurship, and organizational behavior.
+0b898119-8736-40a5-8a53-63950787084c	Psychology	Courses related to human behavior, mental processes, and psychological theories.
+c89d164c-e2c9-48df-96f3-ccbdffd6d3a8	Health & Fitness	Courses aimed at promoting physical health, fitness, and well-being.
+5e033d99-00c5-4e47-8e1d-fa07cdc536dc	Environmental Studies	Courses focusing on environmental science, sustainability, and climate change.
+0fe8c8d3-7ccf-44cc-ab42-2e98a5574dcf	Social Sciences	Courses covering sociology, anthropology, economics, and political science.
 \.
 
 
 --
--- Data for Name: instructors; Type: TABLE DATA; Schema: public; Owner: chinmayvivek
+-- Data for Name: courses; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.instructors (instructor_id, first_name, last_name, email, phone_number, password_hash, sso_provider, sso_provider_id, profile_picture_url, bio, date_of_birth, address, gender, social_media_handles, qualifications, years_of_experience, created_at, updated_at) FROM stdin;
-111d7c66-0541-4712-967f-3f586834ca80	Olen	Aufderhar	Jermey.Kihn58@hotmail.com	2178212016	\N	\N	\N	\N	venture lover  🤢	1977-04-08	816 Mireille Trafficway, Faroe Islands	male	{}	\N	7	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-a264b4d1-2090-47df-8678-62a3b7275f91	Terrell	Ratke	Brenden.Jerde58@gmail.com	3485162506	\N	\N	\N	\N	grad	1983-07-20	335 Etha Fort, Iceland	male	{}	\N	1	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-55d31bd8-3f21-48de-9688-87fc9e81bada	Ardith	Stehr	Alycia_Murazik@gmail.com	3178833752	\N	\N	\N	\N	streamer, foodie	1963-08-27	28816 Laurie Village, Isle of Man	female	{}	\N	9	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-ae365955-0bcf-4766-96ec-65b15ebe2464	Flavio	McGlynn	Reyes.Friesen@gmail.com	17536005310	\N	\N	\N	\N	cousin advocate, developer	1972-01-22	3261 Kristopher Bypass, Cyprus	male	{}	\N	8	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-69abd674-83bd-48ac-9836-35c82e87aa4a	Kaylie	Ledner	Shad_Johnson@hotmail.com	3564235003	\N	\N	\N	\N	minor-league enthusiast  🍰	1963-06-13	13983 Kunze Loaf, Virgin Islands, U.S.	female	{}	\N	1	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-8e26af9f-6f97-41c2-aac3-d482af993449	Ike	Hamill	Robyn85@yahoo.com	2346717557	\N	\N	\N	\N	entrepreneur	1975-11-27	1651 Amber Estate, Ghana	male	{}	\N	8	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-57f92096-3a7b-440b-899a-5ea811699888	Bernadette	Daugherty	Jessyca21@yahoo.com	8219724759	\N	\N	\N	\N	scientist, designer	1988-09-25	2052 Littel Radial, Curacao	female	{}	\N	9	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-933a7e90-4873-4d9c-a480-ffeb02480af5	Georgiana	Walker	Ewell53@yahoo.com	12794557150	\N	\N	\N	\N	smith junkie, scientist 🔉	1954-05-12	4761 Harrison Knoll, Cyprus	female	{}	\N	1	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-2bd2f411-c397-4d20-a734-32c0432bdb68	Maddison	Runolfsdottir	Reece_Borer56@gmail.com	6813432609	\N	\N	\N	\N	restoration advocate  🏙️	1969-04-06	2089 Ebert Shore, Mexico	female	{}	\N	8	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
-fdfa098a-8812-4096-b62f-2c86bccf7436	Kristian	Feest	Osvaldo87@yahoo.com	9115050418	\N	\N	\N	\N	exterior lover, foodie	1973-10-09	4017 Nettie Cliffs, Guyana	male	{}	\N	7	2025-03-04 03:23:44.667142	2025-03-04 03:23:44.667142
+COPY public.courses (course_id, title, description, created_at, image, is_active, sequence_no, course_price, course_level, course_type_id) FROM stdin;
+8bea988b-ed1b-4cbb-8604-db5e59295f51	Falit Jyotish	Study the ancient Indian science of astrology, focusing on predictive astrology and charts.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	2	3000	beginner	437817d3-a279-42eb-bd81-516fbe8f422c
+733a1948-ed6a-49b5-8893-4c4e96d22b34	Singing	Explore the basics of singing, voice techniques, and song interpretation across different genres.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	3	3000	beginner	e8b28ce5-1c30-49c2-98ac-9c2dc3fe1039
+05d4aa8f-c53c-4923-86e0-9a0e7dfc3dba	DSA	Learn Data Structures and Algorithms, key concepts in computer science for solving complex problems efficiently.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	4	3000	intermediate	bfbe9aa7-3329-4749-ae68-206dacb58901
+e126fdf5-3b26-467f-a6fd-a62663e23bbc	Web Development	Introduction to web development covering front-end and back-end technologies like HTML, CSS, JavaScript, and server-side scripting.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	5	3000	intermediate	bfbe9aa7-3329-4749-ae68-206dacb58901
+594231b6-4647-4473-b01b-a28e43e2f9f2	Golang	Master the Go programming language, focusing on concurrency, performance, and building scalable applications.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	6	3000	intermediate	bfbe9aa7-3329-4749-ae68-206dacb58901
+31d3e002-7294-4a9c-9db3-0e19f003ac22	Rust	Learn Rust, a systems programming language known for memory safety and high performance.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	7	3000	intermediate	bfbe9aa7-3329-4749-ae68-206dacb58901
+006a2540-87bf-4f94-91ab-1df6d90e54dc	Ancient Indian History	Explore the rich history of ancient India, focusing on its kingdoms, cultures, and contributions to world heritage.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	8	3000	beginner	437817d3-a279-42eb-bd81-516fbe8f422c
+7d9ca2e5-e0ef-415e-9a20-47b970725983	Environmental Studies	Study the key concepts of ecology, conservation, and the impact of human activities on the environment.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	9	3000	beginner	5e033d99-00c5-4e47-8e1d-fa07cdc536dc
+4042935f-51fa-4992-aeb6-e25c51b4182e	Social Psychology	Study how individuals are influenced by their social environment and how attitudes, beliefs, and behaviors are shaped by society.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	10	3000	beginner	0b898119-8736-40a5-8a53-63950787084c
+a8c725f9-d37d-4c97-8f2f-a1b1c2e2f96f	World War II: A Historical Perspective	An in-depth study of the causes, events, and aftermath of World War II and its impact on the world.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	11	3000	beginner	437817d3-a279-42eb-bd81-516fbe8f422c
+a29823e8-19c8-4bf0-b76d-567a82ebf2d0	Environmental Sustainability	Learn about sustainable practices and how they help protect ecosystems and biodiversity for future generations.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	12	3000	intermediate	5e033d99-00c5-4e47-8e1d-fa07cdc536dc
+01cef7a7-2c73-4194-aed1-71a69a3968c5	Modern Political Philosophy	Examine key political ideologies and philosophies from the Enlightenment to contemporary thought.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	13	3000	intermediate	0fe8c8d3-7ccf-44cc-ab42-2e98a5574dcf
+b8f48151-9bcc-4fd8-a8e4-fb7a055d0582	Ancient Greek Philosophy	Study the foundational ideas of Greek philosophers like Socrates, Plato, and Aristotle and their lasting impact on Western thought.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	14	3000	beginner	437817d3-a279-42eb-bd81-516fbe8f422c
+ec2cf1c9-749f-42d2-b3fa-9b515e69d11f	Social Media and Society	Explore the role of social media in shaping modern society, culture, and individual behavior.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	15	3000	intermediate	0fe8c8d3-7ccf-44cc-ab42-2e98a5574dcf
+963104dc-f335-4eac-9058-0c0e83f2e359	History of the Roman Empire	Learn about the rise and fall of the Roman Empire and its influence on Western civilization.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	16	3000	beginner	437817d3-a279-42eb-bd81-516fbe8f422c
+0f0f9143-5f0e-4cf6-93d9-81af2d9f16ac	Gender Studies	Study the social and cultural aspects of gender, identity, and equality in different societies throughout history.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	17	3000	beginner	0fe8c8d3-7ccf-44cc-ab42-2e98a5574dcf
+3b00453f-ac46-4d6b-9695-012a589763d6	Climate Change and Policy	Understand the science of climate change and the policies aimed at mitigating its effects on a global scale.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	18	3000	intermediate	5e033d99-00c5-4e47-8e1d-fa07cdc536dc
+979b4d21-1bbd-4a18-b584-db81a60af976	Ancient Civilizations	Explore the history of ancient civilizations like Mesopotamia, Egypt, the Indus Valley, and China.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	19	3000	beginner	437817d3-a279-42eb-bd81-516fbe8f422c
+5155e545-d80b-4f07-a7af-816152c7d0d7	Public Health and Society	Study the intersections between public health, society, and policy, focusing on issues like disease prevention and health education.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	20	3000	intermediate	c89d164c-e2c9-48df-96f3-ccbdffd6d3a8
+daddb2a2-d79a-4273-801b-e4b26c883da3	Hindustani Vocal	Learn the art of Hindustani classical vocal music, including ragas, taals, and improvisation techniques.	2025-03-05 22:05:42.213396	https://pixabay.com/get/gdd343508bd703a3814dbf38946910389e706f16069ced5cb56301af37a68829f89290b3a071d6d8d6ec828c448d4a1c5e3bae58fe87e4bad4287d65cf3c0d4e8_640.png	t	1	3000	beginner	e8b28ce5-1c30-49c2-98ac-9c2dc3fe1039
 \.
 
 
 --
--- Data for Name: notes; Type: TABLE DATA; Schema: public; Owner: chinmayvivek
+-- Data for Name: instructors; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.instructors (instructor_id, user_id, qualifications, years_of_experience) FROM stdin;
+045f845a-74fe-4cbc-bc21-46333b9ff57c	276f780a-bfd0-4472-97e9-1962f0bf7e66	MSc Computer Science	5
+5873325c-3d76-431b-a78b-c782a6d54279	7ad6c580-33bc-48f7-9a47-43d4d9214449	PhD in Mathematics	10
+fd48a0b0-374d-494b-8dc2-bc9d1499523f	029a2bba-dd50-4485-897c-c890fb3eec02	MBA, BBA	7
+ef976fc0-0f9a-411f-9bbd-96018dc9d24a	4abad104-843a-4ad7-992b-7217e6b434db	B.Tech in Electrical Engineering	3
+32abd01a-774b-4faf-874f-db951fdb09bc	1a3baa80-11ea-49e5-b88c-4a83a47fee17	MSc Chemistry	8
+be9fcabe-4248-410e-9918-fa5eb78b6db8	491d7f3e-a927-41f4-ae5a-a177e0ca7f04	M.A. in History	12
+652ebfdd-0a93-4de0-88d4-926558a79cf7	7e97574d-2b02-43fe-9456-c79900e15722	BCA	2
+ecd55895-0166-4313-89a7-36886d51bdf0	ad050e44-70d1-4786-b902-9abfde66e1d8	MBA in Marketing	6
+4937d25a-2b25-486c-874e-d354fbe4aead	caf7215c-93a5-4594-9f31-36ca06ae86be	B.Tech in Mechanical Engineering	9
+c4ace339-91b1-4c90-8a14-b8057e00a31f	d522ef17-c837-4a1f-93b5-082040fee391	PhD in Physics	15
+\.
+
+
+--
+-- Data for Name: notes; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.notes (note_id, class_id, user_id, note_url, created_at) FROM stdin;
@@ -280,128 +322,181 @@ COPY public.notes (note_id, class_id, user_id, note_url, created_at) FROM stdin;
 
 
 --
--- Data for Name: students; Type: TABLE DATA; Schema: public; Owner: chinmayvivek
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.students (student_id, first_name, last_name, email, phone_number, password_hash, sso_provider, sso_provider_id, profile_picture_url, bio, date_of_birth, address, gender, social_media_handles, nationality, preferred_language, created_at, updated_at) FROM stdin;
-7cf84eee-4155-495f-a0c7-a20335f89feb	Hayley	Reichel-Watsica	Aaliyah23@hotmail.com	5134639584	\N	\N	\N	\N	patriot, grad, developer	1972-12-08	305 Volkman Junction	Female	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-d6845c76-4866-4de3-877a-374e013b5d6f	Jacques	Keeling	Brooke_Donnelly96@hotmail.com	4066888808	\N	\N	\N	\N	boulder junkie  🦞	2005-05-05	5162 Bryce Ports	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-01e97943-24e2-424a-b379-a5823befa1de	Otis	Jerde	Aida_Rohan74@yahoo.com	4473104490	\N	\N	\N	\N	coach	1978-01-23	16929 Eliezer Lock	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-245dfbc8-63ed-44b2-808d-ab96cee358f2	Kurt	Mann	Kiley.Corkery@hotmail.com	3155964450	\N	\N	\N	\N	grad, public speaker	2004-07-03	68951 Broderick Tunnel	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-c6929acd-8108-4bc4-ba22-3da4dd05e6a3	Rafael	Jacobi	Kaley.OHara@hotmail.com	8673866673	\N	\N	\N	\N	riot enthusiast, student 🏴	1986-10-17	6017 Bergnaum Lake	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-18890d51-344f-4544-b2b6-849cc5f8775c	Finn	Weissnat	Hailey_Ferry57@hotmail.com	2763355087	\N	\N	\N	\N	ownership fan, activist	1961-12-12	865 Bernier Curve	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-69032098-ade8-46e8-97d0-fb533db6972f	Jaquan	Roberts	Torey23@yahoo.com	6729075110	\N	\N	\N	\N	business owner, streamer	1963-03-11	3598 Bradley Falls	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-ba404079-2809-413c-b6c8-c1d4a2f7a472	Duncan	McGlynn	Keyon81@yahoo.com	4278634877	\N	\N	\N	\N	creator	1952-08-24	191 Fahey Pass	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-1c54d620-144a-4603-bb1a-daddcdafb889	Meta	Macejkovic	Madelyn96@gmail.com	6222217119	\N	\N	\N	\N	singer	1991-09-05	34269 Trantow Crest	Female	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-def18a96-3c33-4e68-adca-503093f2abd1	Noble	O'Conner	Anthony_Kuhlman@hotmail.com	5359151355	\N	\N	\N	\N	educator, coach, author 🎞️	1958-05-28	1207 Annabell Harbor	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-90223bb8-a019-4dfc-adf1-e98e20f0d898	Devante	Schneider	Buck_Waters@yahoo.com	9624077577	\N	\N	\N	\N	dreamer, person, musician 🧻	1970-01-18	952 Adams Pines	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-8fa18847-2eac-48bb-8e9b-16e5cc495551	Tierra	Grimes	Jeanie.Mitchell@gmail.com	1893569013	\N	\N	\N	\N	friend	2004-09-18	830 Charlene Common	Female	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-bef57a27-d040-499d-880f-a25af4eb6b3c	Esperanza	Christiansen	Sheila94@yahoo.com	6883809944	\N	\N	\N	\N	dud advocate	1975-11-20	630 Medhurst Extension	Female	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-e7333421-b669-49db-bb46-918d0f1176b4	Hortense	Schoen	Salvador_Feil54@hotmail.com	3756000406	\N	\N	\N	\N	teacher, leader, activist 🔺	1994-07-11	3906 Rhoda Estates	Female	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-c0b5dc21-0924-433d-a8e5-51fd310a3d31	Kimberly	Murphy	Fannie_Prohaska7@yahoo.com	2777980326	\N	\N	\N	\N	activist, foodie, grad 🐆	1984-03-06	4194 Paucek Drives	Female	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-82940495-be7b-4542-8dbb-8627205ed819	Doris	Altenwerth	Everardo_Schmeler90@gmail.com	7522228558	\N	\N	\N	\N	grad	1972-12-16	150 Randi Greens	Female	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-4320492e-e725-4012-bdef-e751fe4f8082	Louie	Rutherford	Gayle.Block18@gmail.com	8882665115	\N	\N	\N	\N	dreamer, singer, model ♑	1953-10-11	594 Dagmar Corner	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-685c792f-9e1d-4f84-80e4-7f886e6f79cd	Ike	Kshlerin	Jesus50@gmail.com	7805166231	\N	\N	\N	\N	lip lover, gamer 🙋🏿‍♀️	1957-08-13	7516 Considine Ways	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-b978131d-5694-43a4-aa79-98b93e9ee342	Newell	Fadel	Amalia.Tromp31@hotmail.com	5808350869	\N	\N	\N	\N	excuse advocate, artist	1986-01-11	776 Piper Ranch	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-26699616-9291-4921-9936-eefe2a47dd81	Alexzander	Russel	Wade25@gmail.com	7638754670	\N	\N	\N	\N	icing enthusiast, veteran 👉🏾	2001-10-11	5499 Doyle Well	Male	\N	\N	\N	2025-03-04 03:03:33.070419	2025-03-04 03:03:33.070419
-e5fe5cc8-6bbd-4711-bd27-00b590ab12f3	Vito	Lockman	Celine_Steuber-Rau21@yahoo.com	9207294670	\N	\N	\N	\N	leader, streamer	1967-10-10	613 Schulist Avenue	Male	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-b1eb4175-89bd-48ea-be5a-31d1ea1d1cbd	Lera	Gleichner	Alva.Will@hotmail.com	2798414006	\N	\N	\N	\N	teacher, grad, streamer 🇸🇹	1977-11-12	10125 Judge Dam	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-869b8929-0db4-4854-88d3-bb7c92b84890	Lowell	Jacobs	Dayne_Hirthe@yahoo.com	8116335463	\N	\N	\N	\N	blogger, inventor, educator	1984-05-14	99326 Dicki Court	Male	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-469b7e31-16e7-447c-a426-f2246660b33d	Jesse	Deckow	Marlin83@yahoo.com	5694493358	\N	\N	\N	\N	birdbath advocate  🌋	1960-06-19	72885 Leif Causeway	Male	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-55725929-db53-4fe0-ba2d-e1b444841b44	Aniyah	Lindgren	Carson.McLaughlin36@yahoo.com	2052368595	\N	\N	\N	\N	prestige fan, nerd	2003-05-19	721 Franz Via	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-d3c4569e-8026-44f4-8de3-01d05184aadc	Samir	Heller	Candelario39@yahoo.com	6544214140	\N	\N	\N	\N	bin supporter, philosopher 🕧	1992-02-02	530 Jaleel Parkways	Male	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-a49a2e8d-8854-4782-8928-8c9f54a82bf1	Burnice	Hagenes	Noe_Schimmel@hotmail.com	9109145707	\N	\N	\N	\N	parent	1946-01-04	5709 Armstrong Mews	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-57678847-a44f-4a09-8095-0adf6537b9b5	Sophie	Labadie	Ilene.Goldner72@gmail.com	2409692444	\N	\N	\N	\N	kingdom lover, streamer 🌥️	1956-05-27	47759 Bins Gardens	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-b2d3cd1b-0c5c-47fc-a82f-1bdc997c619b	Brian	Robel	Durward82@gmail.com	8767334932	\N	\N	\N	\N	traveler, streamer, teacher ❄️	1962-09-03	707 Mary Motorway	Male	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-c75c4275-9c18-46a3-a81c-5ae8f15cd16d	Ivy	Kuhic	Shaylee.Nienow15@hotmail.com	3939203110	\N	\N	\N	\N	inventor, foodie	2004-07-31	506 Leopoldo Hollow	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-54d81c1c-b3de-4fa7-bdd6-459c4df54591	Torrey	Rice	Jammie_Zboncak8@yahoo.com	6417339828	\N	\N	\N	\N	creator, veteran, dreamer 🙂	1962-12-21	334 Hermann Fords	Male	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-c3cc83b9-286e-469f-b9e7-387c0f1c35d1	Nicole	Friesen	Jacques_Feil@yahoo.com	2519532910	\N	\N	\N	\N	inventor	1950-09-17	5929 Johnny Via	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-43239cc2-f601-4999-91bd-f476d9e9674d	Noe	Wolf	Lucile_Bradtke@hotmail.com	5865114587	\N	\N	\N	\N	grad	1959-08-11	2021 Jacinthe Bypass	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-060aed65-757d-4f97-afec-3708ecd934c1	Fay	Deckow	Guillermo.Mante@yahoo.com	4073996134	\N	\N	\N	\N	surname advocate	1981-10-22	1582 Kiel Crossroad	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-503b721f-dba5-496d-85e7-57c2b3533674	Greyson	Schmeler	Laurence.Bashirian@gmail.com	9245817055	\N	\N	\N	\N	developer, musician	1972-10-03	78073 Marlon View	Male	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-31fa39a7-67db-4137-9a70-be82ec8a7d7a	Dejah	Hickle	Dillon_Thompson24@yahoo.com	5875510624	\N	\N	\N	\N	crayon lover, veteran 🤛🏻	2002-03-01	703 Renner Highway	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-e5ce6744-bd11-4257-ad94-d044a63f6ef1	Jarrell	MacGyver	Amara.Dietrich49@gmail.com	9067236429	\N	\N	\N	\N	film lover, foodie, grad	1980-12-26	25733 Buckridge Expressway	Male	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-b9024243-1834-4c13-a4a8-336506ee2350	Melba	Larkin	Rosalind_Frami81@yahoo.com	4644941015	\N	\N	\N	\N	traveler	1951-05-02	70684 Jacobi Lock	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-7844e880-08ec-438c-bdd2-28284c93e5b6	Hollie	Stroman	Sylvan_Rice16@yahoo.com	8945265287	\N	\N	\N	\N	inventor, blogger, environmentalist 👱🏼‍♀️	1962-12-23	72925 Fritsch Alley	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-1838aa07-a82c-4688-bcff-74bcde9c58eb	Mayra	Corkery-Strosin	Angeline.OConnell-Lebsack12@yahoo.com	9426196075	\N	\N	\N	\N	key advocate	1984-05-19	874 Marquardt Hills	Female	\N	\N	\N	2025-03-04 03:03:44.93745	2025-03-04 03:03:44.93745
-056c8219-e7dc-4b03-b2a4-22c6db909c91	Ladarius	Treutel	Vena.Wilderman@hotmail.com	1793750681	\N	\N	\N	\N	jaw lover, streamer	1993-11-02	19107 Fisher Light	male	\N	Equatorial Guinea	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-a05db27b-28ee-4f90-9ad7-73d25337f87f	Ruthie	Wiegand	Xander77@gmail.com	5464884243	\N	\N	\N	\N	disposal devotee, author	1997-08-05	744 Ashtyn Mall	female	\N	Egypt	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-eccada38-0b14-4171-ba0d-2a3989d96372	Hazle	Runolfsdottir	Litzy67@gmail.com	1227671253	\N	\N	\N	\N	futon enthusiast 💘	1966-09-20	971 Wisoky Plaza	male	\N	Niger	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-9e872591-4b92-4136-a989-9d16ae533f10	Darby	Cronin	Jonathon84@hotmail.com	5658347362	\N	\N	\N	\N	musician, film lover, traveler 🟧	1948-01-09	731 Wisoky Meadow	male	\N	North Macedonia	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-547adb2c-8092-469c-89f1-23f7914a9d93	Ralph	Grimes	Lenore_Beahan29@hotmail.com	3836139729	\N	\N	\N	\N	robotics supporter, singer	1958-04-14	91887 Hudson Via	transgender	\N	Micronesia	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-352e9a17-9d7b-4618-8394-e2e162673b98	Charles	Konopelski	Henderson_Shanahan@yahoo.com	9465082333	\N	\N	\N	\N	author, parent, business owner 🤛🏻	1990-07-07	34961 Rae Port	transgender	\N	Sierra Leone	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-0a9dc1ec-8668-4eeb-b0b0-b0b040308af5	Arturo	Renner-Stokes	Zena30@hotmail.com	7759390524	\N	\N	\N	\N	call lover 🕡	1969-11-09	5927 Gerhold Pines	transgender	\N	Dominican Republic	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-4cf693ed-56f5-40e1-971e-52dd98a18750	Rosamond	Adams	Pat79@hotmail.com	7987201279	\N	\N	\N	\N	engineer	1976-07-24	2637 Walker Wall	transgender	\N	Azerbaijan	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-c69d0f6f-e72c-4a47-a36c-e0944cfbe767	Jennifer	Champlin-Jones	Joanne61@gmail.com	9864506299	\N	\N	\N	\N	divider fan, veteran	1957-10-09	2486 Pollich Shores	transgender	\N	Gibraltar	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-b83e1eab-0a2e-4b9f-a740-0c79902a4bac	Lon	Witting	Angel.Kohler84@yahoo.com	5002014803	\N	\N	\N	\N	public speaker	1961-06-29	184 Erich Tunnel	transgender	\N	United States Minor Outlying Islands	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-b40e9119-91c8-4c20-80d3-22e775c3a899	Alan	Hudson	Opal.Johns@gmail.com	1397829364	\N	\N	\N	\N	nerd, foodie	2002-02-28	508 Zieme Parkways	transgender	\N	Micronesia	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-bf5b7144-22aa-4041-925d-be4c0b14e409	Elenor	Fritsch	Clementine_Schaden53@yahoo.com	8295290183	\N	\N	\N	\N	philosopher, author, scientist	1958-04-30	9429 Elmer Key	transgender	\N	Nauru	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-89015efc-3379-48c6-b5b8-441e36880842	Sage	Donnelly	Veronica_Corwin47@hotmail.com	8268190897	\N	\N	\N	\N	info supporter 🎂	1997-11-12	524 Hoeger Hollow	transgender	\N	Tonga	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-6e71d7d8-7e01-4a11-8730-c38dfc65dbb5	Macy	Dach	Jenifer80@yahoo.com	4526491417	\N	\N	\N	\N	parent, model, photographer	1976-04-03	926 Breanne Gateway	female	\N	Mauritius	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-0dcc07c0-f8ef-421d-a1f5-615c74f0ead2	Craig	Bauch	Sylvia.Zemlak@hotmail.com	1439791617	\N	\N	\N	\N	dreamer, philosopher, entrepreneur	1982-04-30	163 Larson Branch	transgender	\N	Saint Pierre and Miquelon	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-284c8215-1cc5-4499-866a-7faba96e2878	Elliott	Windler	Alta4@gmail.com	4989552860	\N	\N	\N	\N	philosopher	1956-02-11	99297 Lehner Ramp	male	\N	Mexico	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-9ffaa267-12a9-4377-8788-9fc76c0a3d13	Maryse	Kreiger	Zoie.Beahan@gmail.com	1860429252	\N	\N	\N	\N	opportunist fan 🐸	1964-11-22	688 Johnson Plaza	female	\N	Mauritius	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-e6ffe927-0ece-4164-8534-4454a8600752	Shayna	Strosin	Berry.Parisian@yahoo.com	7412009586	\N	\N	\N	\N	filmmaker, streamer	1952-12-05	82900 Waters Drive	transgender	\N	Pakistan	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-20b8bac1-c4a7-4302-8e61-4921e0379837	Rhiannon	Olson	Haskell94@yahoo.com	1451813540	\N	\N	\N	\N	coach, leader, parent 🎤	2006-03-12	767 Gus Bypass	female	\N	Zimbabwe	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
-c3c4113e-998b-4c40-8ada-725f77c506d7	Imelda	Wiegand	Jason.Schaefer95@gmail.com	7407914786	\N	\N	\N	\N	convention enthusiast, traveler	2003-02-03	147 Rodrigo Valley	male	\N	India	\N	2025-03-04 03:11:55.644589	2025-03-04 03:11:55.644589
+COPY public.roles (role_id, role_name, description) FROM stdin;
+44fd7635-c193-4246-8869-18ad463e13be	student	A user role representing a student in the system.
+41ab7d5f-d889-4e89-a510-2e3c928a304e	instructor	A user role representing an instructor or teacher in the system.
+c8aac6be-511a-44a5-a41a-e484f7300506	manager	A user role with managerial privileges, managing batches, courses, and students.
+9afa13c9-023f-4d84-ac74-70978842b412	admin	A user role with full administrative privileges to manage all aspects of the system.
 \.
 
 
 --
--- Data for Name: students_enrolled; Type: TABLE DATA; Schema: public; Owner: chinmayvivek
+-- Data for Name: students; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.students (student_id, user_id) FROM stdin;
+a5a18e46-1e7d-492f-af1b-3adf65e84e9d	bcf77305-f749-430c-861e-380af125f29e
+d6dbc3ee-2c75-4011-82c3-366e6a1a70ec	3a523e55-bdb7-49ca-95e3-df594bb83570
+99c1f750-0717-4b0c-b44a-fa7c2eca2aeb	7b6c25b6-3be7-4000-8ba7-3f7458bdd81b
+361ce53c-7592-4e09-be69-bd9f9925b41f	fb2ba136-52c7-4697-abf7-285546b083cd
+cd034875-e8c2-4047-a5c5-98017aee8f36	969f5295-d52d-4a42-8109-fdd4df9a6108
+5f293855-1d14-436f-9e3f-d136b8517f9a	9f088dc0-cf25-45e6-b017-b77a8be5fb68
+734c1fb6-33d2-4f0e-8630-fb6e8b506e79	ffd7fa35-e727-4a8d-a75d-7aeedfc46078
+acdbeb69-11f5-4889-a18c-a9746cdc9815	510e86b8-aa97-4199-82ac-37b9d33f9d71
+952f42e7-14cb-4b4c-a198-3488528db4d2	58e6251b-0c72-4049-877b-0c71e415a56f
+f67f9ee7-aaf1-4cae-b410-09b1a963837a	efd59086-b6bc-4104-a07f-cef6304d47d4
+69e99029-89ce-4819-8031-583f96b0027b	f98a6d29-bb55-41be-b101-d5cb9a918261
+12c26f68-4b0d-446d-9842-e5a46fe6ff24	f6cbfe7c-80b3-4e25-836b-4b4321734b42
+f24ae88a-322f-41f8-9bdd-1e8042548d4d	ccc747c0-5e38-4463-997d-9a1b0e8dd585
+b3f120ff-92fb-4bbf-91bb-5937b3a50bbe	230bc85c-7b80-4ae7-8eed-4186e06c69b7
+a498c361-1c6e-4722-9a40-cfe906d2030d	9481094d-0ee9-4435-8cb5-b99edba6f60f
+5f438149-1333-4733-a7f9-f96c76eed501	e63dd0bf-e77b-4300-899e-157276ef5159
+5fae243f-26f9-47da-b513-09024db47c50	8211ed29-b33a-4290-a422-a552c842f946
+3ac33896-6e24-4bf2-9d80-9df4888cfb1e	e6049452-8673-4362-833e-01432733fb8a
+091e6ea1-a0a3-4849-9558-d5379d746abc	411ed73b-ceef-4012-b050-2d847c3f92b4
+2b64085f-abe5-4a1c-b5ed-3443364a2f09	6ef6c94f-54e5-49d0-a6b4-e8e0bff3870e
+\.
+
+
+--
+-- Data for Name: students_enrolled; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public.students_enrolled (enrollment_id, student_id, batch_id, enrollment_date) FROM stdin;
-f43500e8-2590-4d8d-948e-24db73db046f	7cf84eee-4155-495f-a0c7-a20335f89feb	16803052-76df-47f5-b20f-3dc6a5f1da8e	2025-03-04 15:35:16.844629
-4e25d530-f41f-479b-8b27-9ea668702f45	d6845c76-4866-4de3-877a-374e013b5d6f	16803052-76df-47f5-b20f-3dc6a5f1da8e	2025-03-04 15:35:16.844629
-6915788e-9849-446a-8856-0be789bbf86c	01e97943-24e2-424a-b379-a5823befa1de	16803052-76df-47f5-b20f-3dc6a5f1da8e	2025-03-04 15:35:16.844629
-4ebeb61c-1e5b-47d2-9adf-8ae2a4f76143	245dfbc8-63ed-44b2-808d-ab96cee358f2	16803052-76df-47f5-b20f-3dc6a5f1da8e	2025-03-04 15:35:16.844629
-6b5f4a25-19f4-4907-a67e-da3c43080900	c6929acd-8108-4bc4-ba22-3da4dd05e6a3	16803052-76df-47f5-b20f-3dc6a5f1da8e	2025-03-04 15:35:16.844629
-57d88e04-6d21-4e1c-8a6d-ce47021f881c	18890d51-344f-4544-b2b6-849cc5f8775c	eff2f223-48e8-4a45-87d7-7757859ccd11	2025-03-04 15:35:16.844629
-45863967-06b0-40d0-a0ee-23a9165fb6aa	69032098-ade8-46e8-97d0-fb533db6972f	eff2f223-48e8-4a45-87d7-7757859ccd11	2025-03-04 15:35:16.844629
-6801f97b-3744-4621-b139-f43bb7d827f4	ba404079-2809-413c-b6c8-c1d4a2f7a472	eff2f223-48e8-4a45-87d7-7757859ccd11	2025-03-04 15:35:16.844629
-8dd3be6a-e3c6-4027-89f0-32f0c9575221	1c54d620-144a-4603-bb1a-daddcdafb889	eff2f223-48e8-4a45-87d7-7757859ccd11	2025-03-04 15:35:16.844629
-d43ab8da-081c-493b-bc1c-7ac8dcbe2702	def18a96-3c33-4e68-adca-503093f2abd1	eff2f223-48e8-4a45-87d7-7757859ccd11	2025-03-04 15:35:16.844629
-f843cbfa-0f91-4370-aa16-a7f1a4a9d734	90223bb8-a019-4dfc-adf1-e98e20f0d898	d6d6ce87-0094-48d1-beb9-2a7b774b6772	2025-03-04 15:35:16.844629
-07c32b5c-e9be-4a73-81cd-7eb01fedef9d	8fa18847-2eac-48bb-8e9b-16e5cc495551	d6d6ce87-0094-48d1-beb9-2a7b774b6772	2025-03-04 15:35:16.844629
-51005126-883b-4962-8d56-c6ddad2a7d38	bef57a27-d040-499d-880f-a25af4eb6b3c	d6d6ce87-0094-48d1-beb9-2a7b774b6772	2025-03-04 15:35:16.844629
-f1eb79c9-820f-4391-b56f-6ef268d14942	e7333421-b669-49db-bb46-918d0f1176b4	d6d6ce87-0094-48d1-beb9-2a7b774b6772	2025-03-04 15:35:16.844629
-bac4ddad-e920-4401-975b-0159d0b4eb82	c0b5dc21-0924-433d-a8e5-51fd310a3d31	d6d6ce87-0094-48d1-beb9-2a7b774b6772	2025-03-04 15:35:16.844629
-71d13f7b-cfa5-44f4-9e03-dd633e8866b4	82940495-be7b-4542-8dbb-8627205ed819	ccc5850c-5b95-48e8-b6d9-00f36805aef9	2025-03-04 15:35:16.844629
-c6c98ec3-b3e5-46af-b694-16143e47bd92	4320492e-e725-4012-bdef-e751fe4f8082	ccc5850c-5b95-48e8-b6d9-00f36805aef9	2025-03-04 15:35:16.844629
-e1e03648-4317-4bb8-b3c8-95540c887aad	685c792f-9e1d-4f84-80e4-7f886e6f79cd	ccc5850c-5b95-48e8-b6d9-00f36805aef9	2025-03-04 15:35:16.844629
-38c4de35-b8c0-448f-bddc-37b9c4614f7a	b978131d-5694-43a4-aa79-98b93e9ee342	ccc5850c-5b95-48e8-b6d9-00f36805aef9	2025-03-04 15:35:16.844629
-10561ab9-4bf7-4cac-9955-9a4a9954ae4d	26699616-9291-4921-9936-eefe2a47dd81	ccc5850c-5b95-48e8-b6d9-00f36805aef9	2025-03-04 15:35:16.844629
-24abcea7-db58-476a-88da-88ec66a58dff	e5fe5cc8-6bbd-4711-bd27-00b590ab12f3	fd70a9a1-334d-4924-9ca1-62ee2153ee10	2025-03-04 15:35:16.844629
-ec7da61c-fed6-4de2-9897-f47c32d515aa	b1eb4175-89bd-48ea-be5a-31d1ea1d1cbd	fd70a9a1-334d-4924-9ca1-62ee2153ee10	2025-03-04 15:35:16.844629
-3297a978-166a-46dd-8bc0-91b5ac440371	869b8929-0db4-4854-88d3-bb7c92b84890	fd70a9a1-334d-4924-9ca1-62ee2153ee10	2025-03-04 15:35:16.844629
-8caa01bb-662b-405a-a265-bba3c22ecb4e	469b7e31-16e7-447c-a426-f2246660b33d	fd70a9a1-334d-4924-9ca1-62ee2153ee10	2025-03-04 15:35:16.844629
-57dc8376-405f-49f7-b669-54ff58561e73	55725929-db53-4fe0-ba2d-e1b444841b44	fd70a9a1-334d-4924-9ca1-62ee2153ee10	2025-03-04 15:35:16.844629
-3a582b48-d087-4687-8633-243bb3dc55d1	d3c4569e-8026-44f4-8de3-01d05184aadc	8f45e16d-0856-46e9-8bf7-2e7405adb6b9	2025-03-04 15:35:16.844629
-08af0530-c7b2-4a10-af6e-34be57dbefbd	a49a2e8d-8854-4782-8928-8c9f54a82bf1	8f45e16d-0856-46e9-8bf7-2e7405adb6b9	2025-03-04 15:35:16.844629
-575028d1-744a-4cf2-9ee8-30597cc0e69c	57678847-a44f-4a09-8095-0adf6537b9b5	8f45e16d-0856-46e9-8bf7-2e7405adb6b9	2025-03-04 15:35:16.844629
-53af19b6-4881-4968-973b-c1dd453e09d2	b2d3cd1b-0c5c-47fc-a82f-1bdc997c619b	8f45e16d-0856-46e9-8bf7-2e7405adb6b9	2025-03-04 15:35:16.844629
-56073e6f-b944-4e5e-9dd8-8289f345717b	c75c4275-9c18-46a3-a81c-5ae8f15cd16d	8f45e16d-0856-46e9-8bf7-2e7405adb6b9	2025-03-04 15:35:16.844629
-0880a3a7-79fb-49a6-8f48-0a003a889fd4	54d81c1c-b3de-4fa7-bdd6-459c4df54591	bda99212-4b3c-4cd8-ba19-da9f5d384359	2025-03-04 15:35:16.844629
-e1c4debf-9523-45e6-a288-b2987d22d242	c3cc83b9-286e-469f-b9e7-387c0f1c35d1	bda99212-4b3c-4cd8-ba19-da9f5d384359	2025-03-04 15:35:16.844629
-5561aea8-0cd4-406a-87e2-58aceecae509	43239cc2-f601-4999-91bd-f476d9e9674d	bda99212-4b3c-4cd8-ba19-da9f5d384359	2025-03-04 15:35:16.844629
-63f800e1-2343-4f3a-8e87-a893b2664731	060aed65-757d-4f97-afec-3708ecd934c1	bda99212-4b3c-4cd8-ba19-da9f5d384359	2025-03-04 15:35:16.844629
-19feb52c-655c-4f4b-8b1e-cc29a18a5321	503b721f-dba5-496d-85e7-57c2b3533674	bda99212-4b3c-4cd8-ba19-da9f5d384359	2025-03-04 15:35:16.844629
-07040530-e53b-444f-8122-f7103d67b041	31fa39a7-67db-4137-9a70-be82ec8a7d7a	e6f6d1a6-872d-4516-be03-e5749e34380a	2025-03-04 15:35:16.844629
-fddcebc1-c8cb-4bfd-a483-2654cffcfd92	e5ce6744-bd11-4257-ad94-d044a63f6ef1	e6f6d1a6-872d-4516-be03-e5749e34380a	2025-03-04 15:35:16.844629
-7cdab41a-e122-4ea1-8a91-db1875c84d55	b9024243-1834-4c13-a4a8-336506ee2350	e6f6d1a6-872d-4516-be03-e5749e34380a	2025-03-04 15:35:16.844629
-27b8dedd-4ffc-495f-9055-1b69f89f9dc9	7844e880-08ec-438c-bdd2-28284c93e5b6	e6f6d1a6-872d-4516-be03-e5749e34380a	2025-03-04 15:35:16.844629
-2f6e449b-b5d4-4f20-8861-7f364774541e	1838aa07-a82c-4688-bcff-74bcde9c58eb	e6f6d1a6-872d-4516-be03-e5749e34380a	2025-03-04 15:35:16.844629
-bd81123c-7a69-4f49-849e-a614234d7793	056c8219-e7dc-4b03-b2a4-22c6db909c91	9e90077e-d666-4cda-848b-3d3011767fd8	2025-03-04 15:35:16.844629
-cf0f8428-54fa-4192-95ab-e16df1e38f1c	a05db27b-28ee-4f90-9ad7-73d25337f87f	9e90077e-d666-4cda-848b-3d3011767fd8	2025-03-04 15:35:16.844629
-62cf6acf-bdbb-4888-a965-86c56a3792f2	eccada38-0b14-4171-ba0d-2a3989d96372	9e90077e-d666-4cda-848b-3d3011767fd8	2025-03-04 15:35:16.844629
-d4655cc1-94ed-4222-a460-9eaf494d7338	9e872591-4b92-4136-a989-9d16ae533f10	9e90077e-d666-4cda-848b-3d3011767fd8	2025-03-04 15:35:16.844629
-08ded734-8aca-4ab0-be31-0af017c4d0f2	547adb2c-8092-469c-89f1-23f7914a9d93	9e90077e-d666-4cda-848b-3d3011767fd8	2025-03-04 15:35:16.844629
 \.
 
 
 --
--- Name: batches batches_pkey; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Data for Name: user_roles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.user_roles (user_id, role_id) FROM stdin;
+bcf77305-f749-430c-861e-380af125f29e	44fd7635-c193-4246-8869-18ad463e13be
+3a523e55-bdb7-49ca-95e3-df594bb83570	44fd7635-c193-4246-8869-18ad463e13be
+7b6c25b6-3be7-4000-8ba7-3f7458bdd81b	44fd7635-c193-4246-8869-18ad463e13be
+fb2ba136-52c7-4697-abf7-285546b083cd	44fd7635-c193-4246-8869-18ad463e13be
+969f5295-d52d-4a42-8109-fdd4df9a6108	44fd7635-c193-4246-8869-18ad463e13be
+9f088dc0-cf25-45e6-b017-b77a8be5fb68	44fd7635-c193-4246-8869-18ad463e13be
+ffd7fa35-e727-4a8d-a75d-7aeedfc46078	44fd7635-c193-4246-8869-18ad463e13be
+510e86b8-aa97-4199-82ac-37b9d33f9d71	44fd7635-c193-4246-8869-18ad463e13be
+58e6251b-0c72-4049-877b-0c71e415a56f	44fd7635-c193-4246-8869-18ad463e13be
+efd59086-b6bc-4104-a07f-cef6304d47d4	44fd7635-c193-4246-8869-18ad463e13be
+f98a6d29-bb55-41be-b101-d5cb9a918261	44fd7635-c193-4246-8869-18ad463e13be
+f6cbfe7c-80b3-4e25-836b-4b4321734b42	44fd7635-c193-4246-8869-18ad463e13be
+ccc747c0-5e38-4463-997d-9a1b0e8dd585	44fd7635-c193-4246-8869-18ad463e13be
+230bc85c-7b80-4ae7-8eed-4186e06c69b7	44fd7635-c193-4246-8869-18ad463e13be
+9481094d-0ee9-4435-8cb5-b99edba6f60f	44fd7635-c193-4246-8869-18ad463e13be
+e63dd0bf-e77b-4300-899e-157276ef5159	44fd7635-c193-4246-8869-18ad463e13be
+8211ed29-b33a-4290-a422-a552c842f946	44fd7635-c193-4246-8869-18ad463e13be
+e6049452-8673-4362-833e-01432733fb8a	44fd7635-c193-4246-8869-18ad463e13be
+411ed73b-ceef-4012-b050-2d847c3f92b4	44fd7635-c193-4246-8869-18ad463e13be
+6ef6c94f-54e5-49d0-a6b4-e8e0bff3870e	44fd7635-c193-4246-8869-18ad463e13be
+276f780a-bfd0-4472-97e9-1962f0bf7e66	41ab7d5f-d889-4e89-a510-2e3c928a304e
+7ad6c580-33bc-48f7-9a47-43d4d9214449	41ab7d5f-d889-4e89-a510-2e3c928a304e
+029a2bba-dd50-4485-897c-c890fb3eec02	41ab7d5f-d889-4e89-a510-2e3c928a304e
+4abad104-843a-4ad7-992b-7217e6b434db	41ab7d5f-d889-4e89-a510-2e3c928a304e
+1a3baa80-11ea-49e5-b88c-4a83a47fee17	41ab7d5f-d889-4e89-a510-2e3c928a304e
+491d7f3e-a927-41f4-ae5a-a177e0ca7f04	41ab7d5f-d889-4e89-a510-2e3c928a304e
+7e97574d-2b02-43fe-9456-c79900e15722	41ab7d5f-d889-4e89-a510-2e3c928a304e
+ad050e44-70d1-4786-b902-9abfde66e1d8	41ab7d5f-d889-4e89-a510-2e3c928a304e
+caf7215c-93a5-4594-9f31-36ca06ae86be	41ab7d5f-d889-4e89-a510-2e3c928a304e
+d522ef17-c837-4a1f-93b5-082040fee391	41ab7d5f-d889-4e89-a510-2e3c928a304e
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (user_id, first_name, last_name, email, phone_number, password_hash, sso_provider, sso_provider_id, profile_picture_url, bio, date_of_birth, address, gender, social_media_handles, nationality, preferred_language, created_at, updated_at) FROM stdin;
+276f780a-bfd0-4472-97e9-1962f0bf7e66	John	Doe	john.doe1@example.com	+91 7000123456	hashed_password_1	google	google_id_1	https://randomuser.me/api/portraits/men/1.jpg	Bio: John Doe	1990-01-15	123 Main St, Springfield, USA	male	{"twitter": "http://twitter.com/johndoe", "facebook": "http://facebook.com/johndoe"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+7ad6c580-33bc-48f7-9a47-43d4d9214449	Jane	Smith	jane.smith2@example.com	+91 7000234567	hashed_password_2	facebook	facebook_id_2	https://randomuser.me/api/portraits/women/2.jpg	Bio: Jane Smith	1985-02-20	456 Oak St, London, UK	female	{"twitter": "http://twitter.com/janesmith", "facebook": "http://facebook.com/janesmith"}	UK	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+029a2bba-dd50-4485-897c-c890fb3eec02	Alice	Johnson	alice.johnson3@example.com	+91 7000345678	hashed_password_3	google	google_id_3	https://randomuser.me/api/portraits/women/3.jpg	Bio: Alice Johnson	1995-03-25	789 Elm St, New Delhi, India	female	{"twitter": "http://twitter.com/alicejohnson", "facebook": "http://facebook.com/alicejohnson"}	India	Hindi, English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+4abad104-843a-4ad7-992b-7217e6b434db	Bob	Brown	bob.brown4@example.com	+91 7000456789	hashed_password_4	facebook	facebook_id_4	https://randomuser.me/api/portraits/men/4.jpg	Bio: Bob Brown	1987-04-30	101 Pine St, Moscow, Russia	male	{"twitter": "http://twitter.com/bobbrown", "facebook": "http://facebook.com/bobbrown"}	Russia	Russian	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+1a3baa80-11ea-49e5-b88c-4a83a47fee17	Charlie	Davis	charlie.davis5@example.com	+91 7000567890	hashed_password_5	google	google_id_5	https://randomuser.me/api/portraits/men/5.jpg	Bio: Charlie Davis	1992-05-05	202 Maple St, Berlin, Germany	male	{"twitter": "http://twitter.com/charliedavis", "facebook": "http://facebook.com/charliedavis"}	Germany	German	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+491d7f3e-a927-41f4-ae5a-a177e0ca7f04	David	Martinez	david.martinez6@example.com	+91 7000678901	hashed_password_6	facebook	facebook_id_6	https://randomuser.me/api/portraits/men/6.jpg	Bio: David Martinez	1988-06-10	303 Birch St, New York, USA	male	{"twitter": "http://twitter.com/davidmartinez", "facebook": "http://facebook.com/davidmartinez"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+7e97574d-2b02-43fe-9456-c79900e15722	Eva	Miller	eva.miller7@example.com	+91 7000789012	hashed_password_7	google	google_id_7	https://randomuser.me/api/portraits/women/7.jpg	Bio: Eva Miller	1993-07-15	404 Cedar St, London, UK	female	{"twitter": "http://twitter.com/evamiller", "facebook": "http://facebook.com/evamiller"}	UK	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+ad050e44-70d1-4786-b902-9abfde66e1d8	Frank	Wilson	frank.wilson8@example.com	+91 7000890123	hashed_password_8	facebook	facebook_id_8	https://randomuser.me/api/portraits/men/8.jpg	Bio: Frank Wilson	1991-08-20	505 Willow St, Mumbai, India	male	{"twitter": "http://twitter.com/frankwilson", "facebook": "http://facebook.com/frankwilson"}	India	Hindi, English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+caf7215c-93a5-4594-9f31-36ca06ae86be	Grace	Moore	grace.moore9@example.com	+91 7000901234	hashed_password_9	google	google_id_9	https://randomuser.me/api/portraits/women/9.jpg	Bio: Grace Moore	1994-09-25	606 Oak St, Berlin, Germany	female	{"twitter": "http://twitter.com/gracemoore", "facebook": "http://facebook.com/gracemoore"}	Germany	German	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+d522ef17-c837-4a1f-93b5-082040fee391	Henry	Taylor	henry.taylor10@example.com	+91 7000123457	hashed_password_10	facebook	facebook_id_10	https://randomuser.me/api/portraits/men/10.jpg	Bio: Henry Taylor	1986-10-30	707 Pine St, Moscow, Russia	male	{"twitter": "http://twitter.com/henrytaylor", "facebook": "http://facebook.com/henrytaylor"}	Russia	Russian	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+458c5e02-8d54-4f93-8fdf-9b004c5b01fa	Ivy	Anderson	ivy.anderson11@example.com	+91 7000234568	hashed_password_11	google	google_id_11	https://randomuser.me/api/portraits/women/11.jpg	Bio: Ivy Anderson	1990-11-10	808 Birch St, New York, USA	female	{"twitter": "http://twitter.com/ivyanderson", "facebook": "http://facebook.com/ivyanderson"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+92f109fc-9584-4f46-b66b-a5ea634996ec	Jack	Thomas	jack.thomas12@example.com	+91 7000345679	hashed_password_12	facebook	facebook_id_12	https://randomuser.me/api/portraits/men/12.jpg	Bio: Jack Thomas	1989-12-15	909 Maple St, London, UK	male	{"twitter": "http://twitter.com/jackthomas", "facebook": "http://facebook.com/jackthomas"}	UK	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+e24564aa-7907-41f7-a948-fbaef41595bf	Kathy	Jackson	kathy.jackson13@example.com	+91 7000456790	hashed_password_13	google	google_id_13	https://randomuser.me/api/portraits/women/13.jpg	Bio: Kathy Jackson	1992-01-20	1010 Elm St, New Delhi, India	female	{"twitter": "http://twitter.com/kathyjackson", "facebook": "http://facebook.com/kathyjackson"}	India	Hindi, English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+7665384e-455d-4099-ad90-6cdaad1d6719	Louis	White	louis.white14@example.com	+91 7000567901	hashed_password_14	facebook	facebook_id_14	https://randomuser.me/api/portraits/men/14.jpg	Bio: Louis White	1994-02-25	1111 Cedar St, Moscow, Russia	male	{"twitter": "http://twitter.com/louiswhite", "facebook": "http://facebook.com/louiswhite"}	Russia	Russian	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+c77adc2c-9455-44f5-b03d-97327246452c	Mona	Harris	mona.harris15@example.com	+91 7000679012	hashed_password_15	google	google_id_15	https://randomuser.me/api/portraits/women/15.jpg	Bio: Mona Harris	1991-03-30	1212 Willow St, New York, USA	female	{"twitter": "http://twitter.com/monaharris", "facebook": "http://facebook.com/monaharris"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+dae2570f-b966-4b19-8948-41e78601a440	Nathan	Clark	nathan.clark16@example.com	+91 7000789123	hashed_password_16	facebook	facebook_id_16	https://randomuser.me/api/portraits/men/16.jpg	Bio: Nathan Clark	1987-04-10	1313 Pine St, London, UK	male	{"twitter": "http://twitter.com/nathanclark", "facebook": "http://facebook.com/nathanclark"}	UK	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+8f2e6acc-350b-410d-a2a3-037758f44585	Olivia	Lewis	olivia.lewis17@example.com	+91 7000890234	hashed_password_17	google	google_id_17	https://randomuser.me/api/portraits/women/17.jpg	Bio: Olivia Lewis	1993-05-05	1414 Birch St, New Delhi, India	female	{"twitter": "http://twitter.com/olivialeis", "facebook": "http://facebook.com/olivialeis"}	India	Hindi, English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+a5e344da-807a-4977-bd58-fee2af9fe72a	Paul	Walker	paul.walker18@example.com	+91 7000901345	hashed_password_18	facebook	facebook_id_18	https://randomuser.me/api/portraits/men/18.jpg	Bio: Paul Walker	1995-06-15	1515 Oak St, Berlin, Germany	male	{"twitter": "http://twitter.com/paulwalker", "facebook": "http://facebook.com/paulwalker"}	Germany	German	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+72f3566e-606b-43f1-bc04-8512e7aa1314	Quincy	Young	quincy.young19@example.com	+91 7000123458	hashed_password_19	google	google_id_19	https://randomuser.me/api/portraits/men/19.jpg	Bio: Quincy Young	1984-07-20	1616 Cedar St, Moscow, Russia	male	{"twitter": "http://twitter.com/quincyyoung", "facebook": "http://facebook.com/quincyyoung"}	Russia	Russian	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+e004bed6-1396-4f36-9466-c633878e526f	Rachel	King	rachel.king20@example.com	+91 7000234569	hashed_password_20	facebook	facebook_id_20	https://randomuser.me/api/portraits/women/20.jpg	Bio: Rachel King	1990-08-25	1717 Willow St, New York, USA	female	{"twitter": "http://twitter.com/rachelking", "facebook": "http://facebook.com/rachelking"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+c4e2fe24-6e6a-4031-9df5-3f016c1ff729	Tom	Scott	tom.scott21@example.com	+91 7000123459	hashed_password_21	google	google_id_21	https://randomuser.me/api/portraits/men/1.jpg	Bio: Tom Scott	1989-09-10	1818 Oak St, Moscow, Russia	male	{"twitter": "http://twitter.com/tomscott", "facebook": "http://facebook.com/tomscott"}	Russia	Russian	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+165004dd-9dc4-4381-bff1-b99c5930b9cc	Emily	Green	emily.green22@example.com	+91 7000234570	hashed_password_22	facebook	facebook_id_22	https://randomuser.me/api/portraits/women/2.jpg	Bio: Emily Green	1994-10-12	1919 Maple St, Berlin, Germany	female	{"twitter": "http://twitter.com/emilygreen", "facebook": "http://facebook.com/emilygreen"}	Germany	German	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+dc86fc8c-f6dc-42e3-bb58-4bbdd5b6bbd2	Sam	Adams	sam.adams23@example.com	+91 7000345680	hashed_password_23	google	google_id_23	https://randomuser.me/api/portraits/men/3.jpg	Bio: Sam Adams	1986-11-15	2020 Birch St, New Delhi, India	male	{"twitter": "http://twitter.com/samadams", "facebook": "http://facebook.com/samadams"}	India	Hindi, English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+8d472144-940a-444a-9d92-480feaf6cbb1	Sophia	Baker	sophia.baker24@example.com	+91 7000456801	hashed_password_24	facebook	facebook_id_24	https://randomuser.me/api/portraits/women/4.jpg	Bio: Sophia Baker	1992-12-20	2121 Pine St, New York, USA	female	{"twitter": "http://twitter.com/sophiabaker", "facebook": "http://facebook.com/sophiabaker"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+f1389a9f-2731-4b5a-8b6e-4d4c5f1fe5d1	Lucas	Carter	lucas.carter25@example.com	+91 7000567912	hashed_password_25	google	google_id_25	https://randomuser.me/api/portraits/men/5.jpg	Bio: Lucas Carter	1991-01-05	2222 Willow St, London, UK	male	{"twitter": "http://twitter.com/lucascarter", "facebook": "http://facebook.com/lucascarter"}	UK	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+65b2f0b1-447f-47d0-af73-4a557f4d6489	Isabella	Martinez	isabella.martinez26@example.com	+91 7000679023	hashed_password_26	facebook	facebook_id_26	https://randomuser.me/api/portraits/women/6.jpg	Bio: Isabella Martinez	1995-02-10	2323 Oak St, New Delhi, India	female	{"twitter": "http://twitter.com/isabellamartinez", "facebook": "http://facebook.com/isabellamartinez"}	India	Hindi, English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+adb8c968-181d-4773-a4dc-6746e1e79763	James	Wilson	james.wilson27@example.com	+91 7000789134	hashed_password_27	google	google_id_27	https://randomuser.me/api/portraits/men/7.jpg	Bio: James Wilson	1987-03-15	2424 Cedar St, Moscow, Russia	male	{"twitter": "http://twitter.com/jameswilson", "facebook": "http://facebook.com/jameswilson"}	Russia	Russian	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+06d1aa4c-9120-495f-bca8-ce27c843bc67	Charlotte	Allen	charlotte.allen28@example.com	+91 7000890245	hashed_password_28	facebook	facebook_id_28	https://randomuser.me/api/portraits/women/8.jpg	Bio: Charlotte Allen	1993-04-20	2525 Pine St, London, UK	female	{"twitter": "http://twitter.com/charlotteallen", "facebook": "http://facebook.com/charlotteallen"}	UK	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+fec0979c-4a6a-4ec9-9c5d-de4b6b644349	Ethan	King	ethan.king29@example.com	+91 7000901356	hashed_password_29	google	google_id_29	https://randomuser.me/api/portraits/men/9.jpg	Bio: Ethan King	1990-05-25	2626 Birch St, New York, USA	male	{"twitter": "http://twitter.com/ethanking", "facebook": "http://facebook.com/ethanking"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+94604f52-f234-4ab2-9fab-32fd26e21a91	Ava	Lopez	ava.lopez30@example.com	+91 7000123457	hashed_password_30	facebook	facebook_id_30	https://randomuser.me/api/portraits/women/10.jpg	Bio: Ava Lopez	1988-06-30	2727 Cedar St, New York, USA	female	{"twitter": "http://twitter.com/avalopez", "facebook": "http://facebook.com/avalopez"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+86b584a7-d001-4a94-99fd-a363e6689502	Mason	Gonzalez	mason.gonzalez31@example.com	+91 7000234578	hashed_password_31	google	google_id_31	https://randomuser.me/api/portraits/men/11.jpg	Bio: Mason Gonzalez	1992-07-05	2828 Cedar St, New Delhi, India	male	{"twitter": "http://twitter.com/masongonzalez", "facebook": "http://facebook.com/masongonzalez"}	India	Hindi, English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+a9911c35-2cef-4514-829c-5fe22b6d31f2	Amelia	Taylor	amelia.taylor32@example.com	+91 7000345689	hashed_password_32	facebook	facebook_id_32	https://randomuser.me/api/portraits/women/12.jpg	Bio: Amelia Taylor	1987-08-10	2929 Willow St, Moscow, Russia	female	{"twitter": "http://twitter.com/ameliataylor", "facebook": "http://facebook.com/ameliataylor"}	Russia	Russian	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+adf26c5c-947e-4d79-9a2d-353e6ca0f97e	Liam	Harris	liam.harris33@example.com	+91 7000456790	hashed_password_33	google	google_id_33	https://randomuser.me/api/portraits/men/13.jpg	Bio: Liam Harris	1995-09-15	3030 Birch St, Berlin, Germany	male	{"twitter": "http://twitter.com/liamharris", "facebook": "http://facebook.com/liamharris"}	Germany	German	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+40f75e06-7455-47d6-9222-4c34b412eca4	Zoe	Cunningham	zoe.cunningham34@example.com	+91 7000567901	hashed_password_34	facebook	facebook_id_34	https://randomuser.me/api/portraits/women/14.jpg	Bio: Zoe Cunningham	1991-10-20	3131 Pine St, London, UK	female	{"twitter": "http://twitter.com/zoecunningham", "facebook": "http://facebook.com/zoecunningham"}	UK	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+b164a96f-8659-455c-b66f-9e52a5783605	Megan	Wright	megan.wright35@example.com	+91 7000679012	hashed_password_35	google	google_id_35	https://randomuser.me/api/portraits/women/15.jpg	Bio: Megan Wright	1990-11-25	3232 Oak St, New York, USA	female	{"twitter": "http://twitter.com/meganwright", "facebook": "http://facebook.com/meganwright"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+aaf04ebf-f9d5-4ecf-af56-721c44b85862	Daniel	Martin	daniel.martin36@example.com	+91 7000789123	hashed_password_36	facebook	facebook_id_36	https://randomuser.me/api/portraits/men/16.jpg	Bio: Daniel Martin	1989-12-30	3333 Cedar St, New Delhi, India	male	{"twitter": "http://twitter.com/danielmartin", "facebook": "http://facebook.com/danielmartin"}	India	Hindi, English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+22a68ffc-13b0-4308-9f1c-541f3f0cc977	Ethan	Davis	ethan.davis37@example.com	+91 7000890234	hashed_password_37	google	google_id_37	https://randomuser.me/api/portraits/men/17.jpg	Bio: Ethan Davis	1992-01-10	3434 Pine St, Moscow, Russia	male	{"twitter": "http://twitter.com/ethandavis", "facebook": "http://facebook.com/ethandavis"}	Russia	Russian	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+e29dd2e8-37d5-482b-a7ca-ba77d1a70221	Lily	Taylor	lily.taylor38@example.com	+91 7000901345	hashed_password_38	facebook	facebook_id_38	https://randomuser.me/api/portraits/women/18.jpg	Bio: Lily Taylor	1993-02-14	3535 Birch St, Berlin, Germany	female	{"twitter": "http://twitter.com/lilytaylor", "facebook": "http://facebook.com/lilytaylor"}	Germany	German	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+a29604f9-3edd-4f74-a1de-cc7780ff0669	Chloe	Hernandez	chloe.hernandez39@example.com	+91 7000123456	hashed_password_39	google	google_id_39	https://randomuser.me/api/portraits/women/19.jpg	Bio: Chloe Hernandez	1994-03-20	3636 Cedar St, New York, USA	female	{"twitter": "http://twitter.com/chloehernandez", "facebook": "http://facebook.com/chloehernandez"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+bd64836b-bb50-4252-bde4-bdb447441632	Joshua	Young	joshua.young40@example.com	+91 7000234567	hashed_password_40	facebook	facebook_id_40	https://randomuser.me/api/portraits/men/20.jpg	Bio: Joshua Young	1988-04-25	3737 Willow St, London, UK	male	{"twitter": "http://twitter.com/joshuayoung", "facebook": "http://facebook.com/joshuayoung"}	UK	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+c16cb17f-2356-4dc7-a64a-ca68eeee2457	Michael	Scott	michael.scott21@example.com	+91 7000123460	hashed_password_21	google	google_id_21	https://randomuser.me/api/portraits/men/21.jpg	Bio: Michael Scott	1980-01-12	123 Office St, Scranton, USA	male	{"twitter": "http://twitter.com/michaelscott", "facebook": "http://facebook.com/michaelscott"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+b2e21438-7dc3-47a9-b430-9aff63c31747	Pam	Beesly	pam.beesly22@example.com	+91 7000234570	hashed_password_22	facebook	facebook_id_22	https://randomuser.me/api/portraits/women/22.jpg	Bio: Pam Beesly	1983-02-15	456 Art St, Scranton, USA	female	{"twitter": "http://twitter.com/pambeesly", "facebook": "http://facebook.com/pambeesly"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+b9599e73-c169-48d3-849c-7087f401bcf9	Jim	Halpert	jim.halpert23@example.com	+91 7000345680	hashed_password_23	google	google_id_23	https://randomuser.me/api/portraits/men/23.jpg	Bio: Jim Halpert	1985-03-10	789 Paper St, Scranton, USA	male	{"twitter": "http://twitter.com/jimhalpert", "facebook": "http://facebook.com/jimhalpert"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+02f76d88-8250-4e12-80b8-26cd0f195191	Angela	Martin	angela.martin24@example.com	+91 7000456791	hashed_password_24	facebook	facebook_id_24	https://randomuser.me/api/portraits/women/24.jpg	Bio: Angela Martin	1982-04-22	101 Oak St, Scranton, USA	female	{"twitter": "http://twitter.com/angelamartin", "facebook": "http://facebook.com/angelamartin"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+9f724380-3faa-4f29-9de4-71c3eb762a6a	Dwight	Schrute	dwight.schrute25@example.com	+91 7000567902	hashed_password_25	google	google_id_25	https://randomuser.me/api/portraits/men/25.jpg	Bio: Dwight Schrute	1978-05-05	202 Beet St, Scranton, USA	male	{"twitter": "http://twitter.com/dwightschrute", "facebook": "http://facebook.com/dwightschrute"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+e60a6f47-0b2d-4cef-9b63-f670aecb49af	Ryan	Howard	ryan.howard26@example.com	+91 7000679013	hashed_password_26	facebook	facebook_id_26	https://randomuser.me/api/portraits/men/26.jpg	Bio: Ryan Howard	1986-06-18	303 Technology St, Scranton, USA	male	{"twitter": "http://twitter.com/ryanhoward", "facebook": "http://facebook.com/ryanhoward"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+f545547e-97b9-45c5-9704-e0016d2bf086	Kelly	Kapoor	kelly.kapoor27@example.com	+91 7000789124	hashed_password_27	google	google_id_27	https://randomuser.me/api/portraits/women/27.jpg	Bio: Kelly Kapoor	1987-07-30	404 Fashion St, Scranton, USA	female	{"twitter": "http://twitter.com/kellykapoor", "facebook": "http://facebook.com/kellykapoor"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+9e635874-ed5c-43ce-9922-254b54629d6d	Stanley	Hudson	stanley.hudson28@example.com	+91 7000890235	hashed_password_28	facebook	facebook_id_28	https://randomuser.me/api/portraits/men/28.jpg	Bio: Stanley Hudson	1950-08-15	505 Calm St, Scranton, USA	male	{"twitter": "http://twitter.com/stanleyhudson", "facebook": "http://facebook.com/stanleyhudson"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+55846efb-4b3d-4cdd-a39a-bda315d3f3e2	Phyllis	Vance	phyllis.vance29@example.com	+91 7000901346	hashed_password_29	google	google_id_29	https://randomuser.me/api/portraits/women/29.jpg	Bio: Phyllis Vance	1960-09-01	606 Cozy St, Scranton, USA	female	{"twitter": "http://twitter.com/phyllisvance", "facebook": "http://facebook.com/phyllisvance"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+c7bdd038-0454-428c-abaa-ff538ad4f4b3	Creed	Bratton	creed.bratton30@example.com	+91 7000123461	hashed_password_30	facebook	facebook_id_30	https://randomuser.me/api/portraits/men/30.jpg	Bio: Creed Bratton	1945-10-10	707 Mysterious St, Scranton, USA	male	{"twitter": "http://twitter.com/creedbratton", "facebook": "http://facebook.com/creedbratton"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+573acc68-521c-4fe2-b048-69b89adb72c1	Oscar	Martinez	oscar.martinez31@example.com	+91 7000234571	hashed_password_31	google	google_id_31	https://randomuser.me/api/portraits/men/31.jpg	Bio: Oscar Martinez	1980-11-06	808 Accountant St, Scranton, USA	male	{"twitter": "http://twitter.com/oscarmartinez", "facebook": "http://facebook.com/oscarmartinez"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+ad537af1-0fbb-4396-8981-5a1f3845345e	Toby	Flenderson	toby.flenderson32@example.com	+91 7000345681	hashed_password_32	facebook	facebook_id_32	https://randomuser.me/api/portraits/men/32.jpg	Bio: Toby Flenderson	1970-12-24	909 Human Resources St, Scranton, USA	male	{"twitter": "http://twitter.com/tobyflenderson", "facebook": "http://facebook.com/tobyflenderson"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+f0dd99a0-eba4-4321-9ecc-04a737534f07	Meredith	Palmer	meredith.palmer33@example.com	+91 7000456792	hashed_password_33	google	google_id_33	https://randomuser.me/api/portraits/women/33.jpg	Bio: Meredith Palmer	1965-01-18	101 Party St, Scranton, USA	female	{"twitter": "http://twitter.com/meredithpalmer", "facebook": "http://facebook.com/meredithpalmer"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+cbeb99eb-29e8-41e4-b14e-c97820e73daf	Jan	Levinson	jan.levinson34@example.com	+91 7000567903	hashed_password_34	facebook	facebook_id_34	https://randomuser.me/api/portraits/women/34.jpg	Bio: Jan Levinson	1975-02-22	202 Boss St, Scranton, USA	female	{"twitter": "http://twitter.com/janlevinson", "facebook": "http://facebook.com/janlevinson"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+237a66cd-e81b-4125-ae24-0c1b5ba97d73	Karen	Filippelli	karen.filippelli35@example.com	+91 7000679014	hashed_password_35	google	google_id_35	https://randomuser.me/api/portraits/women/35.jpg	Bio: Karen Filippelli	1985-03-14	303 Sales St, Scranton, USA	female	{"twitter": "http://twitter.com/karenfilippelli", "facebook": "http://facebook.com/karenfilippelli"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+6c2b3114-b3c2-455f-8453-530d6efd4ffa	Holly	Flax	holly.flax36@example.com	+91 7000789125	hashed_password_36	facebook	facebook_id_36	https://randomuser.me/api/portraits/women/36.jpg	Bio: Holly Flax	1984-04-01	404 HR St, Scranton, USA	female	{"twitter": "http://twitter.com/hollyflax", "facebook": "http://facebook.com/hollyflax"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+bc66bc7b-5ece-4d2b-a463-d8bada701a4c	Darryl	Philbin	darryl.philbin37@example.com	+91 7000890236	hashed_password_37	google	google_id_37	https://randomuser.me/api/portraits/men/37.jpg	Bio: Darryl Philbin	1971-05-12	505 Warehouse St, Scranton, USA	male	{"twitter": "http://twitter.com/darrylphilbin", "facebook": "http://facebook.com/darrylphilbin"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+ecd6910c-989c-49e4-9689-35aa7a735373	Ryan	Gosling	ryan.gosling38@example.com	+91 7000901347	hashed_password_38	facebook	facebook_id_38	https://randomuser.me/api/portraits/men/38.jpg	Bio: Ryan Gosling	1980-06-14	606 Hollywood St, Los Angeles, USA	male	{"twitter": "http://twitter.com/ryangosling", "facebook": "http://facebook.com/ryangosling"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+5baeba14-0027-4569-8e9d-4d7ad1c53754	Emma	Stone	emma.stone39@example.com	+91 7000123462	hashed_password_39	google	google_id_39	https://randomuser.me/api/portraits/women/39.jpg	Bio: Emma Stone	1988-07-10	707 Sunset St, Los Angeles, USA	female	{"twitter": "http://twitter.com/emmastone", "facebook": "http://facebook.com/emmastone"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+1fd500a0-7539-4614-9d01-57662450e9f9	Ryan	Reynolds	ryan.reynolds40@example.com	+91 7000234572	hashed_password_40	facebook	facebook_id_40	https://randomuser.me/api/portraits/men/40.jpg	Bio: Ryan Reynolds	1976-10-23	808 Broadway St, New York, USA	male	{"twitter": "http://twitter.com/ryanreynolds", "facebook": "http://facebook.com/ryanreynolds"}	USA	English	2025-03-05 12:04:01.576676	2025-03-05 12:04:01.576676
+bcf77305-f749-430c-861e-380af125f29e	Aarav	Sharma	aarav.sharma1@example.com	+91 7000123463	hashed_password_1	google	google_id_1	https://randomuser.me/api/portraits/men/1.jpg	Bio: Aarav Sharma	1990-01-15	123 MG Road, New Delhi, India	male	{"twitter": "http://twitter.com/aaravsharma", "facebook": "http://facebook.com/aaravsharma"}	India	Hindi, English	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+3a523e55-bdb7-49ca-95e3-df594bb83570	Priya	Patel	priya.patel2@example.com	+91 7000234573	hashed_password_2	facebook	facebook_id_2	https://randomuser.me/api/portraits/women/2.jpg	Bio: Priya Patel	1987-02-20	456 Oak St, Mumbai, India	female	{"twitter": "http://twitter.com/priyapatel", "facebook": "http://facebook.com/priyapatel"}	India	Hindi, Gujarati	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+7b6c25b6-3be7-4000-8ba7-3f7458bdd81b	Ravi	Verma	ravi.verma3@example.com	+91 7000345682	hashed_password_3	google	google_id_3	https://randomuser.me/api/portraits/men/3.jpg	Bio: Ravi Verma	1992-03-25	789 Park Lane, Bangalore, India	male	{"twitter": "http://twitter.com/raviverma", "facebook": "http://facebook.com/raviverma"}	India	Kannada, English	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+fb2ba136-52c7-4697-abf7-285546b083cd	Ananya	Singh	ananya.singh4@example.com	+91 7000456794	hashed_password_4	facebook	facebook_id_4	https://randomuser.me/api/portraits/women/4.jpg	Bio: Ananya Singh	1995-04-30	101 Palm St, Chennai, India	female	{"twitter": "http://twitter.com/ananyasingh", "facebook": "http://facebook.com/ananyasingh"}	India	Tamil, English	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+969f5295-d52d-4a42-8109-fdd4df9a6108	Amit	Kumar	amit.kumar5@example.com	+91 7000567904	hashed_password_5	google	google_id_5	https://randomuser.me/api/portraits/men/5.jpg	Bio: Amit Kumar	1986-05-10	202 Rose St, Pune, India	male	{"twitter": "http://twitter.com/amitkumar", "facebook": "http://facebook.com/amitkumar"}	India	Hindi, Marathi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+9f088dc0-cf25-45e6-b017-b77a8be5fb68	Sanya	Mehta	sanya.mehta6@example.com	+91 7000679015	hashed_password_6	facebook	facebook_id_6	https://randomuser.me/api/portraits/women/6.jpg	Bio: Sanya Mehta	1993-06-15	303 Maple St, Ahmedabad, India	female	{"twitter": "http://twitter.com/sanyamehta", "facebook": "http://facebook.com/sanyamehta"}	India	Gujarati, Hindi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+ffd7fa35-e727-4a8d-a75d-7aeedfc46078	Vikram	Yadav	vikram.yadav7@example.com	+91 7000789126	hashed_password_7	google	google_id_7	https://randomuser.me/api/portraits/men/7.jpg	Bio: Vikram Yadav	1985-07-20	404 Shakti St, Jaipur, India	male	{"twitter": "http://twitter.com/vikramyadav", "facebook": "http://facebook.com/vikramyadav"}	India	Hindi, Rajasthani	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+510e86b8-aa97-4199-82ac-37b9d33f9d71	Sneha	Iyer	sneha.iyer8@example.com	+91 7000890237	hashed_password_8	facebook	facebook_id_8	https://randomuser.me/api/portraits/women/8.jpg	Bio: Sneha Iyer	1990-08-25	505 Coconut St, Mumbai, India	female	{"twitter": "http://twitter.com/snehaayer", "facebook": "http://facebook.com/snehaayer"}	India	Marathi, Hindi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+58e6251b-0c72-4049-877b-0c71e415a56f	Karan	Joshi	karan.joshi9@example.com	+91 7000901348	hashed_password_9	google	google_id_9	https://randomuser.me/api/portraits/men/9.jpg	Bio: Karan Joshi	1992-09-30	606 Blue St, Bangalore, India	male	{"twitter": "http://twitter.com/karanjoshi", "facebook": "http://facebook.com/karanjoshi"}	India	Kannada, Hindi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+efd59086-b6bc-4104-a07f-cef6304d47d4	Ritu	Sharma	ritu.sharma10@example.com	+91 7000123464	hashed_password_10	facebook	facebook_id_10	https://randomuser.me/api/portraits/women/10.jpg	Bio: Ritu Sharma	1988-10-05	707 Sunset St, Delhi, India	female	{"twitter": "http://twitter.com/ritusharma", "facebook": "http://facebook.com/ritusharma"}	India	Hindi, Punjabi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+f98a6d29-bb55-41be-b101-d5cb9a918261	Anil	Reddy	anil.reddy11@example.com	+91 7000234574	hashed_password_11	google	google_id_11	https://randomuser.me/api/portraits/men/11.jpg	Bio: Anil Reddy	1990-11-15	808 Sapphire St, Hyderabad, India	male	{"twitter": "http://twitter.com/anilreddy", "facebook": "http://facebook.com/anilreddy"}	India	Telugu, English	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+f6cbfe7c-80b3-4e25-836b-4b4321734b42	Divya	Nair	divya.nair12@example.com	+91 7000345683	hashed_password_12	facebook	facebook_id_12	https://randomuser.me/api/portraits/women/12.jpg	Bio: Divya Nair	1993-12-20	909 Green St, Kochi, India	female	{"twitter": "http://twitter.com/divyanair", "facebook": "http://facebook.com/divyanair"}	India	Malayalam, English	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+ccc747c0-5e38-4463-997d-9a1b0e8dd585	Harish	Mishra	harish.mishra13@example.com	+91 7000456795	hashed_password_13	google	google_id_13	https://randomuser.me/api/portraits/men/13.jpg	Bio: Harish Mishra	1982-01-25	101 West St, Lucknow, India	male	{"twitter": "http://twitter.com/harishmishra", "facebook": "http://facebook.com/harishmishra"}	India	Hindi, Bhojpuri	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+230bc85c-7b80-4ae7-8eed-4186e06c69b7	Neha	Gupta	neha.gupta14@example.com	+91 7000567905	hashed_password_14	facebook	facebook_id_14	https://randomuser.me/api/portraits/women/14.jpg	Bio: Neha Gupta	1994-02-10	1111 Valley St, Kanpur, India	female	{"twitter": "http://twitter.com/nehagupta", "facebook": "http://facebook.com/nehagupta"}	India	Hindi, English	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+9481094d-0ee9-4435-8cb5-b99edba6f60f	Manish	Singh	manish.singh15@example.com	+91 7000679016	hashed_password_15	google	google_id_15	https://randomuser.me/api/portraits/men/15.jpg	Bio: Manish Singh	1985-03-12	1212 City Center, Gurgaon, India	male	{"twitter": "http://twitter.com/manishsingh", "facebook": "http://facebook.com/manishsingh"}	India	Hindi, Haryanvi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+e63dd0bf-e77b-4300-899e-157276ef5159	Komal	Chawla	komal.chawla16@example.com	+91 7000789127	hashed_password_16	facebook	facebook_id_16	https://randomuser.me/api/portraits/women/16.jpg	Bio: Komal Chawla	1991-04-28	1313 Blue Ridge, Chandigarh, India	female	{"twitter": "http://twitter.com/komalchawla", "facebook": "http://facebook.com/komalchawla"}	India	Punjabi, Hindi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+8211ed29-b33a-4290-a422-a552c842f946	Pankaj	Gupta	pankaj.gupta17@example.com	+91 7000890238	hashed_password_17	google	google_id_17	https://randomuser.me/api/portraits/men/17.jpg	Bio: Pankaj Gupta	1989-05-18	1414 Red St, Kolkata, India	male	{"twitter": "http://twitter.com/pankajgupta", "facebook": "http://facebook.com/pankajgupta"}	India	Bengali, Hindi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+e6049452-8673-4362-833e-01432733fb8a	Sweta	Patel	sweta.patel18@example.com	+91 7000901349	hashed_password_18	facebook	facebook_id_18	https://randomuser.me/api/portraits/women/18.jpg	Bio: Sweta Patel	1990-06-21	1515 Tulip St, Surat, India	female	{"twitter": "http://twitter.com/swetapatel", "facebook": "http://facebook.com/swetapatel"}	India	Gujarati, Hindi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+411ed73b-ceef-4012-b050-2d847c3f92b4	Sandeep	Kaur	sandeep.kaur19@example.com	+91 7000123465	hashed_password_19	google	google_id_19	https://randomuser.me/api/portraits/men/19.jpg	Bio: Sandeep Kaur	1987-07-08	1616 Orchard St, Patiala, India	male	{"twitter": "http://twitter.com/sandeepkaur", "facebook": "http://facebook.com/sandeepkaur"}	India	Punjabi, Hindi	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+6ef6c94f-54e5-49d0-a6b4-e8e0bff3870e	Tanya	Kumar	tanya.kumar20@example.com	+91 7000234575	hashed_password_20	facebook	facebook_id_20	https://randomuser.me/api/portraits/women/20.jpg	Bio: Tanya Kumar	1994-08-22	1717 Riverside St, Noida, India	female	{"twitter": "http://twitter.com/tanyakumar", "facebook": "http://facebook.com/tanyakumar"}	India	Hindi, English	2025-03-05 12:07:05.503144	2025-03-05 12:07:05.503144
+\.
+
+
+--
+-- Name: batches batches_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.batches
@@ -409,7 +504,7 @@ ALTER TABLE ONLY public.batches
 
 
 --
--- Name: class_recordings class_recordings_pkey; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: class_recordings class_recordings_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.class_recordings
@@ -417,7 +512,7 @@ ALTER TABLE ONLY public.class_recordings
 
 
 --
--- Name: classes classes_pkey; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: classes classes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.classes
@@ -425,7 +520,15 @@ ALTER TABLE ONLY public.classes
 
 
 --
--- Name: courses courses_pkey; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: course_types course_types_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.course_types
+    ADD CONSTRAINT course_types_pkey PRIMARY KEY (type_id);
+
+
+--
+-- Name: courses courses_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.courses
@@ -433,23 +536,15 @@ ALTER TABLE ONLY public.courses
 
 
 --
--- Name: instructors fk_instructors_email; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: users fk_users_email; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.instructors
-    ADD CONSTRAINT fk_instructors_email UNIQUE (email);
-
-
---
--- Name: students fk_students_email; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
---
-
-ALTER TABLE ONLY public.students
-    ADD CONSTRAINT fk_students_email UNIQUE (email);
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_users_email UNIQUE (email);
 
 
 --
--- Name: instructors instructors_pkey; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: instructors instructors_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.instructors
@@ -457,7 +552,7 @@ ALTER TABLE ONLY public.instructors
 
 
 --
--- Name: notes notes_pkey; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: notes notes_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.notes
@@ -465,7 +560,23 @@ ALTER TABLE ONLY public.notes
 
 
 --
--- Name: students_enrolled students_enrolled_pkey; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (role_id);
+
+
+--
+-- Name: roles roles_role_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_role_name_key UNIQUE (role_name);
+
+
+--
+-- Name: students_enrolled students_enrolled_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.students_enrolled
@@ -473,7 +584,7 @@ ALTER TABLE ONLY public.students_enrolled
 
 
 --
--- Name: students students_pkey; Type: CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: students students_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.students
@@ -481,91 +592,114 @@ ALTER TABLE ONLY public.students
 
 
 --
--- Name: idx_batches_created_at; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: user_roles user_roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_roles
+    ADD CONSTRAINT user_roles_pkey PRIMARY KEY (user_id, role_id);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: idx_batches_created_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_batches_created_at ON public.batches USING btree (created_at);
 
 
 --
--- Name: idx_class_recordings_class_id; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_class_recordings_class_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_class_recordings_class_id ON public.class_recordings USING btree (class_id);
 
 
 --
--- Name: idx_class_recordings_recorded_at; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_class_recordings_recorded_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_class_recordings_recorded_at ON public.class_recordings USING btree (recorded_at);
 
 
 --
--- Name: idx_classes_batch_id; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_classes_batch_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_classes_batch_id ON public.classes USING btree (batch_id);
 
 
 --
--- Name: idx_classes_scheduled_at; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_classes_scheduled_at; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_classes_scheduled_at ON public.classes USING btree (scheduled_at);
 
 
 --
--- Name: idx_enrollments_batch_id; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_enrollments_batch_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_enrollments_batch_id ON public.students_enrolled USING btree (batch_id);
 
 
 --
--- Name: idx_enrollments_student_id; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_enrollments_student_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_enrollments_student_id ON public.students_enrolled USING btree (student_id);
 
 
 --
--- Name: idx_instructors_email; Type: INDEX; Schema: public; Owner: chinmayvivek
---
-
-CREATE INDEX idx_instructors_email ON public.instructors USING btree (email);
-
-
---
--- Name: idx_notes_class_id; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_notes_class_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_notes_class_id ON public.notes USING btree (class_id);
 
 
 --
--- Name: idx_notes_user_id; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_notes_user_id; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_notes_user_id ON public.notes USING btree (user_id);
 
 
 --
--- Name: idx_students_email; Type: INDEX; Schema: public; Owner: chinmayvivek
---
-
-CREATE INDEX idx_students_email ON public.students USING btree (email);
-
-
---
--- Name: idx_students_enrolled_date; Type: INDEX; Schema: public; Owner: chinmayvivek
+-- Name: idx_students_enrolled_date; Type: INDEX; Schema: public; Owner: postgres
 --
 
 CREATE INDEX idx_students_enrolled_date ON public.students_enrolled USING btree (enrollment_date);
 
 
 --
--- Name: batches fk_batches_course; Type: FK CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: idx_user_roles_role_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_user_roles_role_id ON public.user_roles USING btree (role_id);
+
+
+--
+-- Name: idx_user_roles_user_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_user_roles_user_id ON public.user_roles USING btree (user_id);
+
+
+--
+-- Name: idx_users_email; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_users_email ON public.users USING btree (email);
+
+
+--
+-- Name: batches fk_batches_course; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.batches
@@ -573,7 +707,7 @@ ALTER TABLE ONLY public.batches
 
 
 --
--- Name: batches fk_batches_instructor; Type: FK CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: batches fk_batches_instructor; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.batches
@@ -581,7 +715,7 @@ ALTER TABLE ONLY public.batches
 
 
 --
--- Name: classes fk_classes_batch; Type: FK CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: classes fk_classes_batch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.classes
@@ -589,7 +723,15 @@ ALTER TABLE ONLY public.classes
 
 
 --
--- Name: students_enrolled fk_enrollments_batch; Type: FK CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: courses fk_course_type; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.courses
+    ADD CONSTRAINT fk_course_type FOREIGN KEY (course_type_id) REFERENCES public.course_types(type_id);
+
+
+--
+-- Name: students_enrolled fk_enrollments_batch; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.students_enrolled
@@ -597,7 +739,7 @@ ALTER TABLE ONLY public.students_enrolled
 
 
 --
--- Name: students_enrolled fk_enrollments_student; Type: FK CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: students_enrolled fk_enrollments_student; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.students_enrolled
@@ -605,7 +747,15 @@ ALTER TABLE ONLY public.students_enrolled
 
 
 --
--- Name: notes fk_notes_class; Type: FK CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: instructors fk_instructors_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.instructors
+    ADD CONSTRAINT fk_instructors_user FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- Name: notes fk_notes_class; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.notes
@@ -613,7 +763,7 @@ ALTER TABLE ONLY public.notes
 
 
 --
--- Name: notes fk_notes_user; Type: FK CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: notes fk_notes_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.notes
@@ -621,11 +771,35 @@ ALTER TABLE ONLY public.notes
 
 
 --
--- Name: class_recordings fk_recordings_class; Type: FK CONSTRAINT; Schema: public; Owner: chinmayvivek
+-- Name: class_recordings fk_recordings_class; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.class_recordings
     ADD CONSTRAINT fk_recordings_class FOREIGN KEY (class_id) REFERENCES public.classes(class_id) ON DELETE CASCADE;
+
+
+--
+-- Name: students fk_students_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.students
+    ADD CONSTRAINT fk_students_user FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_roles fk_user_roles_role; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_roles
+    ADD CONSTRAINT fk_user_roles_role FOREIGN KEY (role_id) REFERENCES public.roles(role_id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_roles fk_user_roles_user; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_roles
+    ADD CONSTRAINT fk_user_roles_user FOREIGN KEY (user_id) REFERENCES public.users(user_id) ON DELETE CASCADE;
 
 
 --
