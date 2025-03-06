@@ -30,7 +30,7 @@ func (s *Server) SetupRoutes() {
 	authRepo := auth.NewRepository(s.db)
 	authHandler := auth.NewHandler(authRepo)
 
-	s.mux.HandleFunc("/signup", authHandler.LoginPage)
+	s.mux.HandleFunc("/login", authHandler.LoginPage)
 	s.mux.HandleFunc("/api/login", authHandler.Login)
 	s.mux.HandleFunc("/api/logout", authHandler.Logout)
 
