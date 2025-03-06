@@ -1,34 +1,70 @@
 {{ define "header" }}
 <!-- Header -->
-<header class="bg-blue-600 text-white">
-    <nav class="container mx-auto px-4 py-3">
+<header class="bg-white border-b border-gray-200">
+    <nav class="container mx-auto px-6 py-4">
         <div class="flex justify-between items-center">
             <!-- Logo -->
-            <a href="/" class="text-2xl font-bold">LiveClass</a>
-
-            <!-- Mobile Menu Button -->
-            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
+            <a href="/" class="text-2xl font-bold text-blue-600">LiveClass</a>
 
             <!-- Desktop Navigation -->
-            <div class="hidden md:flex space-x-4">
-                <a href="/" class="hover:text-blue-200" hx-get="/home" hx-target="#main-content" hx-push-url="true">Home</a>
-                <a href="/about" class="hover:text-blue-200" hx-get="/about" hx-target="#main-content" hx-push-url="true">About</a>
-                <a href="/courses" class="hover:text-blue-200" hx-get="/courses" hx-target="#main-content" hx-push-url="true">Courses</a>
-                <a href="/contact" class="hover:text-blue-200" hx-get="/contact" hx-target="#main-content" hx-push-url="true">Contact</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <div class="relative group">
+                    <button class="flex items-center text-gray-700 hover:text-blue-600 font-medium">
+                        PROGRAMS
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
+                <a href="/masterclass" class="text-gray-700 hover:text-blue-600 font-medium">MASTERCLASS</a>
+                <a href="/alumni" class="text-gray-700 hover:text-blue-600 font-medium">ALUMNI</a>
+                <div class="relative group">
+                    <button class="flex items-center text-gray-700 hover:text-blue-600 font-medium">
+                        RESOURCES
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
             </div>
+
+            <!-- Right Side Navigation -->
+            <div class="hidden md:flex items-center space-x-4">
+                <button class="p-2 text-gray-700 hover:text-blue-600" aria-label="Toggle dark mode">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+                <a href="/login" class="text-gray-700 hover:text-blue-600 font-medium">LOGIN</a>
+                <a href="/apply" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 font-medium">
+                    APPLY NOW
+                </a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button @click="mobileMenuOpen = !mobileMenuOpen" class="md:hidden text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M4 6h16M4 12h16M4 18h16"></path>
+                    <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                        d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
         </div>
 
         <!-- Mobile Navigation -->
-        <div x-show="mobileMenuOpen" class="md:hidden mt-4 space-y-2">
-            <a href="/" class="block hover:text-blue-200" hx-get="/home" hx-target="#main-content" hx-push-url="true">Home</a>
-            <a href="/about" class="block hover:text-blue-200" hx-get="/about" hx-target="#main-content" hx-push-url="true">About</a>
-            <a href="/courses" class="block hover:text-blue-200" hx-get="/courses" hx-target="#main-content" hx-push-url="true">Courses</a>
-            <a href="/contact" class="block hover:text-blue-200" hx-get="/contact" hx-target="#main-content" hx-push-url="true">Contact</a>
+        <div x-show="mobileMenuOpen" class="md:hidden mt-4 space-y-3">
+            <a href="/programs" class="block text-gray-700 hover:text-blue-600 font-medium">PROGRAMS</a>
+            <a href="/masterclass" class="block text-gray-700 hover:text-blue-600 font-medium">MASTERCLASS</a>
+            <a href="/alumni" class="block text-gray-700 hover:text-blue-600 font-medium">ALUMNI</a>
+            <a href="/resources" class="block text-gray-700 hover:text-blue-600 font-medium">RESOURCES</a>
+            <div class="pt-4 border-t border-gray-200">
+                <a href="/login" class="block text-gray-700 hover:text-blue-600 font-medium">LOGIN</a>
+                <a href="/apply" class="block mt-3 bg-blue-600 text-white px-4 py-2 rounded-md text-center hover:bg-blue-700 font-medium">
+                    APPLY NOW
+                </a>
+            </div>
         </div>
     </nav>
 </header>

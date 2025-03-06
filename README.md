@@ -58,4 +58,8 @@ cd liveClass
 |:--:|:--:|
 | *LiveClass Student Recorded Lecture Page* |  |
 
+| ![Website](screenshots/website.png) |  |
+|:--:|:--:|
+| *LiveClass Website Home Page* |  |
+
 </div>
