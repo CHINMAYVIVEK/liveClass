@@ -64,3 +64,22 @@ func (h *Handler) RecordingPage(w http.ResponseWriter, r *http.Request) {
 		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
 	}
 }
+
+func (h *Handler) VideoPlayer(w http.ResponseWriter, r *http.Request) {
+	if templates == nil {
+		templates = make(map[string]*template.Template)
+	}
+	t, err := helper.LoadTemplate(helper.StudentView, "videoplayer.html",
+		"template/lms_panel/student/videoplayer.html",
+	)
+	if err != nil {
+		logger.Error(err)
+		panic(err)
+	}
+	templates["videoplayer"] = t
+	err = templates["videoplayer"].ExecuteTemplate(w, "videoplayer", nil)
+	if err != nil {
+		logger.Error("Error executing template:", err)
+		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
+	}
+}

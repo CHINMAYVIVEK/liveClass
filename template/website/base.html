@@ -1,7 +1,6 @@
 {{ define "base" }}
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,9 +12,8 @@
     <!-- Scripts -->
     <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
-<!-- Google Sign-In API -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-
+    <!-- Google Sign-In API -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body class="flex flex-col min-h-screen">
@@ -27,6 +25,5 @@
 
     {{ template "footer" . }}
 </body>
-
 </html>
 {{ end }}

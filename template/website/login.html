@@ -9,12 +9,12 @@
     <div class="max-w-6xl w-full bg-white rounded-2xl shadow-xl overflow-hidden">
         <div class="flex flex-col md:flex-row" x-data="{ 
             isLogin: false,
-            email: '', 
+            email: '',
             phone: '',
             name: '',
-            password: '', 
-            showPassword: false, 
-            loading: false, 
+            password: '',
+            showPassword: false,
+            loading: false,
             errorMessage: '',
             handleSubmit() {
                 this.loading = true;
@@ -67,19 +67,22 @@
 
                         <!-- SSO Buttons Container -->
                         <div class="grid grid-cols-3 gap-4">
-                            <!-- Google Button -->
-                            <button class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
-                                <img src="https://www.google.com/favicon.ico" alt="Google" class="w-6 h-6">
+                            <button type="button" 
+                                aria-label="Sign in with Google"
+                                class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
+                                <img src="https://www.google.com/favicon.ico" alt="" class="w-6 h-6">
                             </button>
 
-                            <!-- Facebook Button -->
-                            <button class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
-                                <img src="https://www.facebook.com/favicon.ico" alt="Facebook" class="w-6 h-6">
+                            <button type="button"
+                                aria-label="Sign in with Facebook"
+                                class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
+                                <img src="https://www.facebook.com/favicon.ico" alt="" class="w-6 h-6">
                             </button>
 
-                            <!-- GitHub Button -->
-                            <button class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
-                                <img src="https://github.com/favicon.ico" alt="GitHub" class="w-6 h-6">
+                            <button type="button"
+                                aria-label="Sign in with GitHub"
+                                class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
+                                <img src="https://github.com/favicon.ico" alt="" class="w-6 h-6">
                             </button>
                         </div>
 
@@ -115,18 +118,28 @@
                     </div>
 
                     <!-- Form -->
-                    <form @submit.prevent="handleSubmit" :hx-post="isLogin ? '/api/login' : '/api/signup'"
-                        hx-trigger="submit" hx-target="#main-content" class="space-y-6">
-                        <!-- Error Message -->
-                        <div id="form-error" x-show="errorMessage" x-transition
+                    <form @submit.prevent="handleSubmit" 
+                        :hx-post="isLogin ? '/api/login' : '/api/signup'"
+                        hx-trigger="submit" 
+                        hx-target="#main-content" 
+                        class="space-y-6">
+                        
+                        <!-- Error Message (single instance) -->
+                        <div x-show="errorMessage" 
+                            x-transition
                             class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6"
                             role="alert">
                             <span x-text="errorMessage"></span>
                         </div>
+
                         <!-- Name Input (Signup only) -->
                         <div x-show="!isLogin">
                             <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                            <input type="text" id="name" x-model="name"
+                            <input type="text" 
+                                id="name" 
+                                name="name"
+                                x-model="name"
+                                minlength="2"
                                 class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
                                 required>
                         </div>
@@ -134,7 +147,11 @@
                         <!-- Email Input -->
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-                            <input type="email" id="email" x-model="email"
+                            <input type="email" 
+                                id="email" 
+                                name="email"
+                                x-model="email"
+                                autocomplete="email"
                                 class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
                                 required>
                         </div>
@@ -143,17 +160,19 @@
                         <div x-show="!isLogin" x-data="{ countryCode: '+91' }">
                             <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
                             <div class="mt-1 flex">
-                                <!-- Country Code Select -->
-                                <select x-model="countryCode" class="px-3 py-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500">
+                                <select x-model="countryCode" 
+                                    name="countryCode"
+                                    aria-label="Country code"
+                                    class="px-3 py-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500">
                                     <option value="+91">+91 (IN)</option>
                                     <option value="+1">+1 (US)</option>
                                     <option value="+44">+44 (UK)</option>
                                     <option value="+61">+61 (AU)</option>
                                     <option value="+86">+86 (CN)</option>
                                 </select>
-                                <!-- Phone Input -->
                                 <input type="tel" 
                                     id="phone" 
+                                    name="phone"
                                     x-model="phone"
                                     placeholder="Enter phone number" 
                                     class="flex-1 block w-full rounded-r-lg border border-l-0 border-gray-300 px-4 py-3 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
@@ -167,10 +186,16 @@
                         <div>
                             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                             <div class="relative">
-                                <input :type="showPassword ? 'text' : 'password'" id="password" x-model="password"
+                                <input :type="showPassword ? 'text' : 'password'" 
+                                    id="password" 
+                                    name="password"
+                                    x-model="password"
+                                    autocomplete="current-password"
                                     class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
                                     required>
-                                <button type="button" @click="showPassword = !showPassword"
+                                <button type="button" 
+                                    @click="showPassword = !showPassword"
+                                    aria-label="Toggle password visibility"
                                     class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                     <svg x-show="!showPassword" class="h-5 w-5 text-gray-400" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
