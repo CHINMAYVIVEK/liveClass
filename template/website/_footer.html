@@ -1,5 +1,51 @@
 
 {{ define "footer" }}
+
+ <!-- Call to Action -->
+ <section class="py-12 bg-gray-900 text-white overflow-hidden relative">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row items-center">
+            <!-- Left content -->
+            <div class="w-full md:w-1/2 p-8 z-10">
+                <h2 class="text-3xl font-bold mb-4">Talk to our Advisor</h2>
+                <p class="text-lg uppercase mb-6">AND GET</p>
+                <ul class="space-y-3 mb-8">
+                    <li class="flex items-center">
+                        <span class="text-yellow-400 mr-2">◆</span>
+                        <span>Personalized Career Roadmap</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="text-yellow-400 mr-2">◆</span>
+                        <span>Free Career Counselling</span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="text-yellow-400 mr-2">◆</span>
+                        <span>Free Access to Scaler Events</span>
+                    </li>
+                </ul>
+                <a href="/request-call" 
+                   class="inline-block bg-pink-600 text-white px-8 py-3 rounded-md font-semibold hover:bg-pink-700 transition duration-300"
+                   hx-get="/request-call" 
+                   hx-target="#main-content" 
+                   hx-push-url="true">
+                    REQUEST A CALL
+                    <span class="ml-2">→</span>
+                </a>
+            </div>
+            
+            <!-- Right image -->
+            <div class="w-full md:w-1/2 relative h-64 md:h-auto">
+                <!-- Yellow curved shape -->
+                <div class="absolute top-0 right-0 w-1/2 h-full bg-yellow-400 rounded-l-full transform translate-x-1/4"></div>
+                
+                <!-- Advisor image -->
+                <img src="/static/images/advisor.jpg" alt="Career Advisor" 
+                     class="absolute bottom-0 right-0 h-full object-cover object-center z-10">
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Footer -->
 <footer class="bg-gray-800 text-white">
     <div class="container mx-auto px-4 py-6">

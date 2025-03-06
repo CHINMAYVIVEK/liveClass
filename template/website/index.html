@@ -1,55 +1,298 @@
 {{ define "index" }}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LiveClass - {{ template "title" . }}</title>
-    
+
     <!-- Styles -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    
+
     <!-- Scripts -->
     <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
 </head>
+
 <body class="flex flex-col min-h-screen">
     {{ template "header" . }}
-    
+
     <main id="main-content" class="flex-grow container mx-auto px-4 py-8">
         {{ template "content" . }}
     </main>
 
     {{ template "footer" . }}
 </body>
+
 </html>
 {{ end }}
 
 {{ define "title" }}Home{{ end }}
 
 {{ define "content" }}
-    
-<div class="space-y-8">
+
+<div class="space-y-6">
     <!-- Hero Section -->
-    <section class="text-center py-12 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg">
-        <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to LiveClass</h1>
-        <p class="text-xl mb-8">Transform your learning experience with interactive online classes</p>
-        <div class="space-x-4">
-            <a href="/signup" 
-               class="bg-white text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300"
-               hx-get="/signup" 
-               hx-target="#main-content" 
-               hx-push-url="true">
-                Get Started
-            </a>
-            <a href="/courses" 
-               class="border-2 border-white text-white px-6 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition duration-300"
-               hx-get="/courses" 
-               hx-target="#main-content" 
-               hx-push-url="true">
-                Browse Courses
-            </a>
-        </div>
+    <section class="py-6 bg-white rounded-lg">
+        <div class="flex flex-col md:flex-row items-start gap-6">
+            <!-- Left Side - Content -->
+            <div class="w-full md:w-1/2">
+                <!-- Main Image with Remote Learning Text -->
+                <div class="bg-yellow-400 rounded-lg p-6 mb-6 text-center relative">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Remote Learning<br>Made Easy</h2>
+
+                    <!-- Circular images of people -->
+                    <div class="flex justify-center items-center mb-4">
+                        <div
+                            class="w-16 h-16 rounded-full bg-blue-500 overflow-hidden border-2 border-white -mr-2 z-10">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Student"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-green-500 overflow-hidden border-2 border-white z-20">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Student"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-full bg-purple-500 overflow-hidden border-2 border-white -ml-2 z-10">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Student"
+                                class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Collaborative tools illustration -->
+                    <div class="flex justify-center items-center">
+                        <div class="bg-white p-3 rounded-lg shadow-md mx-2">
+                            <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-md mx-2">
+                            <div class="text-xs font-semibold">Collaborative Agenda</div>
+                            <div class="text-xs text-gray-500">What works? What doesn't work?</div>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-md mx-2">
+                            <svg class="w-10 h-10 text-purple-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-400 rounded-lg p-6 mb-6 text-center relative">
+                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Learn As Per<br>Your Ease</h2>
+
+                    <!-- Circular images of people -->
+                    <div class="flex justify-center items-center mb-4">
+                        <div
+                            class="w-16 h-16 rounded-full bg-blue-500 overflow-hidden border-2 border-white -mr-2 z-10">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Student"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div class="w-16 h-16 rounded-full bg-green-500 overflow-hidden border-2 border-white z-20">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Student"
+                                class="w-full h-full object-cover">
+                        </div>
+                        <div
+                            class="w-16 h-16 rounded-full bg-purple-500 overflow-hidden border-2 border-white -ml-2 z-10">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Student"
+                                class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Collaborative tools illustration -->
+                    <div class="flex justify-center items-center">
+                        <div class="bg-white p-3 rounded-lg shadow-md mx-2">
+                            <svg class="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-md mx-2">
+                            <div class="text-xs font-semibold">Collaborative Agenda</div>
+                            <div class="text-xs text-gray-500">What works? What doesn't work?</div>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-md mx-2">
+                            <svg class="w-10 h-10 text-purple-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z">
+                                </path>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statistics in 3 columns -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <span class="text-3xl font-bold block">200+</span>
+                        <span class="text-gray-600 text-sm">Instructors</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-3xl font-bold block">15K+</span>
+                        <span class="text-gray-600 text-sm">Learners</span>
+                    </div>
+                    <div class="text-center">
+                        <span class="text-3xl font-bold block">100+</span>
+                        <span class="text-gray-600 text-sm">Capstone Projects</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side - Registration Form -->
+            <div class="w-full md:w-1/2">
+                <!-- Form content remains the same -->
+                <div class="bg-white rounded-lg shadow-lg p-8 border" x-data="{ isSignup: true }">
+                    <!-- Toggle Buttons -->
+                    <div class="flex mb-6 border rounded-md overflow-hidden">
+                        <button @click="isSignup = true"
+                            :class="{'bg-blue-600 text-white': isSignup, 'bg-gray-100 text-gray-700': !isSignup}"
+                            class="flex-1 py-3 font-semibold transition duration-200">
+                            Book a Free Class
+                        </button>
+                        <button @click="isSignup = false"
+                            :class="{'bg-blue-600 text-white': !isSignup, 'bg-gray-100 text-gray-700': isSignup}"
+                            class="flex-1 py-3 font-semibold transition duration-200">
+                            Login
+                        </button>
+                    </div>
+
+                    <!-- Signup Form -->
+                    <form x-show="isSignup" class="space-y-4" hx-post="/register" hx-target="#main-content">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Your Topic of Interest*</label>
+                            <select name="program" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value="">Select Program</option>
+                                <option value="ds">Data Science</option>
+                                <option value="webdev">Web Development</option>
+                                <option value="ai">Artificial Intelligence</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" name="name" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="flex gap-2">
+                            <select name="country_code"
+                                class="mt-1 w-24 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                                <option value="+91">+91</option>
+                                <option value="+1">+1</option>
+                            </select>
+                            <input type="tel" name="phone" required placeholder="Enter Phone"
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-pink-600 text-white py-3 px-4 rounded-md hover:bg-pink-700 font-semibold">
+                            BOOK FREE LIVE CLASS
+                        </button>
+
+                        <div class="flex items-center justify-center space-x-2 text-sm text-gray-500">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <span>Limited Seats Left</span>
+                        </div>
+                    </form>
+
+                    <!-- Login Form -->
+                    <form x-show="!isSignup" class="space-y-4" hx-post="/login" hx-target="#main-content">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" name="password" required
+                                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="remember-me" class="h-4 w-4 text-blue-600">
+                                <label for="remember-me" class="ml-2 text-sm text-gray-600">Remember me</label>
+                            </div>
+                            <a href="/forgot-password" class="text-sm text-blue-600 hover:underline">Forgot
+                                password?</a>
+                        </div>
+
+                        <button type="submit"
+                            class="w-full bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 font-semibold">
+                            LOGIN
+                        </button>
+                    </form>
+
+                    <!-- SSO Options (for both forms) -->
+                    <div class="mt-6">
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 grid grid-cols-3 gap-3">
+                            <button type="button"
+                                class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" />
+                                </svg>
+                            </button>
+                            <button type="button"
+                                class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                <svg class="h-5 w-5 text-[#1877F2]" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                                </svg>
+                            </button>
+                            <button type="button"
+                                class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Footer Text -->
+                    <div class="mt-6 text-center text-sm">
+                        <span x-show="!isSignup" class="text-gray-600">Don't have an account?</span>
+                        <span x-show="isSignup" class="text-gray-600">Already have an account?</span>
+                        <button @click="isSignup = !isSignup" class="text-blue-600 hover:underline ml-1">
+                            <span x-show="!isSignup">Sign up</span>
+                            <span x-show="isSignup">Login</span>
+                        </button>
+                    </div>
+
+                    <div class="text-xs text-gray-500 text-center mt-4">
+                        By creating an account I have read and agree to
+                        <a href="/terms" class="text-blue-600 hover:underline">Terms</a> and
+                        <a href="/privacy" class="text-blue-600 hover:underline">Privacy Policy</a>
+                    </div>
+                </div>
+            </div>
     </section>
 
     <!-- Features Section -->
@@ -83,8 +326,7 @@
     </section>
 
     <!-- Latest Courses Section -->
-    <section class="py-12 bg-gray-50 rounded-lg" 
-             x-data="{ 
+    <section class="py-2  rounded-lg" x-data="{ 
                 courses: null,
                 init() {
                     try {
@@ -126,7 +368,8 @@
                 <div class="flex items-center space-x-4">
                     <div class="flex-shrink-0">
                         <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                         </svg>
                     </div>
                     <div>
@@ -140,46 +383,109 @@
         <!-- Courses Grid -->
         <div x-show="hasValidCourses()" class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <template x-for="course in courses" :key="course.course_id">
-                <div class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300">
-                    <img :src="course.image || 'https://placehold.co/600x400'" 
-                         :alt="course.title" 
-                         class="w-full h-48 object-cover">
+                <div
+                    class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 border border-gray-200">
+                    <!-- Course Header with Code Icon -->
+                    <img :src="course.image || 'https://placehold.co/600x400'" :alt="course.title"
+                        class="w-full h-48 object-cover p-6 flex justify-center items-center">
+
                     <div class="p-6">
-                        <h3 class="text-xl font-semibold mb-2" x-text="course.title"></h3>
-                        <p class="text-gray-600 mb-4 line-clamp-2" x-text="course.description"></p>
-                        <div class="flex flex-col space-y-3">
-                            <div class="flex justify-between items-center">
-                                <span class="text-gray-600 text-sm" x-text="'Level: ' + course.course_level"></span>
-                                <span class="text-gray-600 text-sm" x-text="'Type: ' + course.course_type.course_type"></span>
+                        <!-- Certification Badge -->
+                        <div class="inline-flex items-center bg-gray-100 px-3 py-1 rounded-md mb-4">
+                            <svg class="w-5 h-5 mr-2 text-gray-600" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span class="text-sm text-gray-700 font-medium">NSDC CERTIFIED</span>
+                        </div>
+
+                        <!-- Course Title -->
+                        <h3 class="text-2xl font-bold mb-6 text-gray-900 text-center" x-text="course.title"></h3>
+
+                        <!-- Course Details -->
+                        <div class="space-y-4 mb-8">
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-gray-500 mr-3" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-gray-700" x-text="'Level: ' + course.course_level"></span>
                             </div>
-                            <div class="flex justify-between items-center">
-                                <span class="text-blue-600 font-semibold" x-text="'₹' + course.course_price"></span>
-                                <a :href="'/course/' + course.course_id" 
-                                   class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-300"
-                                   hx-get="'/course/' + course.course_id"
-                                   hx-target="#main-content"
-                                   hx-push-url="true">
-                                    Learn More
-                                </a>
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-gray-500 mr-3" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-gray-700" x-text="'Type: ' + course.course_type.course_type"></span>
                             </div>
+
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-gray-500 mr-3" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span class="text-gray-700">Duration: 9-12 months</span>
+                            </div>
+
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-gray-500 mr-3" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                                </svg>
+                                <span class="text-gray-700">1 Capstone project</span>
+                            </div>
+
+                            <div class="flex items-center">
+                                <svg class="w-6 h-6 text-gray-500 mr-3" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                <span class="text-gray-700" x-text="'₹' + course.course_price"></span>
+                            </div>
+                        </div>
+
+                        <!-- Program Type Badge -->
+                        <div class="inline-flex items-center bg-blue-100 px-4 py-2 rounded-md mb-6">
+                            <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                            </svg>
+                            <span class="text-blue-700 font-medium">ONLINE PROGRAM</span>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3">
+                            <a :href="'/course/' + course.course_id"
+                                class="block w-full text-center bg-white border border-gray-300 text-gray-800 px-4 py-3 rounded-md hover:bg-gray-50 transition duration-300 font-medium"
+                                hx-get="'/course/' + course.course_id" hx-target="#main-content" hx-push-url="true">
+                                GO TO PROGRAM
+                            </a>
+
+                            <a :href="'/course/' + course.course_id + '/brochure'"
+                                class="block w-full text-center bg-blue-600 text-white px-4 py-3 rounded-md hover:bg-blue-700 transition duration-300 font-medium"
+                                hx-get="'/course/' + course.course_id + '/brochure'" hx-target="#main-content"
+                                hx-push-url="true">
+                                BROCHURE
+                                <svg class="w-4 h-4 inline-block ml-2" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 </div>
             </template>
         </div>
+
     </section>
 
-    <!-- Call to Action -->
-    <section class="text-center py-12 bg-blue-600 text-white rounded-lg">
-        <h2 class="text-3xl font-bold mb-4">Ready to Start Learning?</h2>
-        <p class="text-xl mb-8">Join thousands of students already learning with LiveClass</p>
-        <a href="/signup" 
-           class="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300"
-           hx-get="/signup" 
-           hx-target="#main-content" 
-           hx-push-url="true">
-            Sign Up Now
-        </a>
-    </section>
 </div>
 {{ end }}
