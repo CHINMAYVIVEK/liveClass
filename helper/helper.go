@@ -46,18 +46,18 @@ func LoadTemplate(view string, name string, files ...string) (*template.Template
 	if view == StudentView {
 		files = append([]string{
 			"template/lms_panel/student/base.html",
-			"template/lms_panel/student/header.html",
-			"template/lms_panel/student/sidebar.html",
+			"template/lms_panel/student/_header.html",
+			"template/lms_panel/student/_sidebar.html",
 		}, files...)
 	} else if view == InstructorView {
 		files = append([]string{
 			"template/lms_panel/instructor/base.html",
-			"template/lms_panel/instructor/header.html",
-			"template/lms_panel/instructor/sidebar.html",
+			"template/lms_panel/instructor/_header.html",
+			"template/lms_panel/instructor/_sidebar.html",
 		}, files...)
 	} else {
 		files = append([]string{
-			"template/website/layout.html",
+			"template/website/base.html",
 			"template/website/_header.html",
 			"template/website/_footer.html",
 		}, files...)

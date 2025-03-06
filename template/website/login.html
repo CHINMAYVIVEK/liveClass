@@ -1,40 +1,11 @@
 {{ define "login" }}
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LiveClass - {{ template "title" . }}</title>
-
-    <!-- Styles -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-
-    <!-- Scripts -->
-    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
-    <!-- Google Sign-In API -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-</head>
-
-<body class="flex flex-col min-h-screen bg-gray-50">
-    {{ template "header" . }}
-
-    <main id="main-content" class="flex-grow container mx-auto px-4 py-8">
-        {{ template "content" . }}
-    </main>
-
-    {{ template "footer" . }}
-</body>
-
-</html>
+{{ template "base" . }}
 {{ end }}
-
-
 {{ define "title" }}Login{{ end }}
+{{ define "page-title" }}Login{{ end }}
 
 {{ define "content" }}
-<div class="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+<div class="space-y-6">
     <div class="max-w-6xl w-full bg-white rounded-2xl shadow-xl overflow-hidden">
         <div class="flex flex-col md:flex-row" x-data="{ 
             isLogin: false,
@@ -67,41 +38,60 @@
                     <div>
                         <h2 class="text-3xl font-bold mb-6">Welcome to LiveClass</h2>
                         <p class="text-blue-100 mb-8">Join our community of learners and educators</p>
+                        
+                        <!-- Added Illustration with enhanced styling -->
+                        <div class="relative flex justify-center items-center mb-12">
+                            <div class="absolute inset-0 bg-white/10 rounded-3xl blur-xl"></div>
+                            <div class="relative w-80 h-80 p-4 bg-white/5 backdrop-blur-sm rounded-3xl shadow-2xl">
+                                <img 
+                                    src="https://img.freepik.com/free-vector/internship-job-training-illustration_23-2148753207.jpg" 
+                                    alt="Live Class" 
+                                    class="w-full h-full object-contain rounded-2xl transform transition-transform hover:scale-105 duration-300"
+                                    loading="lazy"
+                                >
+                            </div>
+                            <div class="absolute -inset-4 bg-blue-500/20 rounded-[2rem] blur-2xl -z-10"></div>
+                        </div>
                     </div>
 
                     <div class="space-y-6">
-                        <div class="bg-white rounded-lg p-4">
-                            <div id="g_id_onload" data-client_id="YOUR_GOOGLE_CLIENT_ID"
-                                data-callback="handleGoogleSuccess" data-auto_prompt="false">
+                        <!-- Divider with text -->
+                        <div class="relative">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-200"></div>
                             </div>
-                            <div class="g_id_signin w-full" data-type="standard" data-size="large" data-theme="outline"
-                                data-text="sign_in_with" data-shape="rectangular" data-logo_alignment="left">
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-4 text-gray-100 bg-gradient-to-br from-blue-600 to-blue-700">Or continue with</span>
                             </div>
                         </div>
 
-                        <div class="text-center text-sm text-blue-200">
-                            <p>By continuing, you agree to our</p>
-                            <div class="mt-2">
-                                <a href="#" class="underline">Terms of Service</a>
-                                <span class="mx-2">•</span>
-                                <a href="#" class="underline">Privacy Policy</a>
+                        <!-- SSO Buttons Container -->
+                        <div class="grid grid-cols-3 gap-4">
+                            <!-- Google Button -->
+                            <button class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
+                                <img src="https://www.google.com/favicon.ico" alt="Google" class="w-6 h-6">
+                            </button>
+
+                            <!-- Facebook Button -->
+                            <button class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
+                                <img src="https://www.facebook.com/favicon.ico" alt="Facebook" class="w-6 h-6">
+                            </button>
+
+                            <!-- GitHub Button -->
+                            <button class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
+                                <img src="https://github.com/favicon.ico" alt="GitHub" class="w-6 h-6">
+                            </button>
+                        </div>
+
+                        <!-- Terms and Privacy -->
+                        <div class="text-center text-sm">
+                            <p class="text-gray-300">By creating an account I have read and agree to</p>
+                            <div class="mt-1">
+                                <a href="#" class="text-white hover:underline">Terms</a>
+                                <span class="mx-1 text-gray-300">and</span>
+                                <a href="#" class="text-white hover:underline">Privacy Policy</a>
                             </div>
                         </div>
-                    </div>
-                    <div class="mt-6">
-                        <a href="/dashboard"
-                            class="w-full flex justify-center items-center px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition duration-150 shadow-md"
-                            hx-get="/dashboard"
-                            hx-target="body"
-                            hx-push-url="true"
-                            hx-swap="outerHTML">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20"
-                                fill="currentColor">
-                                <path
-                                    d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                            </svg>
-                            Go to Dashboard
-                        </a>
                     </div>
                 </div>
             </div>
@@ -150,11 +140,27 @@
                         </div>
 
                         <!-- Phone Input (Signup only) -->
-                        <div x-show="!isLogin">
+                        <div x-show="!isLogin" x-data="{ countryCode: '+91' }">
                             <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                            <input type="tel" id="phone" x-model="phone" pattern="[0-9]{10}"
-                                class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
-                                required>
+                            <div class="mt-1 flex">
+                                <!-- Country Code Select -->
+                                <select x-model="countryCode" class="px-3 py-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500">
+                                    <option value="+91">+91 (IN)</option>
+                                    <option value="+1">+1 (US)</option>
+                                    <option value="+44">+44 (UK)</option>
+                                    <option value="+61">+61 (AU)</option>
+                                    <option value="+86">+86 (CN)</option>
+                                </select>
+                                <!-- Phone Input -->
+                                <input type="tel" 
+                                    id="phone" 
+                                    x-model="phone"
+                                    placeholder="Enter phone number" 
+                                    class="flex-1 block w-full rounded-r-lg border border-l-0 border-gray-300 px-4 py-3 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+                                    pattern="[0-9]{10}"
+                                    required>
+                            </div>
+                            <p class="mt-1 text-sm text-gray-500">Example: 9876543210</p>
                         </div>
 
                         <!-- Password Input -->
