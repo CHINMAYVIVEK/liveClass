@@ -43,9 +43,33 @@
                 <div class="relative h-full flex flex-col">
 
                     <!-- Video Stream iFrame -->
-                    <div class="flex-1 relative">
-                        <iframe src="https://your-video-stream-url" class="absolute inset-0 w-full h-full"
-                            allow="camera; microphone; fullscreen" frameborder="0"></iframe>
+                    <div class="flex-1 relative" x-data="{ streamError: false }">
+                        <!-- No Stream Error Message -->
+                        <div x-show="streamError" class="absolute inset-0 w-full h-full bg-gray-900 flex flex-col items-center justify-center text-gray-400 z-10">
+                            <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            <p class="text-lg font-medium">No video stream available</p>
+                            <p class="text-sm mt-2">Please check your connection or try again later</p>
+                        </div>
+                        
+                        <!-- Video Stream -->
+                        <iframe 
+                            src="https://your-video-stream-url" 
+                            class="absolute inset-0 w-full h-full"
+                            allow="camera; microphone; fullscreen; display-capture" 
+                            allowfullscreen
+                            @error="streamError = true"
+                            @load="streamError = false"
+                            frameborder="0"></iframe>
+                            
+                        <!-- Fullscreen Button -->
+                        <button onclick="document.querySelector('iframe').requestFullscreen()" 
+                            class="absolute bottom-16 right-4 p-2 bg-gray-800/70 hover:bg-gray-700 text-white rounded-full z-20">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5"></path>
+                            </svg>
+                        </button>
                     </div>
 
                     <!-- Bottom Controls -->
