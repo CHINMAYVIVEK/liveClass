@@ -190,5 +190,3 @@ Project Link: [https://github.com/chinmayvivek/liveClass](https://github.com/chi
 8. **Contributing Guidelines**: Added a structured contribution process
 9. **License & Contact**: Added standard sections for open-source projects
 10. **Footer**: Added a professional footer with attribution
-
-The new README maintains all your original content while presenting it in a more professional and visually appealing format.
