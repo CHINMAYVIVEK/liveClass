@@ -176,7 +176,6 @@ Project Link: [https://github.com/chinmayvivek/liveClass](https://github.com/chi
 <div align="center">
   <p>Built with ❤️ by <a href="https://github.com/chinmayvivek">Chinmay Vivek</a></p>
 </div>
-```
 
 ### Key Improvements:
 
