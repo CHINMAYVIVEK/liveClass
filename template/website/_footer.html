@@ -1,8 +1,7 @@
-
 {{ define "footer" }}
 
- <!-- Call to Action -->
- <section class="py-12 bg-gray-900 text-white overflow-hidden relative">
+<!-- Call to Action -->
+<section class="py-12 bg-gray-900 text-white overflow-hidden relative">
     <div class="container mx-auto px-4">
         <div class="flex flex-col md:flex-row items-center">
             <!-- Left content -->
@@ -13,7 +12,7 @@
                     <li class="flex items-center">
                         <span class="text-yellow-400 mr-2">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z"/>
+                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z" />
                             </svg>
                         </span>
                         <span>Personalized Career Roadmap</span>
@@ -21,7 +20,7 @@
                     <li class="flex items-center">
                         <span class="text-yellow-400 mr-2">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z"/>
+                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z" />
                             </svg>
                         </span>
                         <span>Free Career Counselling</span>
@@ -29,30 +28,29 @@
                     <li class="flex items-center">
                         <span class="text-yellow-400 mr-2">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z"/>
+                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z" />
                             </svg>
                         </span>
                         <span>Free Access to Our Events</span>
                     </li>
                 </ul>
-                <a href="/request-call" 
-                   class="inline-block bg-pink-600 text-white px-8 py-3 rounded-md font-semibold hover:bg-pink-700 transition duration-300"
-                   hx-get="/request-call" 
-                   hx-target="#main-content" 
-                   hx-push-url="true">
+                <a href="/request-call"
+                    class="inline-block bg-pink-600 text-white px-8 py-3 rounded-md font-semibold hover:bg-pink-700 transition duration-300"
+                    hx-get="/request-call" hx-target="#main-content" hx-push-url="true">
                     REQUEST A CALL
                     <span class="ml-2">&rarr;</span>
                 </a>
             </div>
-            
+
             <!-- Right image -->
             <div class="w-full md:w-1/2 relative h-64 md:h-auto">
                 <!-- Yellow curved shape -->
-                <div class="absolute top-0 right-0 w-1/2 h-full bg-yellow-400 rounded-l-full transform translate-x-1/4"></div>
-                
+                <div class="absolute top-0 right-0 w-1/2 h-full bg-yellow-400 rounded-l-full transform translate-x-1/4">
+                </div>
+
                 <!-- Advisor image -->
-                <img src="/static/images/advisor.jpg" alt="Career Advisor" 
-                     class="absolute bottom-0 right-0 h-full object-cover object-center z-10">
+                <img src="/static/images/advisor.jpg" alt="Career Advisor"
+                    class="absolute bottom-0 right-0 h-full object-cover object-center z-10">
             </div>
         </div>
     </div>
@@ -72,9 +70,12 @@
             <div>
                 <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
                 <ul class="space-y-2">
-                    <li><a href="/privacy" class="text-gray-400 hover:text-white" hx-get="/privacy" hx-target="#main-content" hx-push-url="true">Privacy Policy</a></li>
-                    <li><a href="/terms" class="text-gray-400 hover:text-white" hx-get="/terms" hx-target="#main-content" hx-push-url="true">Terms of Service</a></li>
-                    <li><a href="/faq" class="text-gray-400 hover:text-white" hx-get="/faq" hx-target="#main-content" hx-push-url="true">FAQ</a></li>
+                    <li><a href="/privacy" class="text-gray-400 hover:text-white" hx-get="/privacy"
+                            hx-target="#main-content" hx-push-url="true">Privacy Policy</a></li>
+                    <li><a href="/terms" class="text-gray-400 hover:text-white" hx-get="/terms"
+                            hx-target="#main-content" hx-push-url="true">Terms of Service</a></li>
+                    <li><a href="/faq" class="text-gray-400 hover:text-white" hx-get="/faq" hx-target="#main-content"
+                            hx-push-url="true">FAQ</a></li>
                 </ul>
             </div>
 
@@ -109,17 +110,42 @@
         </div>
     </div>
 </footer>
-{{ end }}
 
-    <!-- Additional Scripts -->
-    <script>
-        // Add any additional JavaScript here
-        document.body.addEventListener('htmx:afterSwap', function(evt) {
-            // Scroll to top after content swap
-            window.scrollTo(0, 0);
-            // Close mobile menu if open
-            Alpine.store('mobileMenuOpen', false);
-        });
-    </script>
+<!-- Additional Scripts -->
+<script>
+    // Add any additional JavaScript here
+    document.body.addEventListener('htmx:afterSwap', function (evt) {
+        // Scroll to top after content swap
+        window.scrollTo(0, 0);
+        // Close mobile menu if open
+        Alpine.store('mobileMenuOpen', false);
+    });
+</script>
+
+<button 
+    x-data="{ 
+        showButton: false,
+        checkScroll() {
+            this.showButton = window.pageYOffset > 100 && 
+                (document.documentElement.scrollHeight > document.documentElement.clientHeight + 100)
+        }
+    }" 
+    x-init="
+        checkScroll();
+        window.addEventListener('scroll', () => checkScroll());
+        window.addEventListener('resize', () => checkScroll());
+    "
+    @click="window.scrollTo({ top: 0, behavior: 'smooth' })"
+    :class="{ 'opacity-0 pointer-events-none': !showButton, 'opacity-100': showButton }"
+    class="fixed bottom-6 right-6 bg-blue-600 text-white p-3 rounded-full shadow-lg transition-all duration-300 hover:bg-blue-700 focus:outline-none z-50"
+>
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+    </svg>
+</button>
+
+<!-- Rest of your scripts -->
+{{ end }}
 </body>
+
 </html>
