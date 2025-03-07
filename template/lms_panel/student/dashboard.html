@@ -154,10 +154,64 @@
                                     <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
                                     <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                                 </span>
-                                <a href="/live-lecture" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">Join Now</a>
+                                <a href="/live-lecture" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">Join</a>
                             </div>
                         </div>
-                        <!-- ... Other schedule items ... -->
+                        
+                        <!-- Second class item -->
+                        <div class="flex items-center p-4 bg-gray-50 rounded-lg relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-gray-400"></div>
+                            <div class="flex-shrink-0 w-16 text-center">
+                                <p class="text-sm text-gray-600">11:30</p>
+                                <p class="text-xs text-gray-500">AM</p>
+                            </div>
+                            <div class="ml-4 flex-grow">
+                                <h4 class="text-sm font-semibold text-gray-900">Algorithm Design</h4>
+                                <p class="text-sm text-gray-500">Prof. Michael Chen</p>
+                            </div>
+                            <div>
+                                <a href="/live-lecture" class="bg-gray-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-gray-700 transition-colors">Join</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template x-if="activeTab === 'all' || activeTab === 'classes'">
+            <!-- Recent Activities -->
+            <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">Recent Activities</h3>
+                    <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <!-- Activity 1 -->
+                        <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">Assignment Submitted: Database Design</p>
+                                <p class="text-xs text-gray-500">2 hours ago</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Activity 2 -->
+                        <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-gray-900">Watched: Introduction to Machine Learning</p>
+                                <p class="text-xs text-gray-500">5 hours ago</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -167,7 +221,7 @@
             <!-- Assignments with Progress -->
             <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="text-lg font-semibold text-gray-800">Active Assignments</h3>
+                    <h3 class="text-lg font-semibold text-gray-800">Pending Assignments</h3>
                     <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
                 </div>
                 <div class="p-6">
@@ -178,17 +232,86 @@
                                     <h4 class="text-sm font-semibold text-gray-900">System Design Project</h4>
                                     <p class="text-xs text-red-500">Due: Tomorrow, 11:59 PM</p>
                                 </div>
-                                <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">In Progress</span>
+                                <button class="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700">Submit</button>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2 mt-3">
                                 <div class="bg-blue-600 h-2 rounded-full" style="width: 45%"></div>
                             </div>
                             <div class="flex justify-between mt-2">
                                 <span class="text-xs text-gray-500">Progress: 45%</span>
-                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Continue</button>
                             </div>
                         </div>
-                        <!-- ... Other assignments ... -->
+                        
+                        <!-- Second assignment -->
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-gray-900">Algorithm Analysis</h4>
+                                    <p class="text-xs text-gray-500">Due: Next Week</p>
+                                </div>
+                                <button class="px-3 py-1 text-xs font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-700">Start</button>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-3">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 0%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2">
+                                <span class="text-xs text-gray-500">Not started</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        
+        <template x-if="activeTab === 'all' || activeTab === 'assignments'">
+            <!-- Latest Resources -->
+            <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">Latest Resources</h3>
+                    <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <!-- Resource 1 -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-900">Advanced Database Concepts</h4>
+                                    <p class="text-xs text-gray-500">PDF • Added 2 days ago</p>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <!-- Resource 2 -->
+                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                            <div class="flex items-center space-x-3">
+                                <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-900">Machine Learning Fundamentals</h4>
+                                    <p class="text-xs text-gray-500">Video • Added 3 days ago</p>
+                                </div>
+                            </div>
+                            <button class="text-blue-600 hover:text-blue-800">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
