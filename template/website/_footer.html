@@ -11,16 +11,28 @@
                 <p class="text-lg uppercase mb-6">AND GET</p>
                 <ul class="space-y-3 mb-8">
                     <li class="flex items-center">
-                        <span class="text-yellow-400 mr-2">◆</span>
+                        <span class="text-yellow-400 mr-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z"/>
+                            </svg>
+                        </span>
                         <span>Personalized Career Roadmap</span>
                     </li>
                     <li class="flex items-center">
-                        <span class="text-yellow-400 mr-2">◆</span>
+                        <span class="text-yellow-400 mr-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z"/>
+                            </svg>
+                        </span>
                         <span>Free Career Counselling</span>
                     </li>
                     <li class="flex items-center">
-                        <span class="text-yellow-400 mr-2">◆</span>
-                        <span>Free Access to Scaler Events</span>
+                        <span class="text-yellow-400 mr-2">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L3 12l9 10 9-10L12 2zm0 2.83L18.17 12 12 19.17 5.83 12 12 4.83z"/>
+                            </svg>
+                        </span>
+                        <span>Free Access to Our Events</span>
                     </li>
                 </ul>
                 <a href="/request-call" 
@@ -29,7 +41,7 @@
                    hx-target="#main-content" 
                    hx-push-url="true">
                     REQUEST A CALL
-                    <span class="ml-2">→</span>
+                    <span class="ml-2">&rarr;</span>
                 </a>
             </div>
             
@@ -77,9 +89,23 @@
             </div>
         </div>
 
-        <!-- Copyright -->
-        <div class="mt-8 pt-4 border-t border-gray-700 text-center text-gray-400">
-            <p>&copy; <span x-text="new Date().getFullYear()"></span> LiveClass. All rights reserved.</p>
+        <!-- Copyright Section -->
+        <div class="mt-12 pt-8 border-t border-gray-700">
+            <div class="flex flex-col md:flex-row items-center justify-between text-gray-400">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <span class="text-2xl">&copy;</span>
+                    <span x-data="{ currentYear: new Date().getFullYear() }">
+                        <span x-text="currentYear"></span>
+                    </span>
+                    <span class="font-medium">LiveClass</span>
+                    <span class="hidden md:inline">|</span>
+                </div>
+                <div class="flex items-center space-x-4 text-sm">
+                    <span>All Rights Reserved</span>
+                    <span class="hidden md:inline">&bull;</span>
+                    <span>Made with <span class="text-red-500">&hearts;</span> in India</span>
+                </div>
+            </div>
         </div>
     </div>
 </footer>

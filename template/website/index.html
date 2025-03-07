@@ -367,14 +367,14 @@
                     class="bg-white rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition duration-300 border border-gray-200">
                     <!-- Course Header with Image -->
                     <div class="w-full h-48 overflow-hidden relative">
-                        <img :src="course.image || 'https://placehold.co/600x400'" :alt="course.title"
+                        <img :src="course.image || 'https://static.vecteezy.com/system/resources/previews/001/925/918/original/e-learning-concept-free-vector.jpg'" :alt="course.title"
                             class="w-full h-full object-cover">
-                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
-                            <h3 class="text-xl font-bold text-white text-center" x-text="course.title"></h3>
-                        </div>
                     </div>
 
                     <div class="p-4">
+                        <div class="px-6 py-4">
+                            <h3 class="text-lg font-semibold text-gray-900 text-center leading-tight" x-text="course.title"></h3>
+                        </div>
                         <!-- Certification Badge -->
                         <div class="inline-flex items-center bg-gray-100 px-3 py-1 rounded-md mb-3">
                             <svg class="w-4 h-4 mr-1 text-gray-600" fill="none" stroke="currentColor"
