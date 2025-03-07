@@ -1,6 +1,19 @@
 {{ define "sidebar" }}
+<!-- Mobile Overlay -->
+<div 
+    x-show="sidebarOpen" 
+    @click="sidebarOpen = false" 
+    class="fixed inset-0 bg-black bg-opacity-50 transition-opacity lg:hidden z-40"
+></div>
+
 <aside 
     x-show="sidebarOpen" 
+    x-transition:enter="transform transition-transform duration-300"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transform transition-transform duration-300"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="-translate-x-full"
     class="w-64 bg-gradient-to-b from-blue-900 to-blue-800 text-white min-h-screen flex flex-col fixed lg:relative z-50"
     @resize.window="if (window.innerWidth > 1024) sidebarOpen = true"
 >

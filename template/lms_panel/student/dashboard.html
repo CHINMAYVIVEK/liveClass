@@ -2,247 +2,211 @@
 {{ template "base" . }}
 {{ end }}
 {{ define "title" }}Dashboard{{ end }}
-{{ define "page-title" }}Dashboard{{ end }}
+{{ define "page-title" }}Welcome Back, John{{ end }}
 
 {{ define "content" }}
-<!-- Main Content -->
+<main class="p-6" x-data="{ activeTab: 'all' }">
+    <!-- Welcome Message -->
+    <div class="mb-8">
+        <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-2xl font-bold">Good Morning, John!</h2>
+                    <p class="mt-1 text-blue-100">You have 2 classes scheduled for today</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-blue-100">Monday, 25th October</p>
+                    <p class="text-2xl font-bold">09:30 AM</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-<main class="p-6">
-    <!-- Quick Stats -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-lg shadow p-6">
-            <a href="/schedule">
+    <!-- Quick Stats with Hover Effects -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <a href="/schedule" class="block">
                 <div class="flex items-center">
                     <div class="p-3 rounded-full bg-blue-100 text-blue-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
                     <div class="ml-4">
                         <h3 class="text-gray-500 text-sm">Upcoming Classes</h3>
-                        <p class="text-2xl font-semibold text-gray-800">3</p>
+                        <div class="flex items-center">
+                            <p class="text-2xl font-semibold text-gray-800">3</p>
+                            <span class="ml-2 text-sm text-green-500">↑ 2</span>
+                        </div>
                     </div>
                 </div>
             </a>
+        </div>
 
-        </div>
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-green-100 text-green-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
-                        </path>
-                    </svg>
-                </div>
-                <div class="ml-4">
-                    <h3 class="text-gray-500 text-sm">Pending Assignments</h3>
-                    <p class="text-2xl font-semibold text-gray-800">5</p>
-                </div>
-            </div>
-        </div>
-        <div class="bg-white rounded-lg shadow p-6">
-            <a href="/recordings">
+        <div class="bg-white rounded-lg shadow p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <a href="/assignments" class="block">
                 <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
                     </div>
                     <div class="ml-4">
-
-                        <h3 class="text-gray-500 text-sm">Recorded Lectures</h3>
-                        <p class="text-2xl font-semibold text-gray-800">12</p>
-
+                        <h3 class="text-gray-500 text-sm">Pending Assignments</h3>
+                        <div class="flex items-center">
+                            <p class="text-2xl font-semibold text-gray-800">5</p>
+                            <span class="ml-2 text-sm text-red-500">↑ 1</span>
+                        </div>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                        </path>
-                    </svg>
+
+        <div class="bg-white rounded-lg shadow p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <a href="/recordings" class="block">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-gray-500 text-sm">Recorded Lectures</h3>
+                        <div class="flex items-center">
+                            <p class="text-2xl font-semibold text-gray-800">12</p>
+                            <span class="ml-2 text-sm text-green-500">↑ 3</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="ml-4">
-                    <h3 class="text-gray-500 text-sm">Average Score</h3>
-                    <p class="text-2xl font-semibold text-gray-800">85%</p>
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
+            <a href="/performance" class="block">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h3 class="text-gray-500 text-sm">Average Score</h3>
+                        <div class="flex items-center">
+                            <p class="text-2xl font-semibold text-gray-800">85%</p>
+                            <span class="ml-2 text-sm text-green-500">↑ 5%</span>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 
-    <!-- Schedule and Upcoming -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <!-- Schedule -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Today's Schedule</h3>
-            </div>
-            <div class="p-6">
-                <div class="space-y-4">
-                    <div class="flex items-center p-4 bg-blue-50 rounded-lg">
-                        <div class="flex-shrink-0 w-16 text-center">
-                            <p class="text-sm text-blue-600">09:00</p>
-                            <p class="text-xs text-blue-500">AM</p>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-sm font-semibold text-gray-900">Data Structures</h4>
-                            <p class="text-sm text-gray-500">Prof. Sarah Johnson</p>
-                        </div>
-                        <button class="ml-auto bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Join</button>
-                    </div>
-
-                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
-                        <div class="flex-shrink-0 w-16 text-center">
-                            <p class="text-sm text-gray-600">11:30</p>
-                            <p class="text-xs text-gray-500">AM</p>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-sm font-semibold text-gray-900">Algorithm Design</h4>
-                            <p class="text-sm text-gray-500">Prof. Michael Chen</p>
-                        </div>
-                        <button class="ml-auto bg-gray-600 text-white px-4 py-2 rounded-lg text-sm">Join</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Recent Activities -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Recent Activities</h3>
-            </div>
-            <div class="p-6">
-                <div class="space-y-4">
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7"></path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm text-gray-900">Assignment Submitted: Database Design</p>
-                            <p class="text-xs text-gray-500">2 hours ago</p>
-                        </div>
-                    </div>
-
-                    <div class="flex items-start">
-                        <div class="flex-shrink-0">
-                            <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                                <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                    </path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="ml-4">
-                            <p class="text-sm text-gray-900">Watched: Introduction to Machine Learning</p>
-                            <p class="text-xs text-gray-500">5 hours ago</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Tabs for Schedule and Activities -->
+    <div class="mb-8">
+        <div class="border-b border-gray-200">
+            <nav class="flex space-x-8" aria-label="Tabs">
+                <button 
+                    @click="activeTab = 'all'" 
+                    :class="{'border-blue-500 text-blue-600': activeTab === 'all'}"
+                    class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    All Activities
+                </button>
+                <button 
+                    @click="activeTab = 'classes'" 
+                    :class="{'border-blue-500 text-blue-600': activeTab === 'classes'}"
+                    class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Classes
+                </button>
+                <button 
+                    @click="activeTab = 'assignments'" 
+                    :class="{'border-blue-500 text-blue-600': activeTab === 'assignments'}"
+                    class="border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                    Assignments
+                </button>
+            </nav>
         </div>
     </div>
 
-    <!-- Assignments and Resources -->
+    <!-- Dynamic Content based on Tab -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Pending Assignments -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Pending Assignments</h3>
-            </div>
-            <div class="p-6">
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div>
-                            <h4 class="text-sm font-semibold text-gray-900">System Design Project</h4>
-                            <p class="text-xs text-gray-500">Due: Tomorrow, 11:59 PM</p>
+        <template x-if="activeTab === 'all' || activeTab === 'classes'">
+            <!-- Schedule with Animation -->
+            <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">Today's Schedule</h3>
+                    <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-4">
+                        <!-- Live Class Indicator -->
+                        <div class="flex items-center p-4 bg-blue-50 rounded-lg relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
+                            <div class="flex-shrink-0 w-16 text-center">
+                                <p class="text-sm text-blue-600">09:00</p>
+                                <p class="text-xs text-blue-500">AM</p>
+                            </div>
+                            <div class="ml-4 flex-grow">
+                                <h4 class="text-sm font-semibold text-gray-900">Data Structures</h4>
+                                <p class="text-sm text-gray-500">Prof. Sarah Johnson</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="flex h-3 w-3">
+                                    <span class="animate-ping absolute inline-flex h-3 w-3 rounded-full bg-red-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                                </span>
+                                <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">Join Now</button>
+                            </div>
                         </div>
-                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Submit</button>
-                    </div>
-
-                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                        <div>
-                            <h4 class="text-sm font-semibold text-gray-900">Algorithm Analysis</h4>
-                            <p class="text-xs text-gray-500">Due: Next Week</p>
-                        </div>
-                        <button class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm">Start</button>
+                        <!-- ... Other schedule items ... -->
                     </div>
                 </div>
             </div>
-        </div>
+        </template>
 
-        <!-- Latest Resources -->
-        <div class="bg-white rounded-lg shadow">
-            <div class="p-6 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Latest Resources</h3>
-            </div>
-            <div class="p-6">
-                <div class="space-y-4">
-                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
-                        <div class="flex-shrink-0">
-                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
-                                </path>
-                            </svg>
+        <template x-if="activeTab === 'all' || activeTab === 'assignments'">
+            <!-- Assignments with Progress -->
+            <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">Active Assignments</h3>
+                    <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View All</button>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 class="text-sm font-semibold text-gray-900">System Design Project</h4>
+                                    <p class="text-xs text-red-500">Due: Tomorrow, 11:59 PM</p>
+                                </div>
+                                <span class="px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">In Progress</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 mt-3">
+                                <div class="bg-blue-600 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                            <div class="flex justify-between mt-2">
+                                <span class="text-xs text-gray-500">Progress: 45%</span>
+                                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">Continue</button>
+                            </div>
                         </div>
-                        <div class="ml-4">
-                            <h4 class="text-sm font-semibold text-gray-900">Advanced Database Concepts</h4>
-                            <p class="text-xs text-gray-500">PDF • Added 2 days ago</p>
-                        </div>
-                        <button class="ml-auto text-blue-600 hover:text-blue-700">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                            </svg>
-                        </button>
-                    </div>
-
-                    <div class="flex items-center p-4 bg-gray-50 rounded-lg">
-                        <div class="flex-shrink-0">
-                            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z">
-                                </path>
-                            </svg>
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="text-sm font-semibold text-gray-900">Machine Learning Fundamentals</h4>
-                            <p class="text-xs text-gray-500">Video • Added 3 days ago</p>
-                        </div>
-                        <button class="ml-auto text-blue-600 hover:text-blue-700">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
-                                </path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                            </svg>
-                        </button>
+                        <!-- ... Other assignments ... -->
                     </div>
                 </div>
+            </div>
+        </template>
+    </div>
+
+    <!-- Performance Overview -->
+    <div class="mt-8">
+        <div class="bg-white rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Weekly Performance</h3>
+            <div class="h-64 bg-gray-50 rounded-lg">
+                <!-- Add your chart component here -->
+                <!-- For example, using Chart.js or any other charting library -->
             </div>
         </div>
     </div>
 </main>
 
-
+<!-- Add any required scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {{ end }}
-
-{{ template "base" . }}
