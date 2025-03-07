@@ -159,7 +159,7 @@ SERVER_PORT=8080
       <p><em>LiveClass Student Recorded Lecture List Page</em></p>
     </div>
     <div style="flex: 1; min-width: 45%;">
-      <img src="screenshots/Screenshot-8.png" alt="Student Recorded Lecture Player" width="100%">
+      <img src="screenshots/screenshot-8.png" alt="Student Recorded Lecture Player" width="100%">
       <p><em>LiveClass Student Recorded Lecture Player</em></p>
     </div>
   </div>
