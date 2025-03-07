@@ -20,7 +20,8 @@ func (s *Server) SetupRoutes() {
 	s.mux.HandleFunc("/dashboard", studentHandler.DashboardPage)
 	s.mux.HandleFunc("/schedule", studentHandler.SchedulePage)
 	s.mux.HandleFunc("/recordings", studentHandler.RecordingPage)
-	s.mux.HandleFunc("/video", studentHandler.VideoPlayer)
+	s.mux.HandleFunc("/video", studentHandler.VideoPlayerPage)
+	s.mux.HandleFunc("/live-lecture", studentHandler.LiveLecturePage)
 
 	// Add more routes as needed
 	webRepo := website.NewRepository(s.db)

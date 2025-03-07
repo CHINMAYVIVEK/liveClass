@@ -1,0 +1,184 @@
+{{ define "livelecture" }}
+{{ template "base" . }}
+{{ end }}
+{{ define "title" }}Live lecture{{ end }}
+{{ define "page-title" }}Live lecture{{ end }}
+
+{{ define "content" }}
+
+<!-- Main Content Area -->
+<main class="flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100"
+    x-data="{ chatOpen: true }">
+    <div class="container mx-auto px-6 py-8">
+        <!-- Course Info Banner -->
+        <div class="mb-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">Data Structures</h2>
+                        <p class="text-sm text-gray-600">Prof. Sarah Johnson • Live Now</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span
+                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+                        <span class="w-2 h-2 mr-2 bg-red-500 rounded-full animate-pulse"></span>
+                        LIVE
+                    </span>
+                    <span class="text-sm text-gray-600">Viewers: 42</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Live Class Layout -->
+        <div class="flex flex-row gap-8 h-[calc(100vh-12rem)]">
+            <!-- Video Section - Keep this independent of chat state -->
+            <div class="flex-grow bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+                <div class="relative h-full">
+                    <iframe 
+                        src="https://your-video-stream-url" 
+                        class="absolute inset-0 w-full h-full"
+                        allow="camera; microphone; fullscreen" 
+                        frameborder="0"
+                    ></iframe>
+                    
+                    <!-- Video Controls -->
+                    <div class="absolute bottom-0 inset-x-0 z-10">
+                        <div class="w-full h-1 bg-gray-600/30 cursor-pointer group">
+                            <div class="h-full w-1/2 bg-blue-500 group-hover:bg-blue-400 transition-colors"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chat Section with Toggle - Only this should be affected by chatOpen state -->
+            <div class="w-[350px] flex-shrink-0 transition-all duration-300 ease-in-out"
+                :class="{ 'opacity-100': chatOpen, 'opacity-0 w-0': !chatOpen }">
+                <div class="relative h-full">
+                    <!-- Chat Toggle Button -->
+                    <button @click="chatOpen = false"
+                        class="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg border border-gray-200 z-50 hover:bg-gray-50">
+                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                            </path>
+                        </svg>
+                    </button>
+
+                    <!-- Chat content remains the same -->
+                    <div class="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col border border-gray-100 h-full">
+                        <!-- Tabs with Counter -->
+                        <div class="flex border-b border-gray-200" x-data="{ activeTab: 'chat' }">
+                            <button @click="activeTab = 'chat'"
+                                :class="{ 'border-blue-500 text-blue-600 bg-blue-50': activeTab === 'chat' }"
+                                class="flex-1 py-4 px-6 text-sm font-medium border-b-2 transition-all duration-200 hover:bg-gray-50">
+                                <div class="flex items-center justify-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                                        </path>
+                                    </svg>
+                                    <span>Chat</span>
+                                    <span class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs">24</span>
+                                </div>
+                            </button>
+                            <button @click="activeTab = 'qa'"
+                                :class="{ 'border-blue-500 text-blue-600 bg-blue-50': activeTab === 'qa' }"
+                                class="flex-1 py-4 px-6 text-sm font-medium border-b-2 transition-all duration-200 hover:bg-gray-50">
+                                <div class="flex items-center justify-center space-x-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                        </path>
+                                    </svg>
+                                    <span>Q&A</span>
+                                    <span class="bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full text-xs">5</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Chat Content -->
+                        <div class="flex-1 overflow-y-auto p-4 space-y-4" x-show="activeTab === 'chat'"
+                            style="height: calc(100vh - 20rem);">
+                            <!-- System Message -->
+                            <div class="flex justify-center">
+                                <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Today 2:30
+                                    PM</span>
+                            </div>
+
+                            <!-- Chat Messages -->
+                            <div class="space-y-4">
+                                <!-- Received Message -->
+                                <div class="flex items-start space-x-3">
+                                    <img class="w-8 h-8 rounded-full"
+                                        src="https://ui-avatars.com/api/?name=John+Doe&background=random" alt="">
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-gray-900">John Doe</p>
+                                        <div class="mt-1 bg-gray-100 p-3 rounded-2xl rounded-tl-none inline-block">
+                                            <p class="text-sm text-gray-800">Hello everyone! 👋</p>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mt-1">2:30 PM</p>
+                                    </div>
+                                </div>
+
+                                <!-- Sent Message -->
+                                <div class="flex items-start justify-end space-x-3">
+                                    <div class="flex-1 flex flex-col items-end">
+                                        <p class="text-sm font-medium text-gray-900">You</p>
+                                        <div class="mt-1 bg-blue-500 p-3 rounded-2xl rounded-tr-none inline-block">
+                                            <p class="text-sm text-white">Hi John! Welcome to the class!</p>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mt-1">2:31 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Enhanced Input Area -->
+                        <div class="border-t border-gray-200 p-4 bg-gray-50">
+                            <div class="flex items-center space-x-3">
+                                <input type="text" placeholder="Type your message..."
+                                    class="flex-1 rounded-xl border-2 border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors">
+                                <div class="flex items-center space-x-2">
+                                    <button
+                                        class="p-2.5 text-blue-600 hover:bg-blue-50 rounded-xl transition-all duration-200 hover:scale-105">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                                            </path>
+                                        </svg>
+                                    </button>
+                                    <button
+                                        class="px-4 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-all duration-200 hover:scale-105 font-medium text-sm flex items-center space-x-2">
+                                        <span>Send</span>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M5 12h14m0 0l-6-6m6 6l-6 6"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Toggle Button (When Chat is Hidden) -->
+        <button x-show="!chatOpen" @click="chatOpen = true"
+            class="fixed right-6 bottom-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z">
+                </path>
+            </svg>
+        </button>
+    </div>
+</main>
+
+{{ end }}
