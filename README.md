@@ -54,9 +54,9 @@ cd liveClass
 |:--:|:--:|
 | *LiveClass Student Dashboard Page* | *LiveClass Student Lecture Schedule Page* |
 
-| ![Student Recorded Lecture](screenshots/Screenshot-7.png) |  |
+| ![Student Recorded Lecture](screenshots/Screenshot-7.png) | ![Student Recorded Lecture Player](screenshots/Screenshot-8.png) |
 |:--:|:--:|
-| *LiveClass Student Recorded Lecture Page* |  |
+| *LiveClass Student Recorded Lecture List Page* |  *LiveClass Student Recorded Lecture Player* |
 
 | ![Website](screenshots/website.png) |  |
 |:--:|:--:|
