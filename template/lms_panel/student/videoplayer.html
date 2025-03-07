@@ -6,77 +6,76 @@
 
 {{ define "content" }}
 <main class="p-6">
+
     <div class="grid grid-cols-12 gap-6">
-        <!-- Chapter List Sidebar -->
-        <div class="col-span-3 bg-white rounded-lg shadow">
-            <div class="p-4 border-b border-gray-200">
-                <h3 class="text-lg font-semibold text-gray-800">Course Title</h3>
-            </div>
-            <div class="chapter-list p-4" x-data="{ expandedModule: null }">
-                <template x-for="(module, moduleIndex) in courseModules" :key="moduleIndex">
-                    <div class="mb-4">
-                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded-lg cursor-pointer"
-                             @click="expandedModule = expandedModule === moduleIndex ? null : moduleIndex">
-                            <div class="flex items-center">
-                                <svg class="w-5 h-5 text-gray-500 transform transition-transform"
-                                     :class="{'rotate-90': expandedModule === moduleIndex}"
-                                     fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                </svg>
-                                <span class="ml-2 font-medium text-gray-700" x-text="module.title"></span>
-                            </div>
-                            <span class="text-xs text-gray-500" x-text="`${module.chapters.length} lectures`"></span>
-                        </div>
-                        
-                        <div class="mt-2 ml-4 space-y-2" x-show="expandedModule === moduleIndex">
-                            <template x-for="(chapter, chapterIndex) in module.chapters" :key="chapter.id">
-                                <div class="flex items-center p-2 rounded-lg hover:bg-gray-50 cursor-pointer"
-                                     :class="{ 'bg-blue-50': currentChapter === chapter.id }"
-                                     @click="currentChapter = chapter.id"
-                                     hx-get="/api/video"
-                                     hx-vals="js:{chapterId: chapter.id}"
-                                     hx-target="#videoPlayer">
-                                    <div class="flex items-center flex-1">
-                                        <span class="w-6 h-6 flex items-center justify-center rounded-full border text-xs text-gray-500"
-                                              x-text="chapterIndex + 1"></span>
-                                        <div class="ml-3 flex-1">
-                                            <h4 class="text-sm font-medium text-gray-900" x-text="chapter.title"></h4>
-                                            <div class="flex items-center mt-1">
-                                                <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
-                                                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                                </svg>
-                                                <span class="ml-1 text-xs text-gray-500" x-text="chapter.duration"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="ml-2">
-                                        <template x-if="chapter.completed">
-                                            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                                            </svg>
-                                        </template>
-                                    </div>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                </template>
-            </div>
-        </div>
 
         <!-- Main Content Area -->
-        <div class="col-span-9">
+        <div class="col-span-12">
             <!-- Video Player -->
-            <div class="bg-white rounded-lg shadow mb-6">
-                <div class="aspect-w-16 aspect-h-9">
-                    <video id="videoPlayer" class="w-full rounded-t-lg"
-                           controls
-                           @timeupdate="updateProgress($event)"
-                           @ended="markComplete()">
-                        <source src="" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
+            <div class="bg-white rounded-lg shadow mb-6" x-data="{ 
+                    initSecurity() {
+                        // Prevent context menu
+                        document.addEventListener('contextmenu', e => e.preventDefault());
+                        
+                        // Prevent keyboard shortcuts
+                        document.addEventListener('keydown', e => {
+                            if (
+                                e.key === 'PrintScreen' ||
+                                ((e.ctrlKey || e.metaKey) && e.shiftKey && ['S', 'C', 'I', 'J'].includes(e.key)) ||
+                                ((e.ctrlKey || e.metaKey) && e.key === 'P')
+                            ) {
+                                e.preventDefault();
+                            }
+                        });
+                    }
+                }" x-init="initSecurity()">
+                <div class="relative w-full" style="padding-top: 56.25%">
+                    <!-- Top Gradient Overlay -->
+                    <div class="absolute top-0 left-0 right-0 z-10 h-24 bg-gradient-to-b from-black/70 to-transparent pointer-events-none p-4">
+                        <div class="flex items-center space-x-2">
+                            <!-- <span class="px-2 py-1 bg-blue-600 text-white text-xs rounded-md">LIVE</span> -->
+                            <h3 class="text-white font-medium truncate">{{ .VideoTitle }} Title -1</h3>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Gradient Overlay -->
+                    <!-- <div class="absolute bottom-0 left-0 right-0 z-10 h-24 bg-gradient-to-t from-black/70 to-transparent pointer-events-none p-4 flex items-end">
+                        <div class="w-full flex justify-between items-center">
+                            <div class="text-white">
+                                <p class="text-sm font-medium">{{ .InstructorName }}Name -1</p>
+                                <p class="text-xs opacity-75">{{ .VideoDate }} DATE</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-white text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    Live viewers: 125
+                                </span>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <!-- Video Player (existing code) -->
+                    <div class="absolute inset-0 bg-gray-900 rounded-t-lg flex items-center justify-center">
+                        <div class="text-gray-400">
+                            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p class="mt-2">Video not available</p>
+                        </div>
+                    </div>
+                    <iframe id="videoPlayer" class="absolute inset-0 w-full h-full rounded-t-lg" src="{{ .VideoURL }}"
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen
+                        referrerpolicy="no-referrer" loading="lazy"
+                        sandbox="allow-scripts allow-same-origin allow-presentation"
+                        style="-webkit-user-select: none; -ms-user-select: none; user-select: none;"
+                        @load="initializePlayer" @message="handlePlayerEvent" onerror="this.style.display='none'">
+                    </iframe>
                 </div>
             </div>
 
@@ -86,34 +85,38 @@
                     <div class="flex justify-center">
                         <nav class="flex space-x-8" x-data="{ activeTab: 'overview' }">
                             <button class="flex items-center px-4 py-4 text-sm font-medium border-b-2"
-                                    :class="activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    @click="activeTab = 'overview'">
+                                :class="activeTab === 'overview' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                @click="activeTab = 'overview'">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 Overview
                             </button>
                             <button class="flex items-center px-4 py-4 text-sm font-medium border-b-2"
-                                    :class="activeTab === 'qa' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    @click="activeTab = 'qa'">
+                                :class="activeTab === 'qa' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                @click="activeTab = 'qa'">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 Q&A
                             </button>
                             <button class="flex items-center px-4 py-4 text-sm font-medium border-b-2"
-                                    :class="activeTab === 'notebook' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    @click="activeTab = 'notebook'">
+                                :class="activeTab === 'notebook' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                @click="activeTab = 'notebook'">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                 </svg>
                                 Notebook
                             </button>
                             <button class="flex items-center px-4 py-4 text-sm font-medium border-b-2"
-                                    :class="activeTab === 'transcript' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                    @click="activeTab = 'transcript'">
+                                :class="activeTab === 'transcript' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
+                                @click="activeTab = 'transcript'">
                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                                 Transcript
                             </button>
@@ -128,8 +131,10 @@
                         <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
                             <div class="flex items-start space-x-6">
                                 <div class="relative">
-                                    <img class="h-16 w-16 rounded-full ring-2 ring-blue-500 p-0.5" src="/path/to/instructor-image.jpg" alt="Instructor">
-                                    <span class="absolute bottom-0 right-0 h-4 w-4 bg-green-400 rounded-full ring-2 ring-white"></span>
+                                    <img class="h-16 w-16 rounded-full ring-2 ring-blue-500 p-0.5"
+                                        src="/path/to/instructor-image.jpg" alt="Instructor">
+                                    <span
+                                        class="absolute bottom-0 right-0 h-4 w-4 bg-green-400 rounded-full ring-2 ring-white"></span>
                                 </div>
                                 <div class="flex-1">
                                     <div class="flex items-center justify-between">
@@ -137,9 +142,11 @@
                                             <h4 class="text-lg font-semibold text-gray-900">Sudha Jamthe</h4>
                                             <p class="text-sm text-gray-600">Technology Futurist, GenAI Instructor</p>
                                         </div>
-                                        <button class="inline-flex items-center px-4 py-2 border border-blue-600 rounded-full text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors">
+                                        <button
+                                            class="inline-flex items-center px-4 py-2 border border-blue-600 rounded-full text-sm font-medium text-blue-600 hover:bg-blue-50 transition-colors">
                                             <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                                                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                                                <path
+                                                    d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
                                             </svg>
                                             Follow on LinkedIn
                                         </button>
@@ -172,7 +179,13 @@
                         <div class="bg-white rounded-lg p-6 border border-gray-100 shadow-sm">
                             <h3 class="text-lg font-semibold mb-4">About this course</h3>
                             <p class="text-gray-600 leading-relaxed">
-                                Unlock the power of Glean, the widely used AI work assistant. Glean is an innovative search tool that simplifies finding information at work from any application—Microsoft Office files, Google Docs and Sheets, Slack messages, OneDrive files, and more—with natural language prompts. In this course, instructor Sudha Jamthe shows you how to navigate the Glean interface, utilize its capability to glean insights from your corporate documents by summarizing and comparing them, and chat directly with your documents in real time.
+                                Unlock the power of Glean, the widely used AI work assistant. Glean is an innovative
+                                search tool that simplifies finding information at work from any application—Microsoft
+                                Office files, Google Docs and Sheets, Slack messages, OneDrive files, and more—with
+                                natural language prompts. In this course, instructor Sudha Jamthe shows you how to
+                                navigate the Glean interface, utilize its capability to glean insights from your
+                                corporate documents by summarizing and comparing them, and chat directly with your
+                                documents in real time.
                             </p>
                         </div>
 
@@ -182,9 +195,12 @@
                             <div class="grid gap-4">
                                 <template x-for="(objective, index) in learningObjectives" :key="index">
                                     <div class="flex items-start space-x-3 p-3 bg-white rounded-lg shadow-sm">
-                                        <div class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                        <div
+                                            class="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5 13l4 4L19 7" />
                                             </svg>
                                         </div>
                                         <p class="text-gray-700" x-text="objective"></p>
@@ -202,8 +218,10 @@
                             <div class="grid grid-cols-2 gap-6">
                                 <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                                     <div class="p-3 bg-blue-100 rounded-lg">
-                                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                         </svg>
                                     </div>
                                     <div>
@@ -213,8 +231,10 @@
                                 </div>
                                 <div class="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
                                     <div class="p-3 bg-green-100 rounded-lg">
-                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor"
+                                            viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                         </svg>
                                     </div>
                                     <div>
