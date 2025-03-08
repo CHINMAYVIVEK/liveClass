@@ -112,8 +112,6 @@ SERVER_PORT=8080
 <details>
 <summary><strong>Website Pages</strong> (Click to expand)</summary>
 <div align="center">
-  <img src="screenshots/website.png" alt="LiveClass Website Home Page" width="80%">
-  <p><em>LiveClass Website Home Page</em></p>
   
   <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px;">
     <div style="flex: 1; min-width: 45%;">
