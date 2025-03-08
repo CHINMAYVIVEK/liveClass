@@ -1,0 +1,199 @@
+{{ define "live-class" }}
+{{ template "base" . }}
+{{ end }}
+
+{{ define "title" }}Live Class{{ end }}
+{{ define "page-title" }}Live Class, {{ .InstructorName }}{{ end }}
+
+{{ define "content" }}
+<div class="h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex flex-col" 
+     x-data="{ 
+        showChat: true,
+        showTools: false,
+        isMuted: false,
+        isVideoOff: false,
+        isScreenSharing: false,
+        currentTool: 'none'
+     }">
+    <div class="bg-black/30 backdrop-blur-sm px-6 py-4 flex items-center justify-between border-b border-white/10">
+        <div class="flex items-center space-x-6">
+            <span class="inline-flex items-center px-4 py-1.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30">
+                <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse mr-2"></span>
+                LIVE
+            </span>
+            <div class="flex items-center space-x-3">
+                <h1 class="text-white font-medium text-lg">{{ .ClassName }}</h1>
+                <span class="text-gray-400 text-sm">|</span>
+                <span class="text-gray-400 text-sm">Advanced Mathematics</span>
+            </div>
+        </div>
+        <div class="flex items-center space-x-4 text-gray-300">
+            <div class="flex items-center">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span x-data="timer" x-text="display">00:00:00</span>
+            </div>
+            <button class="px-4 py-1.5 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-all"
+                    hx-post="/instructor/end-class"
+                    hx-confirm="Are you sure you want to end the class?">
+                End Class
+            </button>
+        </div>
+    </div>
+
+    
+    <div class="flex-1 flex overflow-hidden">
+        
+        <div class="w-20 bg-black/20 backdrop-blur-sm border-r border-white/10 flex flex-col items-center py-4 space-y-6">
+            <button @click="currentTool = 'whiteboard'" 
+                    :class="currentTool === 'whiteboard' ? 'bg-blue-500/20 text-blue-400' : 'text-gray-400 hover:text-white'"
+                    class="p-3 rounded-xl transition-all duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"></path>
+                </svg>
+            </button>
+            <button @click="currentTool = 'poll'"
+                    :class="currentTool === 'poll' ? 'bg-purple-500/20 text-purple-400' : 'text-gray-400 hover:text-white'"
+                    class="p-3 rounded-xl transition-all duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+            </button>
+            <button @click="currentTool = 'quiz'"
+                    :class="currentTool === 'quiz' ? 'bg-green-500/20 text-green-400' : 'text-gray-400 hover:text-white'"
+                    class="p-3 rounded-xl transition-all duration-300">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </button>
+        </div>
+
+        
+        <div class="flex-1 relative">
+            <iframe id="video-frame" 
+                    class="w-full h-full"
+                    src="{{ .VideoURL }}"
+                    allow="camera; microphone; display-capture"
+                    allowfullscreen>
+            </iframe>
+
+            
+            <div x-show="currentTool !== 'none'" 
+                 class="absolute top-4 left-24 bg-gray-800/95 backdrop-blur-sm rounded-xl border border-white/10 shadow-2xl w-80"
+                 @click.away="currentTool = 'none'">
+                <div class="p-4">
+                    <h3 class="text-white font-medium mb-4" x-text="currentTool.charAt(0).toUpperCase() + currentTool.slice(1)"></h3>
+                    
+                    <template x-if="currentTool === 'whiteboard'">
+                        <div class="space-y-3">
+                            <div class="flex space-x-2">
+                                <button class="p-2 rounded bg-white/10 text-white hover:bg-white/20">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
+                                </button>
+                                
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent">
+                <div class="container mx-auto px-6 py-6">
+                    <div class="flex items-center justify-center space-x-6">
+                        
+                        <button class="p-4 rounded-xl bg-white/10 hover:bg-white/20 transition-all duration-300 group"
+                                @click="isMuted = !isMuted">
+                            <svg class="w-6 h-6 transform group-hover:scale-110 transition-all duration-300" 
+                                 :class="isMuted ? 'text-red-400' : 'text-white'" 
+                                 fill="none" 
+                                 stroke="currentColor" 
+                                 viewBox="0 0 24 24">
+                                <path x-show="!isMuted" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                <path x-show="isMuted" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zm10.007-11.421a9 9 0 010 12.842M17.657 6.343a5 5 0 010 7.071" />
+                            </svg>
+                        </button>
+
+                        
+                        <button class="p-4 rounded-full bg-gray-800/80 hover:bg-gray-700/80 transition-all"
+                                @click="isVideoOff = !isVideoOff">
+                            <svg class="w-6 h-6" :class="isVideoOff ? 'text-red-500' : 'text-white'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+
+                        
+                        <button class="p-4 rounded-full bg-gray-800/80 hover:bg-gray-700/80 transition-all"
+                                @click="isScreenSharing = !isScreenSharing">
+                            <svg class="w-6 h-6" :class="isScreenSharing ? 'text-green-500' : 'text-white'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="w-96 bg-black/30 backdrop-blur-sm border-l border-white/10 flex flex-col">
+            <div class="p-4 border-b border-white/10 flex items-center justify-between">
+                <h3 class="text-white font-medium">Class Chat</h3>
+                <span class="text-sm text-gray-400">23 participants</span>
+            </div>
+            <div class="flex-1 overflow-y-auto" id="chat-messages">
+                <div class="p-4 space-y-4">
+                    {{ range .Messages }}
+                    <div class="flex items-start space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                            <span class="text-sm font-medium text-gray-300">{{ .Initials }}</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-baseline space-x-2">
+                                <span class="text-sm font-medium text-gray-300">{{ .Name }}</span>
+                                <span class="text-xs text-gray-500">{{ .Time }}</span>
+                            </div>
+                            <p class="text-gray-300 text-sm mt-1">{{ .Content }}</p>
+                        </div>
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+
+            
+            <div class="p-4 border-t border-gray-700">
+                <form class="flex space-x-2"
+                      hx-post="/instructor/class/send-message"
+                      hx-target="#chat-messages"
+                      hx-swap="beforeend">
+                    <input type="text" 
+                           name="message" 
+                           class="flex-1 bg-gray-700 border-0 rounded-lg text-gray-200 placeholder-gray-400 focus:ring-2 focus:ring-blue-500"
+                           placeholder="Type a message...">
+                    <button type="submit" 
+                            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('alpine:init', () => {
+    Alpine.data('timer', () => ({
+        seconds: 0,
+        display: '00:00:00',
+        init() {
+            setInterval(() => {
+                this.seconds++;
+                this.display = new Date(this.seconds * 1000).toISOString().substr(11, 8);
+            }, 1000);
+        }
+    }));
+});
+</script>
+{{ end }}

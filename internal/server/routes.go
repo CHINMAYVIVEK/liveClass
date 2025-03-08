@@ -48,6 +48,7 @@ func (s *Server) SetupRoutes() {
 	instructorHandler := instructor.NewHandler(instructorRepo)
 
 	s.mux.HandleFunc("/instructor/dashboard", instructorHandler.DashboardPage)
+	s.mux.HandleFunc("/instructor/live-class", instructorHandler.LiveClassPage)
 
 	// admin routes
 }
