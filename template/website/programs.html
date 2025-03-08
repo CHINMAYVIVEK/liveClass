@@ -10,15 +10,15 @@
          x-data="{ 
             selectedCategory: 'all',
             courses: null,
+            itemsPerPage: 6,
+            currentPage: 1,
             init() {
                 try {
                     const coursesData = {{ if .Courses }}{{ marshal .Courses }}{{ else }}[]{{ end }};
-                    // Ensure each course has a unique ID
                     this.courses = Array.isArray(coursesData) ? coursesData.map((course, index) => ({
                         ...course,
-                        id: course.id || `course-${index + 1}` // Fallback ID if none exists
+                        id: course.id || `course-${index + 1}`
                     })) : [];
-                    console.log('Courses loaded:', this.courses);
                 } catch (error) {
                     console.error('Error loading courses:', error);
                     this.courses = [];
@@ -26,6 +26,20 @@
             },
             hasValidCourses() {
                 return this.courses && Array.isArray(this.courses) && this.courses.length > 0;
+            },
+            filteredCourses() {
+                return this.courses.filter(course => 
+                    this.selectedCategory === 'all' || course.category === this.selectedCategory
+                );
+            },
+            paginatedCourses() {
+                return this.filteredCourses().slice(0, this.currentPage * this.itemsPerPage);
+            },
+            hasMorePages() {
+                return this.paginatedCourses().length < this.filteredCourses().length;
+            },
+            loadMore() {
+                this.currentPage++;
             }
          }">
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -65,7 +79,7 @@
         <!-- Programs Grid -->
         <div x-show="hasValidCourses()" 
              class="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <template x-for="(course, index) in courses" :key="`course-${course.id || index}`">
+            <template x-for="(course, index) in paginatedCourses()" :key="`course-${course.id || index}`">
                 <div x-show="selectedCategory === 'all' || course.category === selectedCategory"
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 transform scale-90"
@@ -106,10 +120,17 @@
             </template>
         </div>
 
-        <!-- Program Details Modal -->
-        <div id="program-details" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <!-- Content will be loaded here via HTMX -->
+        <!-- Load More Button -->
+        <div x-show="hasMorePages()" class="mt-12 text-center">
+            <button @click="loadMore()"
+                    class="px-8 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700 transition-colors inline-flex items-center gap-2">
+                Load More
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </button>
         </div>
+
     </div>
 </section>
 {{end}}
