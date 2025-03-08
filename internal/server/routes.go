@@ -17,17 +17,20 @@ func (s *Server) SetupRoutes() {
 
 	s.mux.HandleFunc("/api/students", studentHandler.CreateStudent)
 	s.mux.HandleFunc("/api/students/get", studentHandler.GetStudent)
-	s.mux.HandleFunc("/dashboard", studentHandler.DashboardPage)
-	s.mux.HandleFunc("/schedule", studentHandler.SchedulePage)
-	s.mux.HandleFunc("/recordings", studentHandler.RecordingPage)
-	s.mux.HandleFunc("/video", studentHandler.VideoPlayerPage)
-	s.mux.HandleFunc("/live-lecture", studentHandler.LiveLecturePage)
+	s.mux.HandleFunc("/student/dashboard", studentHandler.DashboardPage)
+	s.mux.HandleFunc("/student/schedule", studentHandler.SchedulePage)
+	s.mux.HandleFunc("/student/recordings", studentHandler.RecordingPage)
+	s.mux.HandleFunc("/student/video", studentHandler.VideoPlayerPage)
+	s.mux.HandleFunc("/student/live-lecture", studentHandler.LiveLecturePage)
+	s.mux.HandleFunc("/student/performance", studentHandler.PerformancePage)
 
 	// Add more routes as needed
 	webRepo := website.NewRepository(s.db)
 	webHandler := website.NewHandler(webRepo)
 
 	s.mux.HandleFunc("/", webHandler.IndexPage)
+	s.mux.HandleFunc("/programs", webHandler.ProgramsPage)
+	s.mux.HandleFunc("/instructors", webHandler.InstructorsPage)
 
 	authRepo := auth.NewRepository(s.db)
 	authHandler := auth.NewHandler(authRepo)

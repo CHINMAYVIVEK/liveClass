@@ -31,3 +31,12 @@ var CourseLevels = map[string]string{
 // 	CourseLevelID uuid.UUID `json:"course_level_id" db:"course_level_id"`
 // 	CourseLevel   string    `json:"course_level" db:"course_level"`
 // }
+
+type Instructors struct {
+	InstructorID string `json:"instructor_id"`
+	FirstName    string `json:"first_name"`
+	LastName     string `json:"last_name"`
+	Image        string `json:"image"`
+	IsActive     bool   `json:"is_active"`
+	SequenceNo   int    `json:"sequence_no"`
+}

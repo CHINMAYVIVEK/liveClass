@@ -34,7 +34,10 @@ func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interf
 }
 
 func (h *Handler) IndexPage(w http.ResponseWriter, r *http.Request) {
-	courses, err := h.repo.GetCourses()
+	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
+
+	courses, err := h.repo.GetCourses(page, limit)
 	if err != nil {
 		logger.Error("Error getting courses:", err)
 	}
@@ -42,4 +45,28 @@ func (h *Handler) IndexPage(w http.ResponseWriter, r *http.Request) {
 		"Courses": courses,
 		"Error":   err != nil,
 	})
+}
+
+func (h *Handler) ProgramsPage(w http.ResponseWriter, r *http.Request) {
+	page := r.URL.Query().Get("page")
+	limit := r.URL.Query().Get("limit")
+	courses, err := h.repo.GetCourses(page, limit)
+	if err != nil {
+		logger.Error("Error getting courses:", err)
+	}
+	h.renderTemplate(w, "programs", map[string]interface{}{
+		"Courses": courses,
+		"Error":   err != nil,
+	})
+}
+
+func (h *Handler) InstructorsPage(w http.ResponseWriter, r *http.Request) {
+	// page := r.URL.Query().Get("page")
+	// limit := r.URL.Query().Get("limit")
+
+	// instructors, err := h.repo.GetInstructors(page, limit)
+	// if err != nil {
+	// 	logger.Error("Error getting courses:", err)
+	// }
+	h.renderTemplate(w, "instructors", map[string]interface{}{})
 }
