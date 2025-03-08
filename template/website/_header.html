@@ -296,7 +296,45 @@
              x-transition:leave-start="opacity-100 translate-y-0"
              x-transition:leave-end="opacity-0 -translate-y-4"
              class="lg:hidden mt-4 rounded-xl bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700">
-            <!-- Mobile menu content here -->
+            <div class="p-4 space-y-4">
+                <!-- Programs -->
+                <div x-data="{ open: false }" class="space-y-2">
+                    <button @click="open = !open" class="flex items-center justify-between w-full text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+                        <span class="font-medium">PROGRAMS</span>
+                        <svg :class="{'rotate-180': open}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="open" class="pl-4 space-y-2">
+                        <a href="/programs/web-development" class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Web Development</a>
+                        <a href="/programs/data-science" class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Data Science</a>
+                        <a href="/programs/mobile-dev" class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Mobile Development</a>
+                    </div>
+                </div>
+
+                <a href="/masterclass" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">MASTERCLASS</a>
+                <a href="/alumni" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">ALUMNI</a>
+
+                <!-- Resources -->
+                <div x-data="{ open: false }" class="space-y-2">
+                    <button @click="open = !open" class="flex items-center justify-between w-full text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400">
+                        <span class="font-medium">RESOURCES</span>
+                        <svg :class="{'rotate-180': open}" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div x-show="open" class="pl-4 space-y-2">
+                        <a href="/resources/blog" class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Blog</a>
+                        <a href="/resources/tutorials" class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Tutorials</a>
+                        <a href="/resources/events" class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Events</a>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                    <a href="/login" class="block py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium">Login</a>
+                    <a href="/apply" class="mt-2 block text-center px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:from-blue-700 hover:to-purple-700">Apply Now</a>
+                </div>
+            </div>
         </div>
     </nav>
 </header>
