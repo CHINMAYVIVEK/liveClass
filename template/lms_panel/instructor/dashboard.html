@@ -1,0 +1,202 @@
+{{ define "dashboard" }}
+{{ template "base" . }}
+{{ end }}
+
+{{ define "title" }}Dashboard{{ end }}
+{{ define "page-title" }}Welcome Back, {{ .InstructorName }}{{ end }}
+
+{{ define "content" }}
+<div class="container-fluid py-4">
+    <!-- Quick Stats Row -->
+    <div class="row g-4 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border-0 rounded-4 bg-gradient-primary text-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase small mb-2">Active Courses</h6>
+                            <h2 class="mb-0 fw-bold">{{ .ActiveCourses }}</h2>
+                        </div>
+                        <div class="icon-circle bg-white bg-opacity-25">
+                            <i class="fas fa-book-open fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border-0 rounded-4 bg-gradient-success text-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase small mb-2">Total Students</h6>
+                            <h2 class="mb-0 fw-bold">{{ .TotalStudents }}</h2>
+                        </div>
+                        <div class="icon-circle bg-white bg-opacity-25">
+                            <i class="fas fa-users fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border-0 rounded-4 bg-gradient-info text-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase small mb-2">Average Performance</h6>
+                            <h2 class="mb-0 fw-bold">{{ .AveragePerformance }}%</h2>
+                        </div>
+                        <div class="icon-circle bg-white bg-opacity-25">
+                            <i class="fas fa-chart-line fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card h-100 border-0 rounded-4 bg-gradient-warning text-white">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-white-50 text-uppercase small mb-2">Pending Reviews</h6>
+                            <h2 class="mb-0 fw-bold">{{ .PendingReviews }}</h2>
+                        </div>
+                        <div class="icon-circle bg-white bg-opacity-25">
+                            <i class="fas fa-clipboard-list fa-2x text-white"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content Row -->
+    <div class="row g-4">
+        <!-- Upcoming Classes -->
+        <div class="col-xl-6">
+            <div class="card border-0 rounded-4 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4">
+                    <h5 class="mb-0 fw-bold">Upcoming Classes</h5>
+                    <a href="/instructor/schedule" class="btn btn-primary btn-sm rounded-pill px-3">View All</a>
+                </div>
+                <div class="card-body p-4">
+                    {{ range .UpcomingClasses }}
+                    <div class="class-card mb-3 p-4 border rounded-4 bg-light">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h5 class="fw-bold mb-3">{{ .CourseName }}</h5>
+                                <p class="mb-2 text-muted">
+                                    <i class="far fa-clock me-2"></i>{{ .DateTime }}
+                                </p>
+                                <p class="mb-3 text-muted">
+                                    <i class="fas fa-users me-2"></i>{{ .EnrolledStudents }} students
+                                </p>
+                            </div>
+                            <a href="/instructor/class/{{ .ID }}" class="btn btn-outline-primary rounded-pill px-4">
+                                Prepare Class
+                            </a>
+                        </div>
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Performance -->
+        <div class="col-xl-6">
+            <div class="card border-0 rounded-4 shadow-sm h-100">
+                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4">
+                    <h5 class="mb-0 fw-bold">Performance Analytics</h5>
+                    <a href="/instructor/analytics" class="btn btn-primary btn-sm rounded-pill px-3">Details</a>
+                </div>
+                <div class="card-body p-4">
+                    <canvas id="performanceChart" class="chart-canvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 rounded-4 shadow-sm">
+                <div class="card-header bg-transparent border-0 p-4">
+                    <h5 class="mb-0 fw-bold">Quick Actions</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-3">
+                            <a href="/instructor/course/create" class="card action-card h-100 border-0 rounded-4 bg-primary bg-opacity-10 text-primary text-decoration-none">
+                                <div class="card-body p-4 text-center">
+                                    <i class="fas fa-plus-circle fa-2x mb-3"></i>
+                                    <h6 class="mb-0">Create New Course</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/instructor/assignments" class="card action-card h-100 border-0 rounded-4 bg-success bg-opacity-10 text-success text-decoration-none">
+                                <div class="card-body p-4 text-center">
+                                    <i class="fas fa-tasks fa-2x mb-3"></i>
+                                    <h6 class="mb-0">Manage Assignments</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/instructor/resources" class="card action-card h-100 border-0 rounded-4 bg-info bg-opacity-10 text-info text-decoration-none">
+                                <div class="card-body p-4 text-center">
+                                    <i class="fas fa-file-upload fa-2x mb-3"></i>
+                                    <h6 class="mb-0">Upload Resources</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-3">
+                            <a href="/instructor/messages" class="card action-card h-100 border-0 rounded-4 bg-warning bg-opacity-10 text-warning text-decoration-none">
+                                <div class="card-body p-4 text-center">
+                                    <i class="fas fa-envelope fa-2x mb-3"></i>
+                                    <h6 class="mb-0">Student Messages</h6>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(45deg, #4e73df, #224abe);
+}
+.bg-gradient-success {
+    background: linear-gradient(45deg, #1cc88a, #13855c);
+}
+.bg-gradient-info {
+    background: linear-gradient(45deg, #36b9cc, #258391);
+}
+.bg-gradient-warning {
+    background: linear-gradient(45deg, #f6c23e, #dda20a);
+}
+.icon-circle {
+    height: 60px;
+    width: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.action-card {
+    transition: transform 0.2s ease-in-out;
+}
+.action-card:hover {
+    transform: translateY(-5px);
+}
+.chart-canvas {
+    min-height: 300px;
+}
+</style>
+{{ end }}
