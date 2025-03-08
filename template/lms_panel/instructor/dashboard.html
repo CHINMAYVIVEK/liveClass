@@ -6,197 +6,270 @@
 {{ define "page-title" }}Welcome Back, {{ .InstructorName }}{{ end }}
 
 {{ define "content" }}
-<div class="container-fluid py-4">
-    <!-- Quick Stats Row -->
-    <div class="row g-4 mb-4">
-        <div class="col-xl-3 col-md-6">
-            <div class="card h-100 border-0 rounded-4 bg-gradient-primary text-white">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 text-uppercase small mb-2">Active Courses</h6>
-                            <h2 class="mb-0 fw-bold">{{ .ActiveCourses }}</h2>
-                        </div>
-                        <div class="icon-circle bg-white bg-opacity-25">
-                            <i class="fas fa-book-open fa-2x text-white"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<div class="container mx-auto px-4 py-8" 
+     x-data="{ 
+        activeTab: 'overview',
+        showWelcome: true,
+        notifications: 3
+     }"
+     x-init="setTimeout(() => showWelcome = false, 3000)">
 
-        <div class="col-xl-3 col-md-6">
-            <div class="card h-100 border-0 rounded-4 bg-gradient-success text-white">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 text-uppercase small mb-2">Total Students</h6>
-                            <h2 class="mb-0 fw-bold">{{ .TotalStudents }}</h2>
-                        </div>
-                        <div class="icon-circle bg-white bg-opacity-25">
-                            <i class="fas fa-users fa-2x text-white"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card h-100 border-0 rounded-4 bg-gradient-info text-white">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 text-uppercase small mb-2">Average Performance</h6>
-                            <h2 class="mb-0 fw-bold">{{ .AveragePerformance }}%</h2>
-                        </div>
-                        <div class="icon-circle bg-white bg-opacity-25">
-                            <i class="fas fa-chart-line fa-2x text-white"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card h-100 border-0 rounded-4 bg-gradient-warning text-white">
-                <div class="card-body p-4">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-white-50 text-uppercase small mb-2">Pending Reviews</h6>
-                            <h2 class="mb-0 fw-bold">{{ .PendingReviews }}</h2>
-                        </div>
-                        <div class="icon-circle bg-white bg-opacity-25">
-                            <i class="fas fa-clipboard-list fa-2x text-white"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- Welcome Animation -->
+    <div x-show="showWelcome"
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0 transform translate-y-4"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-300"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform translate-y-4"
+         class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <div class="bg-white rounded-2xl p-8 shadow-2xl transform transition-all">
+            <h2 class="text-3xl font-bold text-gray-900 mb-4">Welcome Back, {{ .InstructorName }}! 👋</h2>
+            <p class="text-gray-600">Your dashboard is ready for today's activities</p>
         </div>
     </div>
 
-    <!-- Content Row -->
-    <div class="row g-4">
-        <!-- Upcoming Classes -->
-        <div class="col-xl-6">
-            <div class="card border-0 rounded-4 shadow-sm h-100">
-                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4">
-                    <h5 class="mb-0 fw-bold">Upcoming Classes</h5>
-                    <a href="/instructor/schedule" class="btn btn-primary btn-sm rounded-pill px-3">View All</a>
+    <!-- Quick Stats Row with Hover Effects -->
+    <!-- Quick Stats Row -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Active Courses Card -->
+        <div class="group relative bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 shadow-xl transform hover:scale-102 transition-all duration-300 cursor-pointer overflow-hidden"
+             x-intersect="$el.classList.add('animate-fade-in')"
+             @click="window.location.href='/instructor/courses'">
+            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10 flex items-center justify-between">
+                <div>
+                    <p class="text-blue-100 text-sm font-medium uppercase tracking-wider mb-1">Active Courses</p>
+                    <h2 class="text-white text-4xl font-bold">{{ .ActiveCourses }}</h2>
+                    <p class="text-blue-200 text-sm mt-2">View all courses →</p>
                 </div>
-                <div class="card-body p-4">
-                    {{ range .UpcomingClasses }}
-                    <div class="class-card mb-3 p-4 border rounded-4 bg-light">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h5 class="fw-bold mb-3">{{ .CourseName }}</h5>
-                                <p class="mb-2 text-muted">
-                                    <i class="far fa-clock me-2"></i>{{ .DateTime }}
-                                </p>
-                                <p class="mb-3 text-muted">
-                                    <i class="fas fa-users me-2"></i>{{ .EnrolledStudents }} students
-                                </p>
-                            </div>
-                            <a href="/instructor/class/{{ .ID }}" class="btn btn-outline-primary rounded-pill px-4">
+                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-book-open text-3xl text-white"></i>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
+        </div>
+
+        <!-- Total Students Card -->
+        <div class="group relative bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-6 shadow-xl transform hover:scale-102 transition-all duration-300"
+             x-intersect="$el.classList.add('animate-fade-in')">
+            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10 flex items-center justify-between">
+                <div>
+                    <p class="text-emerald-100 text-sm font-medium uppercase tracking-wider mb-1">Total Students</p>
+                    <h2 class="text-white text-4xl font-bold">{{ .TotalStudents }}</h2>
+                    <p class="text-emerald-200 text-sm mt-2">Active learners</p>
+                </div>
+                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-users text-3xl text-white"></i>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
+        </div>
+
+        <!-- Performance Card -->
+        <div class="group relative bg-gradient-to-br from-cyan-600 to-cyan-800 rounded-2xl p-6 shadow-xl transform hover:scale-102 transition-all duration-300"
+             x-intersect="$el.classList.add('animate-fade-in')">
+            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10 flex items-center justify-between">
+                <div>
+                    <p class="text-cyan-100 text-sm font-medium uppercase tracking-wider mb-1">Average Performance</p>
+                    <div class="flex items-baseline">
+                        <h2 class="text-white text-4xl font-bold">{{ .AveragePerformance }}</h2>
+                        <span class="text-cyan-200 text-xl ml-1">%</span>
+                    </div>
+                    <p class="text-cyan-200 text-sm mt-2">Overall progress</p>
+                </div>
+                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-chart-line text-3xl text-white"></i>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
+        </div>
+
+        <!-- Pending Reviews Card -->
+        <div class="group relative bg-gradient-to-br from-amber-600 to-amber-800 rounded-2xl p-6 shadow-xl transform hover:scale-102 transition-all duration-300"
+             x-intersect="$el.classList.add('animate-fade-in')">
+            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <div class="relative z-10 flex items-center justify-between">
+                <div>
+                    <p class="text-amber-100 text-sm font-medium uppercase tracking-wider mb-1">Pending Reviews</p>
+                    <h2 class="text-white text-4xl font-bold">{{ .PendingReviews }}</h2>
+                    <p class="text-amber-200 text-sm mt-2">Needs attention</p>
+                </div>
+                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <i class="fas fa-clipboard-list text-3xl text-white"></i>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
+        </div>
+    </div>
+
+    <!-- Content Area -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Upcoming Classes -->
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between p-6 border-b">
+                <h3 class="text-lg font-semibold text-gray-900">Upcoming Classes</h3>
+                <a href="/instructor/schedule" 
+                   class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
+                   hx-get="/instructor/schedule"
+                   hx-target="#main-content"
+                   hx-push-url="true">
+                    View All
+                </a>
+            </div>
+            <div class="p-6">
+                {{ range .UpcomingClasses }}
+                <div class="bg-gray-50 rounded-xl p-5 mb-4 hover:shadow-md transition-shadow"
+                     x-data="{ showActions: false }"
+                     @mouseenter="showActions = true"
+                     @mouseleave="showActions = false">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h4 class="text-lg font-semibold text-gray-900 mb-3">{{ .CourseName }}</h4>
+                            <p class="text-gray-600 mb-2 flex items-center">
+                                <i class="far fa-clock mr-2"></i>{{ .DateTime }}
+                            </p>
+                            <p class="text-gray-600 flex items-center">
+                                <i class="fas fa-users mr-2"></i>{{ .EnrolledStudents }} students
+                            </p>
+                        </div>
+                        <div x-show="showActions" 
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 transform translate-y-2"
+                             x-transition:enter-end="opacity-100 transform translate-y-0">
+                            <a href="/instructor/class/{{ .ID }}"
+                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors">
                                 Prepare Class
                             </a>
                         </div>
                     </div>
-                    {{ end }}
                 </div>
+                {{ end }}
             </div>
         </div>
 
-        <!-- Student Performance -->
-        <div class="col-xl-6">
-            <div class="card border-0 rounded-4 shadow-sm h-100">
-                <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center p-4">
-                    <h5 class="mb-0 fw-bold">Performance Analytics</h5>
-                    <a href="/instructor/analytics" class="btn btn-primary btn-sm rounded-pill px-3">Details</a>
-                </div>
-                <div class="card-body p-4">
-                    <canvas id="performanceChart" class="chart-canvas"></canvas>
-                </div>
+        <!-- Performance Analytics -->
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between p-6 border-b">
+                <h3 class="text-lg font-semibold text-gray-900">Performance Analytics</h3>
+                <a href="/instructor/analytics"
+                   class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
+                   hx-get="/instructor/analytics"
+                   hx-target="#main-content"
+                   hx-push-url="true">
+                    Details
+                </a>
+            </div>
+            <div class="p-6">
+                <canvas id="performanceChart" class="w-full" style="height: 300px"></canvas>
             </div>
         </div>
     </div>
 
     <!-- Quick Actions -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card border-0 rounded-4 shadow-sm">
-                <div class="card-header bg-transparent border-0 p-4">
-                    <h5 class="mb-0 fw-bold">Quick Actions</h5>
-                </div>
-                <div class="card-body p-4">
-                    <div class="row g-4">
-                        <div class="col-md-3">
-                            <a href="/instructor/course/create" class="card action-card h-100 border-0 rounded-4 bg-primary bg-opacity-10 text-primary text-decoration-none">
-                                <div class="card-body p-4 text-center">
-                                    <i class="fas fa-plus-circle fa-2x mb-3"></i>
-                                    <h6 class="mb-0">Create New Course</h6>
-                                </div>
-                            </a>
+    <div class="mt-8">
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div class="p-6 border-b">
+                <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <a href="/instructor/course/create"
+                       class="group bg-blue-50 rounded-xl p-6 text-center hover:bg-blue-100 transition-all hover:-translate-y-2 duration-300"
+                       hx-get="/instructor/course/create"
+                       hx-target="#main-content"
+                       hx-push-url="true">
+                        <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-plus-circle text-xl"></i>
                         </div>
-                        <div class="col-md-3">
-                            <a href="/instructor/assignments" class="card action-card h-100 border-0 rounded-4 bg-success bg-opacity-10 text-success text-decoration-none">
-                                <div class="card-body p-4 text-center">
-                                    <i class="fas fa-tasks fa-2x mb-3"></i>
-                                    <h6 class="mb-0">Manage Assignments</h6>
-                                </div>
-                            </a>
+                        <h4 class="text-blue-900 font-semibold">Create New Course</h4>
+                    </a>
+
+                    <a href="/instructor/assignments"
+                       class="group bg-emerald-50 rounded-xl p-6 text-center hover:bg-emerald-100 transition-colors"
+                       hx-get="/instructor/assignments"
+                       hx-target="#main-content"
+                       hx-push-url="true">
+                        <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-600 text-white rounded-full mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-tasks text-xl"></i>
                         </div>
-                        <div class="col-md-3">
-                            <a href="/instructor/resources" class="card action-card h-100 border-0 rounded-4 bg-info bg-opacity-10 text-info text-decoration-none">
-                                <div class="card-body p-4 text-center">
-                                    <i class="fas fa-file-upload fa-2x mb-3"></i>
-                                    <h6 class="mb-0">Upload Resources</h6>
-                                </div>
-                            </a>
+                        <h4 class="text-emerald-900 font-semibold">Manage Assignments</h4>
+                    </a>
+
+                    <a href="/instructor/resources"
+                       class="group bg-cyan-50 rounded-xl p-6 text-center hover:bg-cyan-100 transition-colors"
+                       hx-get="/instructor/resources"
+                       hx-target="#main-content"
+                       hx-push-url="true">
+                        <div class="inline-flex items-center justify-center w-12 h-12 bg-cyan-600 text-white rounded-full mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-file-upload text-xl"></i>
                         </div>
-                        <div class="col-md-3">
-                            <a href="/instructor/messages" class="card action-card h-100 border-0 rounded-4 bg-warning bg-opacity-10 text-warning text-decoration-none">
-                                <div class="card-body p-4 text-center">
-                                    <i class="fas fa-envelope fa-2x mb-3"></i>
-                                    <h6 class="mb-0">Student Messages</h6>
-                                </div>
-                            </a>
+                        <h4 class="text-cyan-900 font-semibold">Upload Resources</h4>
+                    </a>
+
+                    <a href="/instructor/messages"
+                       class="group bg-amber-50 rounded-xl p-6 text-center hover:bg-amber-100 transition-colors"
+                       hx-get="/instructor/messages"
+                       hx-target="#main-content"
+                       hx-push-url="true">
+                        <div class="inline-flex items-center justify-center w-12 h-12 bg-amber-600 text-white rounded-full mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-envelope text-xl"></i>
                         </div>
-                    </div>
+                        <h4 class="text-amber-900 font-semibold">Student Messages</h4>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-.bg-gradient-primary {
-    background: linear-gradient(45deg, #4e73df, #224abe);
-}
-.bg-gradient-success {
-    background: linear-gradient(45deg, #1cc88a, #13855c);
-}
-.bg-gradient-info {
-    background: linear-gradient(45deg, #36b9cc, #258391);
-}
-.bg-gradient-warning {
-    background: linear-gradient(45deg, #f6c23e, #dda20a);
-}
-.icon-circle {
-    height: 60px;
-    width: 60px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.action-card {
-    transition: transform 0.2s ease-in-out;
-}
-.action-card:hover {
-    transform: translateY(-5px);
-}
-.chart-canvas {
-    min-height: 300px;
-}
-</style>
+<!-- Enhanced Chart Initialization -->
+<script>
+    document.addEventListener('alpine:init', () => {
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Average Performance',
+                    data: [65, 70, 75, 72, 80, 85],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#2563eb',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            display: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
 {{ end }}
