@@ -1,59 +1,167 @@
+{{ define "assignments" }}
+{{ template "base" . }}
+{{ end }}
 {{ define "title" }}Assignments{{ end }}
 {{ define "page-title" }}Assignments{{ end }}
 
 {{ define "content" }}
 <main class="p-6">
-    <div class="grid grid-cols-1 gap-6">
-        <!-- Filters -->
-        <div class="bg-white rounded-lg shadow p-4">
-            <div class="flex space-x-4">
-                <select class="px-4 py-2 border rounded-lg"
-                    hx-get="/assignments/filter"
-                    hx-target="#assignments-list">
-                    <option value="all">All Assignments</option>
-                    <option value="pending">Pending</option>
-                    <option value="submitted">Submitted</option>
-                    <option value="graded">Graded</option>
-                </select>
-                <input type="text" 
-                    placeholder="Search assignments..." 
-                    class="flex-1 px-4 py-2 border rounded-lg"
-                    hx-get="/assignments/search"
-                    hx-trigger="keyup changed delay:500ms"
-                    hx-target="#assignments-list">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header with Stats -->
+        <div class="mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white rounded-lg shadow p-4 flex items-center space-x-4">
+                <div class="bg-blue-100 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Total Assignments</p>
+                    <p class="text-xl font-semibold" x-text="assignments.length"></p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4 flex items-center space-x-4">
+                <div class="bg-yellow-100 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Pending</p>
+                    <p class="text-xl font-semibold" x-text="assignments.filter(a => a.status === 'Pending').length"></p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4 flex items-center space-x-4">
+                <div class="bg-green-100 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Submitted</p>
+                    <p class="text-xl font-semibold" x-text="assignments.filter(a => a.status === 'Submitted').length"></p>
+                </div>
+            </div>
+            <div class="bg-white rounded-lg shadow p-4 flex items-center space-x-4">
+                <div class="bg-purple-100 p-3 rounded-full">
+                    <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">Graded</p>
+                    <p class="text-xl font-semibold" x-text="assignments.filter(a => a.status === 'Graded').length"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="bg-white rounded-lg shadow p-4 mb-6">
+            <div class="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-4">
+                <div class="flex-1 flex space-x-4">
+                    <select class="px-4 py-2 border rounded-lg w-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        hx-get="/assignments/filter"
+                        hx-target="#assignments-list">
+                        <option value="all">All Assignments</option>
+                        <option value="pending">Pending</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="graded">Graded</option>
+                    </select>
+                    <div class="flex-1 relative">
+                        <input type="text" 
+                            placeholder="Search assignments..." 
+                            class="w-full px-4 py-2 border rounded-lg pl-10 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            hx-get="/assignments/search"
+                            hx-trigger="keyup changed delay:500ms"
+                            hx-target="#assignments-list">
+                        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </div>
+                </div>
+                <button class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors duration-200">
+                    Sort by Due Date
+                </button>
             </div>
         </div>
 
         <!-- Assignments List -->
-        <div id="assignments-list" class="space-y-4">
-            {{ range $i := seq 4 }}
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="flex justify-between items-start">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Data Structures Implementation</h3>
-                        <p class="text-sm text-gray-500 mt-1">Due: Jan 20, 2024 at 11:59 PM</p>
-                        <div class="mt-2 flex items-center space-x-2">
-                            <span class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>
-                            <span class="text-sm text-gray-500">Points: 100</span>
+        <div id="assignments-list" class="space-y-4" x-data="{ assignments: [
+            {
+                title: 'Data Structures Implementation',
+                dueDate: 'Jan 20, 2024 at 11:59 PM',
+                status: 'Pending',
+                points: 100,
+                description: 'Implement the following data structures:',
+                tasks: ['Binary Search Tree', 'Red-Black Tree', 'Hash Table'],
+                progress: 0
+            },
+            {
+                title: 'Algorithm Analysis',
+                dueDate: 'Jan 25, 2024 at 11:59 PM',
+                status: 'In Progress',
+                points: 100,
+                description: 'Analyze the following algorithms:',
+                tasks: ['Quick Sort', 'Merge Sort', 'Heap Sort'],
+                progress: 30
+            },
+            {
+                title: 'Database Design',
+                dueDate: 'Jan 30, 2024 at 11:59 PM',
+                status: 'Submitted',
+                points: 100,
+                description: 'Design a database for:',
+                tasks: ['Student Management', 'Course Registration', 'Grade Tracking'],
+                progress: 100
+            }
+        ] }">
+            <template x-for="assignment in assignments" :key="assignment.title">
+                <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 p-6">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center space-x-3">
+                                <h3 class="text-lg font-semibold text-gray-900" x-text="assignment.title"></h3>
+                                <span x-show="assignment.status === 'Pending'" class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                <span x-show="assignment.status === 'In Progress'" class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">In Progress</span>
+                                <span x-show="assignment.status === 'Submitted'" class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">Submitted</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1" x-text="'Due: ' + assignment.dueDate"></p>
+                            <div class="mt-2 flex items-center space-x-4">
+                                <span class="text-sm text-gray-500" x-text="'Points: ' + assignment.points"></span>
+                                <div class="flex-1 max-w-xs">
+                                    <div class="h-2 bg-gray-200 rounded-full">
+                                        <div class="h-2 bg-blue-600 rounded-full transition-all duration-500"
+                                            :style="'width: ' + assignment.progress + '%'"></div>
+                                    </div>
+                                </div>
+                                <span class="text-sm text-gray-500" x-text="assignment.progress + '%'"></span>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="text-gray-600 hover:text-blue-600 transition-colors duration-200">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </button>
+                            <button class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors duration-200"
+                                :class="{ 'opacity-50 cursor-not-allowed': assignment.status === 'Submitted' }"
+                                :disabled="assignment.status === 'Submitted'">
+                                <span x-text="assignment.status === 'Submitted' ? 'Submitted' : 'Submit'"></span>
+                            </button>
                         </div>
                     </div>
-                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm hover:bg-blue-700">
-                        Submit
-                    </button>
+                    <div class="mt-4 text-sm text-gray-600">
+                        <p x-text="assignment.description"></p>
+                        <ul class="list-disc list-inside mt-2 space-y-1">
+                            <template x-for="task in assignment.tasks" :key="task">
+                                <li x-text="task"></li>
+                            </template>
+                        </ul>
+                    </div>
                 </div>
-                <div class="mt-4 text-sm text-gray-600">
-                    <p>Implement the following data structures:</p>
-                    <ul class="list-disc list-inside mt-2">
-                        <li>Binary Search Tree</li>
-                        <li>Red-Black Tree</li>
-                        <li>Hash Table</li>
-                    </ul>
-                </div>
-            </div>
-            {{ end }}
+            </template>
         </div>
     </div>
 </main>
 {{ end }}
-
-{{ template "base" . }}

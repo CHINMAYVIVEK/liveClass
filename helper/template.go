@@ -20,11 +20,13 @@ var templatePaths = map[ViewType][]string{
 		"template/lms_panel/student/base.html",
 		"template/lms_panel/student/_header.html",
 		"template/lms_panel/student/_sidebar.html",
+		"template/lms_panel/student/_footer.html",
 	},
 	InstructorView: {
 		"template/lms_panel/instructor/base.html",
 		"template/lms_panel/instructor/_header.html",
 		"template/lms_panel/instructor/_sidebar.html",
+		"template/lms_panel/instructor/_footer.html",
 	},
 	WebsiteView: {
 		"template/website/base.html",

@@ -1,5 +1,8 @@
+{{ define "notes" }}
+{{ template "base" . }}
+{{ end }}
 {{ define "title" }}Notes{{ end }}
-{{ define "page-title" }}Study Notes{{ end }}
+{{ define "page-title" }}Notes{{ end }}
 
 {{ define "content" }}
 <main class="p-6">
@@ -33,34 +36,36 @@
                         Add New Note
                     </button>
                 </div>
-                <div id="notes-content" class="space-y-4">
-                    {{ range $i := seq 3 }}
-                    <div class="border rounded-lg p-4">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h3 class="font-semibold text-gray-900">Binary Trees and Traversal</h3>
-                                <p class="text-sm text-gray-500 mt-1">Last updated: Jan 15, 2024</p>
-                            </div>
-                            <div class="flex space-x-2">
-                                <button class="text-blue-600 hover:text-blue-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                                    </svg>
-                                </button>
-                                <button class="text-red-600 hover:text-red-700">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                    </svg>
-                                </button>
+                <div id="notes-content" class="space-y-4" x-data="{ notes: [
+                    { title: 'Binary Trees and Traversal', date: 'Jan 15, 2024' },
+                    { title: 'Graph Algorithms', date: 'Jan 14, 2024' },
+                    { title: 'Hash Tables', date: 'Jan 13, 2024' }
+                ] }">
+                    <template x-for="note in notes" :key="note.title">
+                        <div class="border rounded-lg p-4">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-semibold text-gray-900" x-text="note.title"></h3>
+                                    <p class="text-sm text-gray-500 mt-1" x-text="'Last updated: ' + note.date"></p>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="text-blue-600 hover:text-blue-700">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="text-red-600 hover:text-red-700">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    {{ end }}
+                    </template>
                 </div>
             </div>
         </div>
     </div>
 </main>
 {{ end }}
-
-{{ template "base" . }}
