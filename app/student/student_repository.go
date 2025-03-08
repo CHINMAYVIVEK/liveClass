@@ -116,7 +116,7 @@ func (r *StudentRepository) validateStudentInput(student *Student) error {
 	if strings.TrimSpace(student.Email) == "" {
 		return fmt.Errorf("%w: email is required", helper.ErrInvalidInput)
 	}
-	if !helper.PatternValidation(helper.PatternTypeEmail, student.Email) {
+	if !helper.IsValidPattern(helper.PatternTypeEmail, student.Email) {
 		return fmt.Errorf("%w: invalid email format", helper.ErrInvalidInput)
 	}
 

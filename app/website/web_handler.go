@@ -35,11 +35,11 @@ func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interf
 
 func (h *Handler) IndexPage(w http.ResponseWriter, r *http.Request) {
 	courses, err := h.repo.GetCourses()
+	if err != nil {
+		logger.Error("Error getting courses:", err)
+	}
 	h.renderTemplate(w, "index", map[string]interface{}{
 		"Courses": courses,
 		"Error":   err != nil,
 	})
-	if err != nil {
-		logger.Error("Error getting courses:", err)
-	}
 }

@@ -32,7 +32,7 @@ var (
 	}
 )
 
-func PatternValidation(patternType, value string) bool {
+func IsValidPattern(patternType, value string) bool {
 	if pattern, ok := patterns[patternType]; ok {
 		return pattern.MatchString(value)
 	}
