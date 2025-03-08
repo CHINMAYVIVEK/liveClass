@@ -3,14 +3,23 @@
     mobileMenuOpen: false,
     scrolled: false,
     darkMode: false,
+    searchOpen: false,
+    lastScrollY: 0,
+    hidden: false,
     init() {
-        
-        this.darkMode = localStorage.getItem('darkMode') === 'true';
+        this.darkMode = localStorage.getItem('darkMode') === 'true' || 
+                        (window.matchMedia('(prefers-color-scheme: dark)').matches && 
+                        localStorage.getItem('darkMode') === null);
         this.applyTheme();
         
-        
         window.addEventListener('scroll', () => {
-            this.scrolled = window.pageYOffset > 10;
+            // Smart header hide/show based on scroll direction
+            const currentScrollY = window.pageYOffset;
+            this.hidden = currentScrollY > this.lastScrollY && currentScrollY > 150;
+            this.lastScrollY = currentScrollY;
+            
+            // Scroll effect
+            this.scrolled = currentScrollY > 10;
         });
     },
     toggleDarkMode() {
@@ -25,40 +34,51 @@
             document.documentElement.classList.remove('dark');
         }
     }
-}" x-init="init()" :class="{ 
-        'shadow-lg backdrop-blur-md bg-white dark:bg-gray-900/90': scrolled, 
-        'bg-white/80 dark:bg-gray-900/80': !scrolled 
-    }" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-    <div
-        class="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 dark:from-blue-900/20 dark:via-purple-900/20 dark:to-pink-900/20 opacity-50">
-    </div>
+}" 
+   x-init="init()" 
+   :class="{ 
+        'shadow-xl backdrop-blur-xl bg-white dark:bg-gray-900/95 border-b border-gray-200/20 dark:border-gray-700/20 translate-y-0': scrolled,
+        'bg-transparent -translate-y-1': !scrolled,
+        '-translate-y-full': hidden
+    }" 
+   class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    
+    <!-- Enhanced depth effect overlay -->
+    <div class="absolute inset-0 bg-gradient-to-b from-white/40 to-white/0 dark:from-gray-900/40 dark:to-gray-900/0"
+         :class="{ 'opacity-100': scrolled, 'opacity-0': !scrolled }"
+         class="transition-opacity duration-500"></div>
 
-    <nav class="container mx-auto px-6 py-4 relative">
+    <!-- Additional depth layer -->
+    <div class="absolute inset-0 bg-gradient-to-r from-blue-500/5 via-purple-500/5 to-pink-500/5 dark:from-blue-900/10 dark:via-purple-900/10 dark:to-pink-900/10"
+         :class="{ 'opacity-100 scale-100': scrolled, 'opacity-0 scale-95': !scrolled }"
+         class="transition-all duration-500"></div>
+
+    <!-- Rest of the header content remains the same -->
+    <nav class="container mx-auto px-4 sm:px-6 py-3 relative">
         <div class="flex justify-between items-center">
-
-            <a href="/" class="relative group">
-                <span
-                    class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 transition-all duration-300">
+            <!-- Logo with animation -->
+            <a href="/" class="relative group flex items-center">
+                <div class="mr-2 text-blue-600 dark:text-blue-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 transition-transform duration-300 group-hover:rotate-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                    </svg>
+                </div>
+                <span class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 transition-all duration-300">
                     LiveClass
                 </span>
-                <span
-                    class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 transition-all duration-300 group-hover:w-full"></span>
+                <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 transition-all duration-300 group-hover:w-full"></span>
             </a>
 
-
+            <!-- Desktop Navigation -->
             <div class="hidden lg:flex items-center space-x-1">
-
-                <div x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false"
-                    class="relative px-3 py-2">
-                    <button
-                        class="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200">
+                <!-- Programs Dropdown -->
+                <div x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" class="relative px-3 py-2">
+                    <button class="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200">
                         <span>PROGRAMS</span>
-                        <svg :class="{'rotate-180': open}" class="w-4 h-4 ml-1 transition-transform duration-200"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg :class="{'rotate-180': open}" class="w-4 h-4 ml-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
-
 
                     <div x-show="open" x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 transform -translate-y-2"
@@ -66,64 +86,71 @@
                         x-transition:leave="transition ease-in duration-150"
                         x-transition:leave-start="opacity-100 transform translate-y-0"
                         x-transition:leave-end="opacity-0 transform -translate-y-2"
-                        class="absolute left-0 mt-2 w-64 rounded-xl bg-white dark:bg-gray-800 shadow-xl z-50 overflow-hidden border border-gray-200 dark:border-gray-700">
-                        <div class="p-1">
-                            <a href="/programs/web-development"
-                                class="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
-                                <div class="font-medium">Web Development</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Learn modern web technologies
+                        class="absolute left-0 mt-2 w-72 rounded-xl bg-white dark:bg-gray-800 shadow-xl z-50 overflow-hidden border border-gray-200 dark:border-gray-700">
+                        <div class="p-2">
+                            <a href="/programs/web-development" class="flex items-start px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
+                                <div class="flex-shrink-0 mr-3 text-blue-600 dark:text-blue-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Web Development</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Learn modern web technologies</div>
                                 </div>
                             </a>
-                            <a href="/programs/data-science"
-                                class="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
-                                <div class="font-medium">Data Science</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Master data analysis and ML</div>
+                            <a href="/programs/data-science" class="flex items-start px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
+                                <div class="flex-shrink-0 mr-3 text-purple-600 dark:text-purple-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Data Science</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Master data analysis and ML</div>
+                                </div>
                             </a>
-                            <a href="/programs/mobile-dev"
-                                class="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
-                                <div class="font-medium">Mobile Development</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Build iOS and Android apps</div>
+                            <a href="/programs/mobile-dev" class="flex items-start px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
+                                <div class="flex-shrink-0 mr-3 text-pink-600 dark:text-pink-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Mobile Development</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Build iOS and Android apps</div>
+                                </div>
                             </a>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-800/80 p-3 border-t border-gray-100 dark:border-gray-700">
-                            <a href="/programs"
-                                class="flex items-center justify-between text-blue-600 dark:text-blue-400 font-medium">
+                            <a href="/programs" class="flex items-center justify-between text-blue-600 dark:text-blue-400 font-medium">
                                 <span>View all programs</span>
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
                             </a>
                         </div>
                     </div>
                 </div>
 
-                <a href="/masterclass"
-                    class="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200 relative group">
-                    <span>MASTERCLASS</span>
-                    <span
-                        class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-300 group-hover:w-4/5 group-hover:left-[10%]"></span>
+                <a href="/masterclass" class="group px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200 relative">
+                    <span class="relative z-10">MASTERCLASS</span>
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 dark:bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                 </a>
 
-                <a href="/alumni"
-                    class="px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200 relative group">
-                    <span>ALUMNI</span>
-                    <span
-                        class="absolute -bottom-1 left-1/2 w-0 h-0.5 bg-blue-600 dark:bg-blue-400 transition-all duration-300 group-hover:w-4/5 group-hover:left-[10%]"></span>
+                <a href="/alumni" class="group px-3 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200 relative">
+                    <span class="relative z-10">ALUMNI</span>
+                    <span class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 dark:bg-blue-400 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"></span>
                 </a>
 
-
-                <div x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false"
-                    class="relative px-3 py-2">
-                    <button
-                        class="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200">
+                <!-- Resources Dropdown -->
+                <div x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false" class="relative px-3 py-2">
+                    <button class="flex items-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200">
                         <span>RESOURCES</span>
-                        <svg :class="{'rotate-180': open}" class="w-4 h-4 ml-1 transition-transform duration-200"
-                            fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg :class="{'rotate-180': open}" class="w-4 h-4 ml-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
-
 
                     <div x-show="open" x-transition:enter="transition ease-out duration-200"
                         x-transition:enter-start="opacity-0 transform -translate-y-2"
@@ -131,211 +158,190 @@
                         x-transition:leave="transition ease-in duration-150"
                         x-transition:leave-start="opacity-100 transform translate-y-0"
                         x-transition:leave-end="opacity-0 transform -translate-y-2"
-                        class="absolute right-0 mt-2 w-64 rounded-xl bg-white dark:bg-gray-800 shadow-xl z-50 overflow-hidden border border-gray-200 dark:border-gray-700">
-                        <div class="p-1">
-                            <a href="/resources/blog"
-                                class="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
-                                <div class="font-medium">Blog</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Latest articles and tutorials
+                        class="absolute right-0 mt-2 w-72 rounded-xl bg-white dark:bg-gray-800 shadow-xl z-50 overflow-hidden border border-gray-200 dark:border-gray-700">
+                        <div class="p-2">
+                            <a href="/resources/blog" class="flex items-start px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
+                                <div class="flex-shrink-0 mr-3 text-blue-600 dark:text-blue-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Blog</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Latest articles and tutorials</div>
                                 </div>
                             </a>
-                            <a href="/resources/tutorials"
-                                class="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
-                                <div class="font-medium">Tutorials</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Step-by-step learning guides</div>
+                            <a href="/resources/tutorials" class="flex items-start px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
+                                <div class="flex-shrink-0 mr-3 text-purple-600 dark:text-purple-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Tutorials</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Step-by-step learning guides</div>
+                                </div>
                             </a>
-                            <a href="/resources/events"
-                                class="block px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
-                                <div class="font-medium">Events</div>
-                                <div class="text-sm text-gray-500 dark:text-gray-400">Webinars and workshops</div>
-                            </a>
-                        </div>
-                        <div class="bg-gray-50 dark:bg-gray-800/80 p-3 border-t border-gray-100 dark:border-gray-700">
-                            <a href="/resources"
-                                class="flex items-center justify-between text-blue-600 dark:text-blue-400 font-medium">
-                                <span>All resources</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                </svg>
+                            <a href="/resources/events" class="flex items-start px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors duration-200">
+                                <div class="flex-shrink-0 mr-3 text-green-600 dark:text-green-400">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2h-2a2 2 0 01-2-2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="font-medium">Events</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">Webinars and workshops</div>
+                                </div>
                             </a>
                         </div>
                     </div>
                 </div>
             </div>
 
-
-            <div class="hidden lg:flex items-center space-x-4">
-
-                <button @click="toggleDarkMode()"
-                    class="p-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
-                    aria-label="Toggle dark mode">
-                    <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                    <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            <!-- Right Side Actions -->
+            <div class="hidden lg:flex items-center space-x-6">
+                <!-- Search Button -->
+                <button @click="searchOpen = true" class="group p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors duration-200">
+                    <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </button>
 
+                <!-- Dark Mode Toggle -->
+                <button @click="toggleDarkMode()" class="group p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors duration-200">
+                    <svg x-show="!darkMode" class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                    <svg x-show="darkMode" class="w-5 h-5 text-gray-600 dark:text-gray-400 group-hover:text-blue-600 dark:group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
 
-                <a href="/login"
-                    class="px-4 py-2 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium border border-transparent hover:border-gray-200 dark:hover:border-gray-700 rounded-lg transition-all duration-200">
-                    LOGIN
+                <!-- Login Button -->
+                <a href="/login" class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 bg-transparent hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg transition-all duration-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                    </svg>
+                    Login
                 </a>
 
-
-                <a href="/apply"
-                    class="relative overflow-hidden px-6 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg group">
-                    <span class="relative z-10">APPLY NOW</span>
-                    <span
-                        class="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform scale-x-0 group-hover:scale-x-100 origin-left"></span>
+                <!-- Apply Now Button -->
+                <a href="/apply" class="inline-flex items-center px-6 py-2.5 text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 rounded-lg shadow-md hover:shadow-lg transform hover:scale-[1.02] transition-all duration-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                    </svg>
+                    Apply Now
                 </a>
             </div>
 
+            <!-- Search Modal -->
+            <div x-show="searchOpen" 
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 transform scale-95"
+                 x-transition:enter-end="opacity-100 transform scale-100"
+                 x-transition:leave="transition ease-in duration-150"
+                 x-transition:leave-start="opacity-100 transform scale-100"
+                 x-transition:leave-end="opacity-0 transform scale-95"
+                 @click="searchOpen = false"
+                 class="fixed inset-0 z-50 overflow-y-auto">
+                <div class="min-h-screen px-4 text-center">
+                    <!-- Backdrop -->
+                    <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"></div>
+                    
+                    <!-- Modal Content -->
+                    <div class="inline-block w-full max-w-2xl my-8 text-left align-middle transition-all transform bg-white dark:bg-gray-800 shadow-xl rounded-2xl">
+                        <div class="relative p-6" @click.stop>
+                            <div class="flex items-center border-2 border-gray-200 dark:border-gray-700 rounded-lg">
+                                <svg class="w-5 h-5 ml-4 text-gray-500 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                                <input type="text" 
+                                       class="w-full px-4 py-3 text-gray-700 dark:text-gray-300 bg-transparent border-0 focus:outline-none focus:ring-0" 
+                                       placeholder="Search courses, tutorials, and resources...">
+                            </div>
+                            <!-- Quick Links -->
+                            <div class="mt-6">
+                                <h3 class="text-sm font-medium text-gray-500 dark:text-gray-400">Quick Links</h3>
+                                <div class="mt-2 grid grid-cols-2 gap-3">
+                                    <a href="/programs" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/50 rounded-lg transition-colors duration-200">
+                                        <svg class="w-5 h-5 mr-3 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                        </svg>
+                                        Programs
+                                    </a>
+                                    <!-- Add more quick links as needed -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+            <!-- Mobile Menu Button -->
             <button @click="mobileMenuOpen = !mobileMenuOpen"
-                class="lg:hidden p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200 focus:outline-none">
+                    class="lg:hidden p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors duration-200">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M4 6h16M4 12h16M4 18h16"></path>
-                    <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M6 18L18 6M6 6l12 12"></path>
+                    <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
-
-        <div x-show="mobileMenuOpen" x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
-            x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 translate-y-0"
-            x-transition:leave-end="opacity-0 -translate-y-4"
-            class="lg:hidden mt-4 rounded-xl bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-
-            <div class="p-4 space-y-3">
-
-                <div x-data="{ open: false }" class="border-b border-gray-100 dark:border-gray-700 pb-3">
-                    <button @click="open = !open"
-                        class="flex items-center justify-between w-full py-2 text-gray-700 dark:text-gray-300 font-medium">
-                        <span>PROGRAMS</span>
-                        <svg :class="{'rotate-180': open}" class="w-4 h-4 transition-transform duration-200" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 -translate-y-2"
-                        x-transition:enter-end="opacity-100 translate-y-0" class="mt-2 pl-4 space-y-2">
-                        <a href="/programs/web-development"
-                            class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Web
-                            Development</a>
-                        <a href="/programs/data-science"
-                            class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Data
-                            Science</a>
-                        <a href="/programs/mobile-dev"
-                            class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Mobile
-                            Development</a>
-                        <a href="/programs" class="block py-2 text-blue-600 dark:text-blue-400 font-medium">View all
-                            programs →</a>
-                    </div>
-                </div>
-
-                <a href="/masterclass"
-                    class="block py-3 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium border-b border-gray-100 dark:border-gray-700">MASTERCLASS</a>
-                <a href="/alumni"
-                    class="block py-3 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium border-b border-gray-100 dark:border-gray-700">ALUMNI</a>
-
-                <div x-data="{ open: false }" class="border-b border-gray-100 dark:border-gray-700 pb-3">
-                    <button @click="open = !open"
-                        class="flex items-center justify-between w-full py-2 text-gray-700 dark:text-gray-300 font-medium">
-                        <span>RESOURCES</span>
-                        <svg :class="{'rotate-180': open}" class="w-4 h-4 transition-transform duration-200" fill="none"
-                            stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                    <div x-show="open" x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="opacity-0 -translate-y-2"
-                        x-transition:enter-end="opacity-100 translate-y-0" class="mt-2 pl-4 space-y-2">
-                        <a href="/resources/blog"
-                            class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Blog</a>
-                        <a href="/resources/tutorials"
-                            class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Tutorials</a>
-                        <a href="/resources/events"
-                            class="block py-2 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Events</a>
-                        <a href="/resources" class="block py-2 text-blue-600 dark:text-blue-400 font-medium">All
-                            resources →</a>
-                    </div>
-                </div>
-            </div>
-
-
-            <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 space-y-3">
-
-                <button @click="toggleDarkMode()"
-                    class="flex items-center justify-between w-full py-2 text-gray-700 dark:text-gray-300 font-medium">
-                    <span>Dark Mode</span>
-                    <div
-                        class="relative inline-block w-10 h-6 transition duration-200 ease-in-out rounded-full bg-gray-200 dark:bg-gray-700">
-                        <label for="toggle"
-                            class="absolute left-0 w-6 h-6 mb-2 transition duration-200 ease-in-out transform bg-white rounded-full cursor-pointer"
-                            :class="{'translate-x-full border-gray-700': darkMode, 'translate-x-0': !darkMode}"></label>
-                        <input type="checkbox" id="toggle" name="toggle"
-                            class="absolute w-full h-full opacity-0 cursor-pointer" x-model="darkMode">
-                    </div>
-                </button>
-
-                <a href="/login"
-                    class="block w-full py-3 text-center text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors duration-200">
-                    LOGIN
-                </a>
-
-                <a href="/apply"
-                    class="block w-full py-3 text-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-lg transition-all duration-200 transform hover:scale-[1.02]">
-                    APPLY NOW
-                </a>
-            </div>
+        <!-- Mobile Menu -->
+        <div x-show="mobileMenuOpen"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0 -translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100 translate-y-0"
+             x-transition:leave-end="opacity-0 -translate-y-4"
+             class="lg:hidden mt-4 rounded-xl bg-white dark:bg-gray-800 shadow-xl border border-gray-200 dark:border-gray-700">
+            <!-- Mobile menu content here -->
         </div>
     </nav>
 </header>
 
-
-<div x-data="{ show: true }" x-show="show"
-    class="fixed top-16 inset-x-0 z-40 bg-gradient-to-r from-blue-600 to-purple-600 text-white py-2 transition-all duration-300 transform"
-    x-transition:leave="transition ease-in duration-300" x-transition:leave-start="opacity-100 transform"
-    x-transition:leave-end="opacity-0 transform -translate-y-full">
-    <div class="container mx-auto px-6 flex items-center justify-center">
-        <div class="flex items-center">
-            <svg class="w-5 h-5 mr-2 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd"
-                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                    clip-rule="evenodd"></path>
-            </svg>
-            <span>New masterclass starting next week! <a href="/masterclass" class="underline font-medium">Register
-                    now</a></span>
+<!-- Announcement Banner -->
+<div x-data="{ show: true }" 
+     x-show="show"
+     class="fixed top-16 inset-x-0 z-40 bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+     x-transition:leave="transition ease-in duration-300"
+     x-transition:leave-start="opacity-100 transform"
+     x-transition:leave-end="opacity-0 transform -translate-y-full">
+    <div class="container mx-auto px-6 py-3">
+        <div class="flex items-center justify-center">
+            <div class="flex items-center">
+                <span class="flex h-6 w-6 items-center justify-center rounded-full bg-white/20 mr-3">
+                    <svg class="h-4 w-4 animate-pulse" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 18.5l-7.2-4.8V9.7l7.2-4.8 7.2 4.8v4l-7.2 4.8zm0-2l5.5-3.7V11l-5.5-3.7L6.5 11v1.8L12 16.5z"/>
+                    </svg>
+                </span>
+                <p class="font-medium">
+                    New masterclass starting next week! 
+                    <a href="/masterclass" class="inline-flex items-center ml-2 underline hover:text-white/90 transition-colors">
+                        Register now
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </p>
+            </div>
+            <button @click="show = false" class="text-white/80 hover:text-white transition-colors ml-8">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
         </div>
-        <button @click="show = false" class="text-white hover:text-gray-200 ml-4">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
     </div>
 </div>
 
-
 <div class="pt-16"></div>
 
-
 <script>
-
     document.addEventListener('alpine:init', () => {
-
         Alpine.store('global', {
-
+            // Global store data here
         });
-
 
         Alpine.magic('scrollTo', () => {
             return (target) => {
