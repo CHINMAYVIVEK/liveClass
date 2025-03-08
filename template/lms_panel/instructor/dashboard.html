@@ -10,12 +10,13 @@
      x-data="{ 
         activeTab: 'overview',
         showWelcome: true,
-        notifications: 3
+        notifications: 3,
+        showLiveStatus: false
      }"
      x-init="setTimeout(() => showWelcome = false, 3000)">
 
-    <!-- Welcome Animation -->
-    <div x-show="showWelcome"
+    <!-- Welcome Message -->
+    <!-- <div x-show="showWelcome"
          x-transition:enter="transition ease-out duration-300"
          x-transition:enter-start="opacity-0 transform translate-y-4"
          x-transition:enter-end="opacity-100 transform translate-y-0"
@@ -25,251 +26,290 @@
          class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
         <div class="bg-white rounded-2xl p-8 shadow-2xl transform transition-all">
             <h2 class="text-3xl font-bold text-gray-900 mb-4">Welcome Back, {{ .InstructorName }}! 👋</h2>
-            <p class="text-gray-600">Your dashboard is ready for today's activities</p>
+            <p class="text-gray-600">Your virtual classroom is ready</p>
+        </div>
+    </div> -->
+
+    <!-- Live Class Status -->
+    <div class="mb-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl p-6 text-white shadow-xl">
+        <div class="flex items-center justify-between">
+            <div>
+                <h3 class="text-2xl font-bold mb-2">Next Live Class</h3>
+                <p class="text-purple-100">Advanced Mathematics - Chapter 4</p>
+                <p class="text-purple-200 text-sm mt-2">Starting in 45 minutes</p>
+            </div>
+            <div class="flex space-x-4">
+                <button class="px-6 py-2 bg-white text-purple-600 rounded-full font-semibold hover:bg-purple-100 transition-colors"
+                        hx-get="/instructor/class/prepare"
+                        hx-target="#main-content">
+                    Prepare Class
+                </button>
+                <button class="px-6 py-2 bg-green-500 text-white rounded-full font-semibold hover:bg-green-600 transition-colors"
+                        @click="showLiveStatus = true">
+                    Start Class
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- Quick Stats Row with Hover Effects -->
-    <!-- Quick Stats Row -->
+    <!-- Quick Stats -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Active Courses Card -->
-        <div class="group relative bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-6 shadow-xl transform hover:scale-102 transition-all duration-300 cursor-pointer overflow-hidden"
-             x-intersect="$el.classList.add('animate-fade-in')"
-             @click="window.location.href='/instructor/courses'">
-            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <!-- Live Sessions Card -->
+        <div class="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-purple-500/5 to-pink-500/5"></div>
             <div class="relative z-10 flex items-center justify-between">
-                <div>
-                    <p class="text-blue-100 text-sm font-medium uppercase tracking-wider mb-1">Active Courses</p>
-                    <h2 class="text-white text-4xl font-bold">{{ .ActiveCourses }}</h2>
-                    <p class="text-blue-200 text-sm mt-2">View all courses →</p>
-                </div>
-                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-book-open text-3xl text-white"></i>
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
-        </div>
-
-        <!-- Total Students Card -->
-        <div class="group relative bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-6 shadow-xl transform hover:scale-102 transition-all duration-300"
-             x-intersect="$el.classList.add('animate-fade-in')">
-            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div class="relative z-10 flex items-center justify-between">
-                <div>
-                    <p class="text-emerald-100 text-sm font-medium uppercase tracking-wider mb-1">Total Students</p>
-                    <h2 class="text-white text-4xl font-bold">{{ .TotalStudents }}</h2>
-                    <p class="text-emerald-200 text-sm mt-2">Active learners</p>
-                </div>
-                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-users text-3xl text-white"></i>
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
-        </div>
-
-        <!-- Performance Card -->
-        <div class="group relative bg-gradient-to-br from-cyan-600 to-cyan-800 rounded-2xl p-6 shadow-xl transform hover:scale-102 transition-all duration-300"
-             x-intersect="$el.classList.add('animate-fade-in')">
-            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div class="relative z-10 flex items-center justify-between">
-                <div>
-                    <p class="text-cyan-100 text-sm font-medium uppercase tracking-wider mb-1">Average Performance</p>
-                    <div class="flex items-baseline">
-                        <h2 class="text-white text-4xl font-bold">{{ .AveragePerformance }}</h2>
-                        <span class="text-cyan-200 text-xl ml-1">%</span>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <p class="text-gray-600 text-sm font-medium uppercase tracking-wider">Live Sessions</p>
                     </div>
-                    <p class="text-cyan-200 text-sm mt-2">Overall progress</p>
-                </div>
-                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-chart-line text-3xl text-white"></i>
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
-        </div>
-
-        <!-- Pending Reviews Card -->
-        <div class="group relative bg-gradient-to-br from-amber-600 to-amber-800 rounded-2xl p-6 shadow-xl transform hover:scale-102 transition-all duration-300"
-             x-intersect="$el.classList.add('animate-fade-in')">
-            <div class="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <div class="relative z-10 flex items-center justify-between">
-                <div>
-                    <p class="text-amber-100 text-sm font-medium uppercase tracking-wider mb-1">Pending Reviews</p>
-                    <h2 class="text-white text-4xl font-bold">{{ .PendingReviews }}</h2>
-                    <p class="text-amber-200 text-sm mt-2">Needs attention</p>
-                </div>
-                <div class="bg-white/10 p-4 rounded-2xl backdrop-blur-sm shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <i class="fas fa-clipboard-list text-3xl text-white"></i>
-                </div>
-            </div>
-            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-white/0 via-white/20 to-white/0"></div>
-        </div>
-    </div>
-
-    <!-- Content Area -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Upcoming Classes -->
-        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <div class="flex items-center justify-between p-6 border-b">
-                <h3 class="text-lg font-semibold text-gray-900">Upcoming Classes</h3>
-                <a href="/instructor/schedule" 
-                   class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
-                   hx-get="/instructor/schedule"
-                   hx-target="#main-content"
-                   hx-push-url="true">
-                    View All
-                </a>
-            </div>
-            <div class="p-6">
-                {{ range .UpcomingClasses }}
-                <div class="bg-gray-50 rounded-xl p-5 mb-4 hover:shadow-md transition-shadow"
-                     x-data="{ showActions: false }"
-                     @mouseenter="showActions = true"
-                     @mouseleave="showActions = false">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="text-lg font-semibold text-gray-900 mb-3">{{ .CourseName }}</h4>
-                            <p class="text-gray-600 mb-2 flex items-center">
-                                <i class="far fa-clock mr-2"></i>{{ .DateTime }}
-                            </p>
-                            <p class="text-gray-600 flex items-center">
-                                <i class="fas fa-users mr-2"></i>{{ .EnrolledStudents }} students
-                            </p>
+                    <div class="flex items-baseline space-x-1">
+                        <h2 class="text-gray-900 text-4xl font-bold">24</h2>
+                        <div class="flex flex-col">
+                            <span class="text-gray-600 text-sm ml-1">sessions</span>
+                            <span class="text-green-500 text-xs">+3 this week</span>
                         </div>
-                        <div x-show="showActions" 
-                             x-transition:enter="transition ease-out duration-200"
-                             x-transition:enter-start="opacity-0 transform translate-y-2"
-                             x-transition:enter-end="opacity-100 transform translate-y-0">
-                            <a href="/instructor/class/{{ .ID }}"
-                               class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors">
-                                Prepare Class
-                            </a>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="flex -space-x-1">
+                            <div class="w-6 h-6 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <span class="text-xs text-indigo-600 font-medium">M</span>
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center">
+                                <span class="text-xs text-purple-600 font-medium">T</span>
+                            </div>
+                            <div class="w-6 h-6 rounded-full bg-pink-100 flex items-center justify-center">
+                                <span class="text-xs text-pink-600 font-medium">W</span>
+                            </div>
+                        </div>
+                        <span class="text-gray-500 text-xs">Next sessions</span>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-indigo-100 to-purple-100 p-4 rounded-2xl shadow-sm group-hover:scale-110 transition-all duration-300">
+                    <svg class="w-8 h-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-20"></div>
+        </div>
+
+        <!-- Students Attending -->
+        <div class="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+            <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-green-500/5"></div>
+            <div class="relative z-10 flex items-center justify-between">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        <p class="text-gray-600 text-sm font-medium uppercase tracking-wider">Active Students</p>
+                    </div>
+                    <div class="flex items-baseline space-x-1">
+                        <h2 class="text-gray-900 text-4xl font-bold">156</h2>
+                        <div class="flex flex-col">
+                            <span class="text-gray-600 text-sm ml-1">learners</span>
+                            <span class="text-green-500 text-xs">+12% this week</span>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-1.5">
+                        <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 85%"></div>
+                        <div class="text-xs text-gray-500 mt-1">85% attendance rate</div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-emerald-100 to-green-100 p-4 rounded-2xl shadow-sm group-hover:scale-110 transition-all duration-300">
+                    <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </div>
+            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 opacity-20"></div>
+        </div>
+
+        <!-- Course Progress -->
+        <div class="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-indigo-500/5 to-violet-500/5"></div>
+            <div class="relative z-10 flex items-center justify-between">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                        <p class="text-gray-600 text-sm font-medium uppercase tracking-wider">Course Progress</p>
+                    </div>
+                    <div class="flex items-baseline space-x-1">
+                        <h2 class="text-gray-900 text-4xl font-bold">78</h2>
+                        <div class="flex flex-col">
+                            <span class="text-gray-600 text-sm ml-1">%</span>
+                            <span class="text-blue-500 text-xs">On track</span>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="w-full bg-gray-100 rounded-full h-1.5">
+                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: 78%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>32/41 topics</span>
+                            <span>2 weeks left</span>
                         </div>
                     </div>
                 </div>
-                {{ end }}
+                <div class="bg-gradient-to-br from-blue-100 to-indigo-100 p-4 rounded-2xl shadow-sm group-hover:scale-110 transition-all duration-300">
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
             </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 opacity-20"></div>
         </div>
 
-        <!-- Performance Analytics -->
-        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <div class="flex items-center justify-between p-6 border-b">
-                <h3 class="text-lg font-semibold text-gray-900">Performance Analytics</h3>
-                <a href="/instructor/analytics"
-                   class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
-                   hx-get="/instructor/analytics"
-                   hx-target="#main-content"
-                   hx-push-url="true">
-                    Details
-                </a>
+        <!-- Student Engagement -->
+        <div class="group relative bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100">
+            <div class="absolute inset-0 bg-gradient-to-br from-amber-500/5 via-orange-500/5 to-red-500/5"></div>
+            <div class="relative z-10 flex items-center justify-between">
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                        </svg>
+                        <p class="text-gray-600 text-sm font-medium uppercase tracking-wider">Engagement Rate</p>
+                    </div>
+                    <div class="flex items-baseline space-x-1">
+                        <h2 class="text-gray-900 text-4xl font-bold">92</h2>
+                        <div class="flex flex-col">
+                            <span class="text-gray-600 text-sm ml-1">%</span>
+                            <span class="text-green-500 text-xs">Excellent</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-1">
+                            <span class="inline-block w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span class="text-gray-500 text-xs">High participation</span>
+                        </div>
+                        <span class="text-amber-600 text-xs font-medium">↑ 5% vs last week</span>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-amber-100 to-orange-100 p-4 rounded-2xl shadow-sm group-hover:scale-110 transition-all duration-300">
+                    <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                    </svg>
+                </div>
             </div>
-            <div class="p-6">
-                <canvas id="performanceChart" class="w-full" style="height: 300px"></canvas>
-            </div>
+            <div class="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500 opacity-20"></div>
         </div>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="mt-8">
-        <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-            <div class="p-6 border-b">
-                <h3 class="text-lg font-semibold text-gray-900">Quick Actions</h3>
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <!-- Upcoming Sessions -->
+        <div class="xl:col-span-2">
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                <div class="flex items-center justify-between p-6 border-b">
+                    <h3 class="text-lg font-semibold text-gray-900">Upcoming Sessions</h3>
+                    <button class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-full hover:bg-blue-700 transition-colors"
+                            hx-get="/instructor/schedule"
+                            hx-target="#session-list">
+                        View All
+                    </button>
+                </div>
+                <div class="p-6" id="session-list">
+                    <!-- Session Items -->
+                    <div class="space-y-4">
+                        <div class="bg-gray-50 rounded-xl p-5 hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h4 class="text-lg font-semibold text-gray-900">Advanced Mathematics</h4>
+                                    <p class="text-gray-600 mt-2">Chapter 4: Complex Numbers</p>
+                                    <div class="flex items-center mt-3 space-x-4">
+                                        <span class="flex items-center text-gray-500">
+                                            <i class="far fa-clock mr-2"></i>
+                                            2:30 PM Today
+                                        </span>
+                                        <span class="flex items-center text-gray-500">
+                                            <i class="fas fa-users mr-2"></i>
+                                            28 Students
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button class="px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-medium hover:bg-blue-200 transition-colors">
+                                        Materials
+                                    </button>
+                                    <button class="px-4 py-2 bg-green-100 text-green-600 rounded-full text-sm font-medium hover:bg-green-200 transition-colors">
+                                        Join
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- More session items... -->
+                    </div>
+                </div>
             </div>
-            <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <a href="/instructor/course/create"
-                       class="group bg-blue-50 rounded-xl p-6 text-center hover:bg-blue-100 transition-all hover:-translate-y-2 duration-300"
-                       hx-get="/instructor/course/create"
-                       hx-target="#main-content"
-                       hx-push-url="true">
-                        <div class="inline-flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-full mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-plus-circle text-xl"></i>
-                        </div>
-                        <h4 class="text-blue-900 font-semibold">Create New Course</h4>
-                    </a>
+        </div>
 
-                    <a href="/instructor/assignments"
-                       class="group bg-emerald-50 rounded-xl p-6 text-center hover:bg-emerald-100 transition-colors"
-                       hx-get="/instructor/assignments"
-                       hx-target="#main-content"
-                       hx-push-url="true">
-                        <div class="inline-flex items-center justify-center w-12 h-12 bg-emerald-600 text-white rounded-full mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-tasks text-xl"></i>
-                        </div>
-                        <h4 class="text-emerald-900 font-semibold">Manage Assignments</h4>
-                    </a>
-
-                    <a href="/instructor/resources"
-                       class="group bg-cyan-50 rounded-xl p-6 text-center hover:bg-cyan-100 transition-colors"
-                       hx-get="/instructor/resources"
-                       hx-target="#main-content"
-                       hx-push-url="true">
-                        <div class="inline-flex items-center justify-center w-12 h-12 bg-cyan-600 text-white rounded-full mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-file-upload text-xl"></i>
-                        </div>
-                        <h4 class="text-cyan-900 font-semibold">Upload Resources</h4>
-                    </a>
-
-                    <a href="/instructor/messages"
-                       class="group bg-amber-50 rounded-xl p-6 text-center hover:bg-amber-100 transition-colors"
-                       hx-get="/instructor/messages"
-                       hx-target="#main-content"
-                       hx-push-url="true">
-                        <div class="inline-flex items-center justify-center w-12 h-12 bg-amber-600 text-white rounded-full mb-4 group-hover:scale-110 transition-transform">
-                            <i class="fas fa-envelope text-xl"></i>
-                        </div>
-                        <h4 class="text-amber-900 font-semibold">Student Messages</h4>
-                    </a>
+        <!-- Quick Tools -->
+        <div class="xl:col-span-1">
+            <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+                <div class="p-6 border-b">
+                    <h3 class="text-lg font-semibold text-gray-900">Teaching Tools</h3>
+                </div>
+                <div class="p-6">
+                    <div class="grid grid-cols-2 gap-4">
+                        <button class="p-4 bg-blue-50 rounded-xl text-center hover:bg-blue-100 transition-colors group">
+                            <i class="fas fa-chalkboard text-2xl text-blue-600 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-sm font-medium text-blue-900">Whiteboard</p>
+                        </button>
+                        <button class="p-4 bg-purple-50 rounded-xl text-center hover:bg-purple-100 transition-colors group">
+                            <i class="fas fa-poll text-2xl text-purple-600 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-sm font-medium text-purple-900">Quiz</p>
+                        </button>
+                        <button class="p-4 bg-green-50 rounded-xl text-center hover:bg-green-100 transition-colors group">
+                            <i class="fas fa-file-upload text-2xl text-green-600 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-sm font-medium text-green-900">Resources</p>
+                        </button>
+                        <button class="p-4 bg-orange-50 rounded-xl text-center hover:bg-orange-100 transition-colors group">
+                            <i class="fas fa-comments text-2xl text-orange-600 mb-2 group-hover:scale-110 transition-transform"></i>
+                            <p class="text-sm font-medium text-orange-900">Discussion</p>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Enhanced Chart Initialization -->
-<script>
-    document.addEventListener('alpine:init', () => {
-        const ctx = document.getElementById('performanceChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Average Performance',
-                    data: [65, 70, 75, 72, 80, 85],
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
-                    fill: true,
-                    tension: 0.4,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#2563eb',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            display: false
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        }
-                    }
-                }
-            }
-        });
-    });
-</script>
+<!-- Live Class Modal -->
+<div x-show="showLiveStatus" 
+     class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center"
+     x-transition>
+    <div class="bg-white rounded-2xl p-6 max-w-lg w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-bold text-gray-900">Live Class Setup</h3>
+            <button @click="showLiveStatus = false" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <div class="p-4 bg-blue-50 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-video text-blue-600"></i>
+                    <span class="text-blue-900">Checking video connection...</span>
+                </div>
+            </div>
+            <div class="p-4 bg-green-50 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-microphone text-green-600"></i>
+                    <span class="text-green-900">Audio system ready</span>
+                </div>
+            </div>
+            <button class="w-full py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                Start Live Session
+            </button>
+        </div>
+    </div>
+</div>
 {{ end }}
