@@ -2,7 +2,6 @@ package student
 
 import (
 	"encoding/json"
-	"fmt"
 	"html/template"
 	"net/http"
 
@@ -12,11 +11,15 @@ import (
 )
 
 type Handler struct {
-	repo *StudentRepository
+	repo      *StudentRepository
+	templates map[string]*template.Template
 }
 
 func NewHandler(repo *StudentRepository) *Handler {
-	return &Handler{repo: repo}
+	return &Handler{
+		repo:      repo,
+		templates: make(map[string]*template.Template),
+	}
 }
 
 var logger = helper.GetLogger()
@@ -49,14 +52,13 @@ func (h *Handler) GetStudent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	idStr := r.URL.Query().Get("id")
-	fmt.Println("hare --1  ")
+
 	id, err := uuid.Parse(idStr)
 	if err != nil {
 		helper.NewErrorResponse(w, http.StatusBadRequest, err.Error())
 
 		return
 	}
-	fmt.Println("hare --2  ")
 	student, err := h.repo.GetByID(r.Context(), id)
 	if err != nil {
 		helper.NewErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -65,5 +67,3 @@ func (h *Handler) GetStudent(w http.ResponseWriter, r *http.Request) {
 
 	helper.NewSuccessResponse(w, student, "Student retrieved successfully", http.StatusOK)
 }
-
-

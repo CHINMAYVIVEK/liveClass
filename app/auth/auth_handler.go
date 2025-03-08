@@ -56,13 +56,23 @@ func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {
 		helper.NewErrorResponse(w, http.StatusBadRequest, "Invalid request body")
 		return
 	}
-	token, err := h.repo.Login(r.Context(), &loginRequest)
+	loginResponse, err := h.repo.Login(r.Context(), &loginRequest)
 	if err != nil {
 		helper.NewErrorResponse(w, http.StatusInternalServerError, err.Error())
 		return
 	}
+	if loginResponse.User.Role == string(AdminRole) {
+		helper.NewSuccessResponse(w, loginResponse, "Admin Login successful", http.StatusOK)
+		return
+	} else if loginResponse.User.Role == string(InstructorRole) {
+		helper.NewSuccessResponse(w, loginResponse, "Instructor Login successful", http.StatusOK)
+		return
 
-	helper.NewSuccessResponse(w, token, "Login successful", http.StatusOK)
+	} else if loginResponse.User.Role == string(StudentRole) {
+		helper.NewSuccessResponse(w, loginResponse, "Student Login successful", http.StatusOK)
+
+	}
+	helper.NewErrorResponse(w, http.StatusUnauthorized, "Invalid credentials")
 }
 
 func (h *Handler) Logout(w http.ResponseWriter, r *http.Request) {

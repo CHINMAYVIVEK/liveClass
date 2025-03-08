@@ -27,7 +27,7 @@ func (s *Server) SetupRoutes() {
 	webRepo := website.NewRepository(s.db)
 	webHandler := website.NewHandler(webRepo)
 
-	s.mux.HandleFunc("/", webHandler.Index)
+	s.mux.HandleFunc("/", webHandler.IndexPage)
 
 	authRepo := auth.NewRepository(s.db)
 	authHandler := auth.NewHandler(authRepo)

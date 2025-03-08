@@ -6,6 +6,23 @@ import (
 	"github.com/google/uuid"
 )
 
+// SSOProvider represents supported SSO providers
+type SSOProvider string
+
+const (
+	Google   SSOProvider = "google"
+	Facebook SSOProvider = "facebook"
+	GitHub   SSOProvider = "github"
+)
+
+type UserRole string
+
+const (
+	StudentRole    UserRole = "student"
+	InstructorRole UserRole = "instructor"
+	AdminRole      UserRole = "admin"
+)
+
 // LoginRequest represents the login credentials
 type LoginRequest struct {
 	Email    string `json:"email"`
@@ -28,15 +45,6 @@ type UserInfo struct {
 	LastName  string    `json:"lastName"`
 	Role      string    `json:"role"`
 }
-
-// SSOProvider represents supported SSO providers
-type SSOProvider string
-
-const (
-	Google   SSOProvider = "google"
-	Facebook SSOProvider = "facebook"
-	GitHub   SSOProvider = "github"
-)
 
 // SSORequest represents the SSO authentication request
 type SSORequest struct {

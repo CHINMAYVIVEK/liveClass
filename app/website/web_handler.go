@@ -8,65 +8,38 @@ import (
 )
 
 type Handler struct {
-	repo *WebRepository
+	repo      *WebRepository
+	templates map[string]*template.Template
 }
 
 func NewHandler(repo *WebRepository) *Handler {
-	return &Handler{repo: repo}
+	return &Handler{
+		repo:      repo,
+		templates: make(map[string]*template.Template),
+	}
 }
 
-var templates map[string]*template.Template
-
-func init() {
-	if templates == nil {
-		templates = make(map[string]*template.Template)
-	}
-
-	// t, err := helper.LoadTemplate("index.html",
-	// 	"template/website/index.html",
-	// 	"template/website/_header.html",
-	// 	"template/website/_footer.html",
-	// )
-
-	t, err := helper.LoadTemplate(helper.WebsiteView, "index.html",
-		"template/website/index.html",
-	)
-
+func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interface{}) {
+	tmpl, err := helper.LoadTemplate(helper.WebsiteView, name, "template/website/"+name+".html")
 	if err != nil {
-		logger.Error(err)
-		panic(err)
-	}
-	templates["index"] = t
-}
-
-func (h *Handler) Index(w http.ResponseWriter, r *http.Request) {
-
-	courses, err := h.repo.GetCourses()
-	if err != nil {
-		logger.Error("Error getting courses:", err)
-		// Still render the template but with error state
-		err = templates["index"].ExecuteTemplate(w, "index", map[string]interface{}{
-			"Error": true,
-		})
-		if err != nil {
-			logger.Error("Error executing template:", err)
-			helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
-		}
+		logger.Error("Error loading template:", err)
+		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error loading template")
 		return
 	}
 
-	// jsonData, err := json.Marshal(courses)
-	// if err != nil {
-	// 	logger.Error("Error executing template:", err)
-	// 	helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
-	// }
-	err = templates["index"].ExecuteTemplate(w, "index", map[string]interface{}{
-		"Courses": courses,
-		"Error":   false,
-	})
-	if err != nil {
+	if err := tmpl.ExecuteTemplate(w, name, data); err != nil {
 		logger.Error("Error executing template:", err)
 		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
-		return
+	}
+}
+
+func (h *Handler) IndexPage(w http.ResponseWriter, r *http.Request) {
+	courses, err := h.repo.GetCourses()
+	h.renderTemplate(w, "index", map[string]interface{}{
+		"Courses": courses,
+		"Error":   err != nil,
+	})
+	if err != nil {
+		logger.Error("Error getting courses:", err)
 	}
 }
