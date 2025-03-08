@@ -6,7 +6,7 @@
 
 {{ define "content" }}
 <main class="p-6" x-data="{ activeTab: 'all' }">
-    <!-- Welcome Message -->
+    
     <div class="mb-8">
         <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-6 text-white">
             <div class="flex items-center justify-between">
@@ -22,7 +22,7 @@
         </div>
     </div>
 
-    <!-- Quick Stats with Hover Effects -->
+    
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-lg shadow p-6 transform transition-all duration-300 hover:scale-105 hover:shadow-lg">
             <a href="/schedule" class="block">
@@ -101,7 +101,7 @@
         </div>
     </div>
 
-    <!-- Tabs for Schedule and Activities -->
+    
     <div class="mb-8">
         <div class="border-b border-gray-200">
             <nav class="flex space-x-8" aria-label="Tabs">
@@ -127,10 +127,10 @@
         </div>
     </div>
 
-    <!-- Dynamic Content based on Tab -->
+    
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <template x-if="activeTab === 'all' || activeTab === 'classes'">
-            <!-- Schedule with Animation -->
+            
             <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-gray-800">Today's Schedule</h3>
@@ -138,7 +138,7 @@
                 </div>
                 <div class="p-6">
                     <div class="space-y-4">
-                        <!-- Live Class Indicator -->
+                        
                         <div class="flex items-center p-4 bg-blue-50 rounded-lg relative overflow-hidden">
                             <div class="absolute top-0 left-0 w-1 h-full bg-blue-600"></div>
                             <div class="flex-shrink-0 w-16 text-center">
@@ -158,7 +158,7 @@
                             </div>
                         </div>
                         
-                        <!-- Second class item -->
+                        
                         <div class="flex items-center p-4 bg-gray-50 rounded-lg relative overflow-hidden">
                             <div class="absolute top-0 left-0 w-1 h-full bg-gray-400"></div>
                             <div class="flex-shrink-0 w-16 text-center">
@@ -179,7 +179,7 @@
         </template>
 
         <template x-if="activeTab === 'all' || activeTab === 'classes'">
-            <!-- Recent Activities -->
+            
             <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-gray-800">Recent Activities</h3>
@@ -187,7 +187,7 @@
                 </div>
                 <div class="p-6">
                     <div class="space-y-4">
-                        <!-- Activity 1 -->
+                        
                         <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
                             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
                                 <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -200,7 +200,7 @@
                             </div>
                         </div>
                         
-                        <!-- Activity 2 -->
+                        
                         <div class="flex items-start space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
                             <div class="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
                                 <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,7 +218,7 @@
         </template>
 
         <template x-if="activeTab === 'all' || activeTab === 'assignments'">
-            <!-- Assignments with Progress -->
+            
             <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-gray-800">Pending Assignments</h3>
@@ -242,7 +242,7 @@
                             </div>
                         </div>
                         
-                        <!-- Second assignment -->
+                        
                         <div class="bg-gray-50 rounded-lg p-4">
                             <div class="flex justify-between items-start mb-2">
                                 <div>
@@ -264,7 +264,7 @@
         </template>
         
         <template x-if="activeTab === 'all' || activeTab === 'assignments'">
-            <!-- Latest Resources -->
+            
             <div class="bg-white rounded-lg shadow-lg transition-all duration-300 hover:shadow-xl">
                 <div class="p-6 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="text-lg font-semibold text-gray-800">Latest Resources</h3>
@@ -272,7 +272,7 @@
                 </div>
                 <div class="p-6">
                     <div class="space-y-4">
-                        <!-- Resource 1 -->
+                        
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <div class="flex items-center space-x-3">
                                 <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -292,7 +292,7 @@
                             </button>
                         </div>
                         
-                        <!-- Resource 2 -->
+                        
                         <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                             <div class="flex items-center space-x-3">
                                 <div class="flex-shrink-0 w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -318,18 +318,18 @@
         </template>
     </div>
 
-    <!-- Performance Overview -->
+    
     <div class="mt-8">
         <div class="bg-white rounded-lg shadow-lg p-6">
             <h3 class="text-lg font-semibold text-gray-800 mb-4">Weekly Performance</h3>
             <div class="h-64 bg-gray-50 rounded-lg">
-                <!-- Add your chart component here -->
-                <!-- For example, using Chart.js or any other charting library -->
+                
+                
             </div>
         </div>
     </div>
 </main>
 
-<!-- Add any required scripts -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 {{ end }}

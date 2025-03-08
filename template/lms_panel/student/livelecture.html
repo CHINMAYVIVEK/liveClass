@@ -6,11 +6,11 @@
 
 {{ define "content" }}
 
-<!-- Main Content Area -->
+
 <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gradient-to-br from-gray-50 to-gray-100"
     x-data="{ chatOpen: true }">
     <div class="container mx-auto px-6 py-8">
-        <!-- Course Info Banner -->
+        
         <div class="mb-6 bg-white/80 backdrop-blur-sm rounded-xl p-4 shadow-sm border border-gray-100">
             <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-4">
@@ -36,15 +36,15 @@
             </div>
         </div>
 
-        <!-- Live Class Layout -->
+        
         <div class="flex flex-row gap-8 h-[calc(100vh-12rem)]">
-            <!-- Video Section - Keep this independent of chat state -->
+            
             <div class="flex-grow bg-gray-900 rounded-2xl shadow-xl overflow-hidden border border-gray-800">
                 <div class="relative h-full flex flex-col">
 
-                    <!-- Video Stream iFrame -->
+                    
                     <div class="flex-1 relative" x-data="{ streamError: false }">
-                        <!-- No Stream Error Message -->
+                        
                         <div x-show="streamError" class="absolute inset-0 w-full h-full bg-gray-900 flex flex-col items-center justify-center text-gray-400 z-10">
                             <svg class="w-16 h-16 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
@@ -53,7 +53,7 @@
                             <p class="text-sm mt-2">Please check your connection or try again later</p>
                         </div>
                         
-                        <!-- Video Stream -->
+                        
                         <iframe 
                             src="https://your-video-stream-url" 
                             class="absolute inset-0 w-full h-full"
@@ -63,7 +63,7 @@
                             @load="streamError = false"
                             frameborder="0"></iframe>
                             
-                        <!-- Fullscreen Button -->
+                        
                         <button onclick="document.querySelector('iframe').requestFullscreen()" 
                             class="absolute bottom-16 right-4 p-2 bg-gray-800/70 hover:bg-gray-700 text-white rounded-full z-20">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -72,14 +72,14 @@
                         </button>
                     </div>
 
-                    <!-- Bottom Controls -->
+                    
                     <div class="bg-gray-900 p-4 border-t border-gray-800 flex justify-between items-center z-10 relative">
                         <div class="flex items-center space-x-2">
                             <span class="text-gray-400 text-xs">42 participants</span>
                         </div>
 
                         <div class="flex items-center space-x-4">
-                            <!-- Microphone Button -->
+                            
                             <button class="p-3 rounded-full bg-gray-800 hover:bg-gray-700 text-white transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -88,7 +88,7 @@
                                 </svg>
                             </button>
 
-                            <!-- Camera Button -->
+                            
                             <button class="p-3 rounded-full bg-gray-800 hover:bg-gray-700 text-white transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -97,7 +97,7 @@
                                 </svg>
                             </button>
 
-                            <!-- Disconnect Button -->
+                            
                             <button class="p-3 rounded-full bg-red-600 hover:bg-red-700 text-white transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -128,11 +128,11 @@
                 </div>
             </div>
 
-            <!-- Chat Section with Toggle - Only this should be affected by chatOpen state -->
+            
             <div class="w-[350px] flex-shrink-0 transition-all duration-300 ease-in-out"
                 :class="{ 'opacity-100': chatOpen, 'opacity-0 w-0': !chatOpen }">
                 <div class="relative h-full">
-                    <!-- Chat Toggle Button -->
+                    
                     <button @click="chatOpen = false"
                         class="absolute -left-4 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow-lg border border-gray-200 z-50 hover:bg-gray-50">
                         <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,10 +141,10 @@
                         </svg>
                     </button>
 
-                    <!-- Chat content remains the same -->
+                    
                     <div
                         class="bg-white rounded-2xl shadow-xl overflow-hidden flex flex-col border border-gray-100 h-full">
-                        <!-- Tabs with Counter -->
+                        
                         <div class="flex border-b border-gray-200" x-data="{ activeTab: 'chat' }">
                             <button @click="activeTab = 'chat'"
                                 :class="{ 'border-blue-500 text-blue-600 bg-blue-50': activeTab === 'chat' }"
@@ -174,18 +174,18 @@
                             </button>
                         </div>
 
-                        <!-- Chat Content -->
+                        
                         <div class="flex-1 overflow-y-auto p-4 space-y-4" x-show="activeTab === 'chat'"
                             style="height: calc(100vh - 20rem);">
-                            <!-- System Message -->
+                            
                             <div class="flex justify-center">
                                 <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Today 2:30
                                     PM</span>
                             </div>
 
-                            <!-- Chat Messages -->
+                            
                             <div class="space-y-4">
-                                <!-- Received Message -->
+                                
                                 <div class="flex items-start space-x-3">
                                     <img class="w-8 h-8 rounded-full"
                                         src="https://ui-avatars.com/api/?name=John+Doe&background=random" alt="">
@@ -198,7 +198,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Sent Message -->
+                                
                                 <div class="flex items-start justify-end space-x-3">
                                     <div class="flex-1 flex flex-col items-end">
                                         <p class="text-sm font-medium text-gray-900">You</p>
@@ -211,7 +211,7 @@
                             </div>
                         </div>
 
-                        <!-- Enhanced Input Area -->
+                        
                         <div class="border-t border-gray-200 p-4 bg-gray-50">
                             <div class="flex items-center space-x-3">
                                 <input type="text" placeholder="Type your message..."
@@ -241,7 +241,7 @@
             </div>
         </div>
 
-        <!-- Chat Toggle Button (When Chat is Hidden) -->
+        
         <button x-show="!chatOpen" @click="chatOpen = true"
             class="fixed right-6 bottom-6 bg-blue-600 text-white p-4 rounded-full shadow-lg hover:bg-blue-700 transition-colors z-50">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

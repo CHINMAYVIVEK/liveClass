@@ -32,61 +32,57 @@
                 this.name = '';
             }
         }">
-            <!-- Left Side - SSO -->
+
             <div class="md:w-5/12 bg-gradient-to-br from-blue-600 to-blue-700 p-8 text-white">
                 <div class="h-full flex flex-col justify-between">
                     <div>
                         <h2 class="text-3xl font-bold mb-6">Welcome to LiveClass</h2>
                         <p class="text-blue-100 mb-8">Join our community of learners and educators</p>
-                        
-                        <!-- Added Illustration with enhanced styling -->
+
+
                         <div class="relative flex justify-center items-center mb-12">
                             <div class="absolute inset-0 bg-white/10 rounded-3xl blur-xl"></div>
                             <div class="relative w-80 h-80 p-4 bg-white/5 backdrop-blur-sm rounded-3xl shadow-2xl">
-                                <img 
-                                    src="https://img.freepik.com/free-vector/internship-job-training-illustration_23-2148753207.jpg" 
-                                    alt="Live Class" 
+                                <img src="https://img.freepik.com/free-vector/internship-job-training-illustration_23-2148753207.jpg"
+                                    alt="Live Class"
                                     class="w-full h-full object-contain rounded-2xl transform transition-transform hover:scale-105 duration-300"
-                                    loading="lazy"
-                                >
+                                    loading="lazy">
                             </div>
                             <div class="absolute -inset-4 bg-blue-500/20 rounded-[2rem] blur-2xl -z-10"></div>
                         </div>
                     </div>
 
                     <div class="space-y-6">
-                        <!-- Divider with text -->
+
                         <div class="relative">
                             <div class="absolute inset-0 flex items-center">
                                 <div class="w-full border-t border-gray-200"></div>
                             </div>
                             <div class="relative flex justify-center text-sm">
-                                <span class="px-4 text-gray-100 bg-gradient-to-br from-blue-600 to-blue-700">Or continue with</span>
+                                <span class="px-4 text-gray-100 bg-gradient-to-br from-blue-600 to-blue-700">Or continue
+                                    with</span>
                             </div>
                         </div>
 
-                        <!-- SSO Buttons Container -->
+
                         <div class="grid grid-cols-3 gap-4">
-                            <button type="button" 
-                                aria-label="Sign in with Google"
+                            <button type="button" aria-label="Sign in with Google"
                                 class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
                                 <img src="https://www.google.com/favicon.ico" alt="" class="w-6 h-6">
                             </button>
 
-                            <button type="button"
-                                aria-label="Sign in with Facebook"
+                            <button type="button" aria-label="Sign in with Facebook"
                                 class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
                                 <img src="https://www.facebook.com/favicon.ico" alt="" class="w-6 h-6">
                             </button>
 
-                            <button type="button"
-                                aria-label="Sign in with GitHub"
+                            <button type="button" aria-label="Sign in with GitHub"
                                 class="flex items-center justify-center p-3 bg-white rounded-lg hover:bg-gray-50 transition-all duration-200">
                                 <img src="https://github.com/favicon.ico" alt="" class="w-6 h-6">
                             </button>
                         </div>
 
-                        <!-- Terms and Privacy -->
+
                         <div class="text-center text-sm">
                             <p class="text-gray-300">By creating an account I have read and agree to</p>
                             <div class="mt-1">
@@ -99,10 +95,10 @@
                 </div>
             </div>
 
-            <!-- Right Side - Forms -->
+
             <div class="md:w-7/12 p-8">
                 <div class="max-w-md mx-auto">
-                    <!-- Header -->
+
                     <div class="text-center mb-8">
                         <h2 class="text-3xl font-bold text-gray-900"
                             x-text="isLogin ? 'Welcome Back' : 'Create Account'"></h2>
@@ -110,59 +106,45 @@
                             x-text="isLogin ? 'Please sign in to continue' : 'Get started with your account'"></p>
                     </div>
 
-                    <!-- Error Message -->
+
                     <div x-show="errorMessage" x-transition
                         class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6"
                         role="alert">
                         <span x-text="errorMessage"></span>
                     </div>
 
-                    <!-- Form -->
-                    <form @submit.prevent="handleSubmit" 
-                        :hx-post="isLogin ? '/api/login' : '/api/signup'"
-                        hx-trigger="submit" 
-                        hx-target="#main-content" 
-                        class="space-y-6">
-                        
-                        <!-- Error Message (single instance) -->
-                        <div x-show="errorMessage" 
-                            x-transition
+
+                    <form @submit.prevent="handleSubmit" :hx-post="isLogin ? '/api/login' : '/api/signup'"
+                        hx-trigger="submit" hx-target="#main-content" class="space-y-6">
+
+
+                        <div x-show="errorMessage" x-transition
                             class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg relative mb-6"
                             role="alert">
                             <span x-text="errorMessage"></span>
                         </div>
 
-                        <!-- Name Input (Signup only) -->
+
                         <div x-show="!isLogin">
                             <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
-                            <input type="text" 
-                                id="name" 
-                                name="name"
-                                x-model="name"
-                                minlength="2"
+                            <input type="text" id="name" name="name" x-model="name" minlength="2"
                                 class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
                                 required>
                         </div>
 
-                        <!-- Email Input -->
+
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
-                            <input type="email" 
-                                id="email" 
-                                name="email"
-                                x-model="email"
-                                autocomplete="email"
+                            <input type="email" id="email" name="email" x-model="email" autocomplete="email"
                                 class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
                                 required>
                         </div>
 
-                        <!-- Phone Input (Signup only) -->
+
                         <div x-show="!isLogin" x-data="{ countryCode: '+91' }">
                             <label for="phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
                             <div class="mt-1 flex">
-                                <select x-model="countryCode" 
-                                    name="countryCode"
-                                    aria-label="Country code"
+                                <select x-model="countryCode" name="countryCode" aria-label="Country code"
                                     class="px-3 py-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm focus:ring-blue-500 focus:border-blue-500">
                                     <option value="+91">+91 (IN)</option>
                                     <option value="+1">+1 (US)</option>
@@ -170,31 +152,23 @@
                                     <option value="+61">+61 (AU)</option>
                                     <option value="+86">+86 (CN)</option>
                                 </select>
-                                <input type="tel" 
-                                    id="phone" 
-                                    name="phone"
-                                    x-model="phone"
-                                    placeholder="Enter phone number" 
+                                <input type="tel" id="phone" name="phone" x-model="phone"
+                                    placeholder="Enter phone number"
                                     class="flex-1 block w-full rounded-r-lg border border-l-0 border-gray-300 px-4 py-3 focus:ring-blue-500 focus:border-blue-500 transition duration-150"
-                                    pattern="[0-9]{10}"
-                                    required>
+                                    pattern="[0-9]{10}" required>
                             </div>
                             <p class="mt-1 text-sm text-gray-500">Example: 9876543210</p>
                         </div>
 
-                        <!-- Password Input -->
+
                         <div>
                             <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
                             <div class="relative">
-                                <input :type="showPassword ? 'text' : 'password'" 
-                                    id="password" 
-                                    name="password"
-                                    x-model="password"
-                                    autocomplete="current-password"
+                                <input :type="showPassword ? 'text' : 'password'" id="password" name="password"
+                                    x-model="password" autocomplete="current-password"
                                     class="mt-1 block w-full px-4 py-3 rounded-lg border border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition duration-150"
                                     required>
-                                <button type="button" 
-                                    @click="showPassword = !showPassword"
+                                <button type="button" @click="showPassword = !showPassword"
                                     aria-label="Toggle password visibility"
                                     class="absolute inset-y-0 right-0 pr-3 flex items-center">
                                     <svg x-show="!showPassword" class="h-5 w-5 text-gray-400" fill="none"
@@ -213,7 +187,7 @@
                             </div>
                         </div>
 
-                        <!-- Remember Me & Forgot Password (Login only) -->
+
                         <div x-show="isLogin" class="flex items-center justify-between">
                             <div class="flex items-center">
                                 <input type="checkbox" id="remember-me"
@@ -226,7 +200,7 @@
                                 password?</a>
                         </div>
 
-                        <!-- Submit Button -->
+
                         <button type="submit"
                             class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150"
                             :disabled="loading">
@@ -242,7 +216,7 @@
                                 x-text="isLogin ? (loading ? 'Signing in...' : 'Sign in') : (loading ? 'Creating account...' : 'Create account')"></span>
                         </button>
 
-                        <!-- Toggle Link with updated styling -->
+
                         <div class="text-center mt-6">
                             <span class="text-gray-600"
                                 x-text="isLogin ? 'Don\'t have an account?' : 'Already have an account?'"></span>
