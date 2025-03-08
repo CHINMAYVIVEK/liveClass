@@ -4,11 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="LiveClass - Interactive online learning platform">
+    
+    <!-- SEO Meta Tags -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="LiveClass">
+    <meta name="keywords" content="online learning, live classes, education, interactive learning">
+    <meta property="og:title" content="LiveClass - {{ template "title" . }}">
+    <meta property="og:description" content="LiveClass - Interactive online learning platform">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ template "canonical-url" . }}">
+    <meta property="og:image" content="/static/images/liveclass-og-image.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="LiveClass - {{ template "title" . }}">
+    <meta name="twitter:description" content="LiveClass - Interactive online learning platform">
+    <link rel="canonical" href="{{ template "canonical-url" . }}">
+    
+    <!-- Performance optimization -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    
     <title>LiveClass - {{ template "title" . }}</title>
 
     <!-- Styles -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+    <noscript><link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"></noscript>
+    
+    <!-- Critical CSS inline -->
     <style>
+        :root {
+            --header-height: 80px;
+            --footer-height: 80px;
+        }
         body {
             overscroll-behavior: none;
             -webkit-overflow-scrolling: touch;
@@ -21,14 +51,23 @@
             -webkit-overflow-scrolling: touch;
             scroll-behavior: smooth;
         }
-        :root {
-            --header-height: 80px;
-            --footer-height: 80px;
-        }
     </style>
+    
     <!-- Scripts -->
-    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4/dist/htmx.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.8/dist/cdn.min.js" defer></script>
+    
+    <!-- JSON-LD structured data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "LiveClass",
+      "description": "Interactive online learning platform",
+      "url": "{{ template "canonical-url" . }}",
+      "logo": "/static/images/liveclass-logo.png"
+    }
+    </script>
 </head>
 
 <body class="flex flex-col bg-gray-50">
@@ -44,3 +83,5 @@
 </body>
 </html>
 {{ end }}
+
+{{ define "canonical-url" }}https://liveclass.example.com{{ .CurrentPath }}{{ end }}
