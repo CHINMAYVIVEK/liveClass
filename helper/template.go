@@ -13,34 +13,33 @@ const (
 	StudentView    ViewType = "student"
 	InstructorView ViewType = "instructor"
 	WebsiteView    ViewType = "website"
+
+	templateBase = "template"
+	lmsPanel     = templateBase + "/lms_panel"
 )
 
-var templatePaths = map[ViewType][]string{
-	StudentView: {
-		"template/lms_panel/student/base.html",
-		"template/lms_panel/student/_header.html",
-		"template/lms_panel/student/_sidebar.html",
-		"template/lms_panel/student/_footer.html",
-	},
-	InstructorView: {
-		"template/lms_panel/instructor/base.html",
-		"template/lms_panel/instructor/_header.html",
-		"template/lms_panel/instructor/_sidebar.html",
-		"template/lms_panel/instructor/_footer.html",
-	},
-	WebsiteView: {
-		"template/website/base.html",
-		"template/website/_header.html",
-		"template/website/_footer.html",
-	},
-}
-
-type TemplateCache struct {
-	cache map[string]*template.Template
-	mu    sync.RWMutex
+type templateFiles struct {
+	base, header, sidebar, footer string
 }
 
 var (
+	defaultFiles = templateFiles{
+		base:    "/base.html",
+		header:  "/_header.html",
+		footer:  "/_footer.html",
+		sidebar: "/_sidebar.html",
+	}
+
+	templatePaths = map[ViewType][]string{
+		StudentView:    buildPaths(lmsPanel+"/student", true),
+		InstructorView: buildPaths(lmsPanel+"/instructor", true),
+		WebsiteView:    buildPaths(templateBase+"/website", false),
+	}
+
+	templateStore = &TemplateCache{
+		cache: make(map[string]*template.Template),
+	}
+
 	defaultFuncMap = template.FuncMap{
 		"marshal": func(v interface{}) template.JS {
 			if b, err := json.Marshal(v); err == nil {
@@ -49,11 +48,50 @@ var (
 			return template.JS("{}")
 		},
 	}
-
-	templateStore = &TemplateCache{
-		cache: make(map[string]*template.Template),
-	}
 )
+
+type TemplateCache struct {
+	cache map[string]*template.Template
+	mu    sync.RWMutex
+}
+
+func buildPaths(base string, withSidebar bool) []string {
+	paths := []string{
+		base + defaultFiles.base,
+		base + defaultFiles.header,
+		base + defaultFiles.footer,
+	}
+	if withSidebar {
+		paths = append(paths, base+defaultFiles.sidebar)
+	}
+	return paths
+}
+
+func LoadTemplate(view ViewType, name string, files ...string) (*template.Template, error) {
+	if name == "" {
+		return nil, fmt.Errorf("template name cannot be empty")
+	}
+
+	cacheKey := string(view) + ":" + name
+	if tmpl, exists := templateStore.get(cacheKey); exists {
+		return tmpl, nil
+	}
+
+	baseFiles, ok := templatePaths[view]
+	if !ok {
+		return nil, fmt.Errorf("invalid view type: %s", view)
+	}
+
+	allFiles := append(baseFiles, files...)
+	tmpl := template.New(name).Funcs(defaultFuncMap)
+	parsedTmpl, err := tmpl.ParseFiles(allFiles...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse template files: %w", err)
+	}
+
+	templateStore.set(cacheKey, parsedTmpl)
+	return parsedTmpl, nil
+}
 
 func (tc *TemplateCache) get(key string) (*template.Template, bool) {
 	tc.mu.RLock()
@@ -68,28 +106,8 @@ func (tc *TemplateCache) set(key string, tmpl *template.Template) {
 	tc.cache[key] = tmpl
 }
 
-func LoadTemplate(view ViewType, name string, files ...string) (*template.Template, error) {
-	cacheKey := string(view) + ":" + name
-
-	if tmpl, exists := templateStore.get(cacheKey); exists {
-		return tmpl, nil
-	}
-
-	baseFiles, ok := templatePaths[view]
-	if !ok {
-		return nil, fmt.Errorf("invalid view type: %s", view)
-	}
-
-	allFiles := make([]string, 0, len(baseFiles)+len(files))
-	allFiles = append(allFiles, baseFiles...)
-	allFiles = append(allFiles, files...)
-
-	tmpl := template.New(name).Funcs(defaultFuncMap)
-	parsedTmpl, err := tmpl.ParseFiles(allFiles...)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse template files: %w", err)
-	}
-
-	templateStore.set(cacheKey, parsedTmpl)
-	return parsedTmpl, nil
+func (tc *TemplateCache) Clear() {
+	tc.mu.Lock()
+	defer tc.mu.Unlock()
+	tc.cache = make(map[string]*template.Template)
 }
