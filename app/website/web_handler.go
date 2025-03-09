@@ -20,7 +20,7 @@ func NewHandler(repo *WebRepository) *Handler {
 }
 
 func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interface{}) {
-	tmpl, err := helper.LoadTemplate(helper.WebsiteView, name, "template/website/"+name+".html")
+	tmpl, err := helper.LoadTemplate(helper.WebsiteView, name)
 	if err != nil {
 		logger.Error("Error loading template:", err)
 		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error loading template")

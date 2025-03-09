@@ -1,4 +1,4 @@
-package instructor
+package auth
 
 import (
 	"liveClass/helper"
@@ -6,7 +6,7 @@ import (
 )
 
 func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interface{}) {
-	tmpl, err := helper.LoadTemplate(helper.InstructorView, name)
+	tmpl, err := helper.LoadTemplate(helper.WebsiteView, name)
 	if err != nil {
 		logger.Error("Error loading template:", err)
 		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error loading template")

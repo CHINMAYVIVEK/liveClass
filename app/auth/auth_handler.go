@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"html/template"
 	"liveClass/helper"
 	"net/http"
 )
@@ -17,33 +16,14 @@ func NewHandler(repo *AuthRepository) *Handler {
 
 var logger = helper.GetLogger()
 
-var templates map[string]*template.Template
-
-func init() {
-	if templates == nil {
-		templates = make(map[string]*template.Template)
-	}
-
-	t, err := helper.LoadTemplate(helper.WebsiteView, "login.html",
-		"template/website/login.html",
-	)
-	if err != nil {
-		logger.Error(err)
-		panic(err)
-	}
-	templates["login"] = t
-}
-
 func (h *Handler) LoginPage(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		helper.NewErrorResponse(w, http.StatusMethodNotAllowed, "Method not allowed")
 		return
 	}
-	err := templates["login"].ExecuteTemplate(w, "login", nil)
-	if err != nil {
-		logger.Error("Error executing template:", err)
-		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error executing template")
-	}
+
+	h.renderTemplate(w, "login", nil)
+
 }
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {

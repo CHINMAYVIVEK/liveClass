@@ -19,7 +19,7 @@ const (
 )
 
 type templateFiles struct {
-	base, header, sidebar, footer string
+	base, header, sidebar, footer, content string
 }
 
 var (
@@ -28,12 +28,13 @@ var (
 		header:  "/_header.html",
 		footer:  "/_footer.html",
 		sidebar: "/_sidebar.html",
+		content: "/%s.html",
 	}
 
-	templatePaths = map[ViewType][]string{
-		StudentView:    buildPaths(lmsPanel+"/student", true),
-		InstructorView: buildPaths(lmsPanel+"/instructor", true),
-		WebsiteView:    buildPaths(templateBase+"/website", false),
+	templatePaths = map[ViewType]string{
+		StudentView:    lmsPanel + "/student",
+		InstructorView: lmsPanel + "/instructor",
+		WebsiteView:    templateBase + "/website",
 	}
 
 	templateStore = &TemplateCache{
@@ -55,19 +56,20 @@ type TemplateCache struct {
 	mu    sync.RWMutex
 }
 
-func buildPaths(base string, withSidebar bool) []string {
+func buildPaths(base string, view ViewType, name string) []string {
 	paths := []string{
 		base + defaultFiles.base,
 		base + defaultFiles.header,
 		base + defaultFiles.footer,
+		base + fmt.Sprintf(defaultFiles.content, name),
 	}
-	if withSidebar {
+	if view != WebsiteView {
 		paths = append(paths, base+defaultFiles.sidebar)
 	}
 	return paths
 }
 
-func LoadTemplate(view ViewType, name string, files ...string) (*template.Template, error) {
+func LoadTemplate(view ViewType, name string) (*template.Template, error) {
 	if name == "" {
 		return nil, fmt.Errorf("template name cannot be empty")
 	}
@@ -77,12 +79,12 @@ func LoadTemplate(view ViewType, name string, files ...string) (*template.Templa
 		return tmpl, nil
 	}
 
-	baseFiles, ok := templatePaths[view]
+	basePath, ok := templatePaths[view]
 	if !ok {
 		return nil, fmt.Errorf("invalid view type: %s", view)
 	}
 
-	allFiles := append(baseFiles, files...)
+	allFiles := buildPaths(basePath, view, name)
 	tmpl := template.New(name).Funcs(defaultFuncMap)
 	parsedTmpl, err := tmpl.ParseFiles(allFiles...)
 	if err != nil {
