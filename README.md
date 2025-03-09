@@ -164,6 +164,19 @@ SERVER_PORT=8080
 </div>
 </details>
 
+<details>
+<summary><strong>Instructor Portal</strong> (Click to expand)</summary>
+<div align="center">
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px;">
+    <div style="flex: 1; min-width: 45%;">
+      <img src="screenshots/Screenshot-9.png" alt="Instructor Dashboard" width="100%">
+      <p><em>LiveClass Instructor Dashboard Page</em></p>
+    </div>
+    
+  </div>
+  
+</div>
+</details>
 
 ## 📬 Contact
 
