@@ -6,6 +6,56 @@
 
 {{ define "content" }}
 
+<!-- Promotional Modal -->
+<div x-data="{ showModal: true }" 
+     x-init="setTimeout(() => showModal = true, 500)" 
+     x-show="showModal" 
+     class="fixed inset-0 z-50 overflow-y-auto" 
+     style="display: none;">
+    <!-- Backdrop -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"></div>
+    
+    <!-- Modal Container -->
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="relative bg-white rounded-lg max-w-4xl w-full mx-auto shadow-xl overflow-hidden"
+             @click.away="showModal = false">
+            
+            <!-- Close Button -->
+            <button @click="showModal = false" 
+                    class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 focus:outline-none z-10">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <!-- Modal Content -->
+            <div class="flex flex-col md:flex-row">
+                <!-- Image Section -->
+                <div class="w-full md:w-1/2">
+                    <img src="https://static.vecteezy.com/system/resources/previews/001/925/918/original/e-learning-concept-free-vector.jpg" 
+                         alt="Promotional Offer" 
+                         class="w-full h-full object-cover">
+                </div>
+                
+                <!-- Text Content Section -->
+                <div class="w-full md:w-1/2 p-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                    <h2 class="text-3xl font-bold mb-4">Special Offer!</h2>
+                    <p class="text-xl mb-6">Get 30% off on all courses this week only!</p>
+                    
+                    <div class="mb-6">
+                        <div class="text-sm mb-2">Offer ends in:</div>
+                        <div class="text-2xl font-bold">48 hours</div>
+                    </div>
+                    
+                    <button @click="showModal = false; document.querySelector('[name=program]').focus()" 
+                            class="w-full bg-white text-blue-600 font-bold py-3 px-4 rounded-lg hover:bg-gray-100 transition duration-300">
+                        CLAIM OFFER NOW
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="space-y-9">
     

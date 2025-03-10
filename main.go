@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"liveClass/config"
+	"liveClass/configs"
 	"liveClass/helper"
 	"liveClass/internal/server"
 
@@ -32,7 +32,7 @@ func main() {
 	defer cancel()
 
 	// Load configurations
-	cfg, err := config.New(ctx)
+	cfg, err := configs.New(ctx)
 	if err != nil {
 		logger.Error("Failed to load configuration: ", err)
 	}
