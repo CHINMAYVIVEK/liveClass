@@ -38,11 +38,14 @@ func (s *Server) SetupRoutes() {
 	authRepo := auth.NewRepository(s.db)
 	authHandler := auth.NewHandler(authRepo)
 
+	// Initialize Google OAuth with config
+	googleAuth := auth.InitGoogleOAuth(s.config)
+
 	s.mux.HandleFunc("/login", authHandler.LoginPage)
 	s.mux.HandleFunc("/api/login", authHandler.Login)
 	s.mux.HandleFunc("/api/logout", authHandler.Logout)
-	s.mux.HandleFunc("/auth/google/login", auth.HandleGoogleLogin)
-	s.mux.HandleFunc("/auth/google/callback", auth.HandleGoogleCallback)
+	s.mux.HandleFunc("/auth/oauth", googleAuth.OAuthHandler)
+	s.mux.HandleFunc("/auth/callback", googleAuth.OAuthCallbackHandler)
 
 	// instructor routes
 

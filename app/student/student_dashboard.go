@@ -5,7 +5,9 @@ import (
 )
 
 func (h *Handler) DashboardPage(w http.ResponseWriter, r *http.Request) {
-	// Add any dashboard-specific data here
+	// Get session
+	// Check if user is authenticated
+
 	data := map[string]interface{}{}
 	h.renderTemplate(w, "dashboard", data)
 }

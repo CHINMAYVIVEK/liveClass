@@ -17,3 +17,17 @@ func (r *AuthRepository) Login(ctx context.Context, login *LoginRequest) (*Login
 	var user LoginResponse
 	return &user, nil
 }
+
+func (r *AuthRepository) GetUserRoleByEmail(ctx context.Context, email string) (string, error) {
+	var role string
+	query := `SELECT role FROM users WHERE email = $1`
+	row, err := r.db.QueryRow(ctx, query, email)
+	if err != nil {
+		return "", err
+	}
+	err = row.Scan(&role)
+	if err != nil {
+		return "", err
+	}
+	return role, nil
+}

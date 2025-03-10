@@ -73,6 +73,10 @@ func (s *Server) Start() error {
 		os.Exit(0)
 	}()
 
+	// Initialize session manager
+	sessionManager := helper.SessionManager()
+	s.server.Handler = sessionManager.LoadAndSave(s.server.Handler)
+
 	// Start the server
 	if err := s.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		return fmt.Errorf("could not start server: %v", err)
