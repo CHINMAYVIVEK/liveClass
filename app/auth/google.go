@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/gob"
 	"encoding/json"
-	"fmt"
 	"liveClass/configs"
 	"net/http"
 
@@ -78,15 +77,16 @@ func (a *OAuth) OAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	user := UserInfo{
-		ID:        jsonResp.Id,
-		Email:     jsonResp.Email,
-		FirstName: jsonResp.GivenName,
-		LastName:  jsonResp.FamilyName,
-		Picture:   jsonResp.Picture,
-		Locale:    jsonResp.Locale,
-	}
-	// check email in DB and find the role and pass the value accordingly
-	fmt.Printf("User Info: %+v\n", user)
+	// user := UserInfo{
+	// 	ID:        jsonResp.Id,
+	// 	Email:     jsonResp.Email,
+	// 	FirstName: jsonResp.GivenName,
+	// 	LastName:  jsonResp.FamilyName,
+	// 	Picture:   jsonResp.Picture,
+	// 	Locale:    jsonResp.Locale,
+	// }
+
+	// Store user data in session
+
 	http.Redirect(w, r, "/student/dashboard", http.StatusTemporaryRedirect)
 }

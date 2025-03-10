@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interface{}) {
-	tmpl, err := helper.LoadTemplate(helper.WebsiteView, name)
+func (h *Handler) renderTemplate(w http.ResponseWriter, view helper.ViewType, name string, data interface{}) {
+	tmpl, err := helper.LoadTemplate(view, name)
 	if err != nil {
 		logger.Error("Error loading template:", err)
 		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error loading template")

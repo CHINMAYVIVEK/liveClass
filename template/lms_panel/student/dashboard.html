@@ -2,7 +2,7 @@
 {{ template "base" . }}
 {{ end }}
 {{ define "title" }}Dashboard{{ end }}
-{{ define "page-title" }}Welcome Back, John{{ end }}
+{{ define "page-title" }}Welcome Back, {{.UserData.FirstName}} {{.UserData.LastName}} {{ end }}
 
 {{ define "content" }}
 <main class="p-6" x-data="{ activeTab: 'all' }">
@@ -11,13 +11,35 @@
         <div class="bg-gradient-to-r from-blue-600 to-blue-800 rounded-lg shadow-lg p-6 text-white">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-2xl font-bold">Good Morning, John!</h2>
+                    <h2 class="text-2xl font-bold">Good Morning, {{.UserData.FirstName}} {{.UserData.LastName}}!</h2>
                     <p class="mt-1 text-blue-100">You have 2 classes scheduled for today</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-sm text-blue-100">Monday, 25th October</p>
-                    <p class="text-2xl font-bold">09:30 AM</p>
+                    <p class="text-sm text-blue-100" id="currentDate"></p>
+                    <p class="text-2xl font-bold" id="currentTime"></p>
                 </div>
+
+<!-- Add this script before the closing </main> tag -->
+<script>
+    function updateDateTime() {
+        const now = new Date();
+        
+        // Format date: Monday, 25th October
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        const date = now.toLocaleDateString('en-US', options);
+        
+        // Format time: 09:30 AM
+        const timeOptions = { hour: '2-digit', minute: '2-digit', hour12: true };
+        const time = now.toLocaleTimeString('en-US', timeOptions);
+        
+        document.getElementById('currentDate').textContent = date;
+        document.getElementById('currentTime').textContent = time;
+    }
+
+    // Update immediately and then every second
+    updateDateTime();
+    setInterval(updateDateTime, 1000);
+</script>
             </div>
         </div>
     </div>

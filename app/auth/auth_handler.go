@@ -11,7 +11,9 @@ type Handler struct {
 }
 
 func NewHandler(repo *AuthRepository) *Handler {
-	return &Handler{repo: repo}
+	return &Handler{
+		repo: repo,
+	}
 }
 
 var logger = helper.GetLogger()
@@ -22,7 +24,7 @@ func (h *Handler) LoginPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.renderTemplate(w, "login", nil)
+	h.renderTemplate(w, helper.WebsiteView, "login", nil)
 
 }
 
