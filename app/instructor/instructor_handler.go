@@ -3,14 +3,13 @@ package instructor
 import (
 	"errors"
 	"html/template"
-	"liveClass/helper"
-	"time"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 var (
 	ErrInvalidInput    = errors.New("invalid input")
 	ErrStudentNotFound = errors.New("student not found")
-	contextTimeout     = 5 * time.Second
 	logger             = helper.GetLogger()
 )
 

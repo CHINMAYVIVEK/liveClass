@@ -161,7 +161,41 @@ SERVER_PORT=8080
       <p><em>LiveClass Student Recorded Lecture Player</em></p>
     </div>
   </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px;">
+    <div style="flex: 1; min-width: 45%;">
+      <img src="screenshots/screenshot-9.png" alt="Student Lecture Notes" width="100%">
+      <p><em>LiveClass Student Recorded Lecture Notes Page</em></p>
+    </div>
+    <div style="flex: 1; min-width: 45%;">
+      <img src="screenshots/screenshot-10.png" alt="Student Assignment" width="100%">
+      <p><em>LiveClass Student Assignment</em></p>
+    </div>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px;">
+    <div style="flex: 1; min-width: 45%;">
+      <img src="screenshots/screenshot-11.png" alt="Student Academic Performance" width="100%">
+      <p><em>LiveClass Student Academic Performance</em></p>
+    </div>
+
+  </div>
 </div>
+
+</details>
+<details>
+<summary><strong>Instructor Portal</strong> (Click to expand)</summary>
+<div align="center">
+  <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 20px;">
+    <div style="flex: 1; min-width: 45%;">
+      <img src="screenshots/Screenshot-12.png" alt="Instructor Dashboard" width="100%">
+      <p><em>LiveClass Student Instructor Page</em></p>
+    </div>
+    <div style="flex: 1; min-width: 45%;">
+      <img src="screenshots/Screenshot-13.png" alt="Instructor Live Class Page" width="100%">
+      <p><em>LiveClass Instructor Live Class Page</em></p>
+    </div>
+  </div>
+</div>
+
 </details>
 
 

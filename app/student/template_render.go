@@ -1,12 +1,13 @@
 package student
 
 import (
-	"liveClass/helper"
 	"net/http"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interface{}) {
-	tmpl, err := helper.LoadTemplate(helper.StudentView, name, "template/lms_panel/student/"+name+".html")
+	tmpl, err := helper.LoadTemplate(helper.StudentView, name)
 	if err != nil {
 		logger.Error("Error loading template:", err)
 		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error loading template")

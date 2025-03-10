@@ -39,11 +39,13 @@ type LoginResponse struct {
 
 // UserInfo represents basic user information returned after authentication
 type UserInfo struct {
-	ID        uuid.UUID `json:"id"`
-	Email     string    `json:"email"`
-	FirstName string    `json:"firstName"`
-	LastName  string    `json:"lastName"`
-	Role      string    `json:"role"`
+	ID        string `json:"id"`
+	Email     string `json:"email"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Role      string `json:"role"`
+	Picture   string `json:"picture"`
+	Locale    string `json:"locale"`
 }
 
 // SSORequest represents the SSO authentication request

@@ -24,8 +24,8 @@
                     @click="open = !open" 
                     class="flex items-center space-x-2 p-1 sm:p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                    <img class="h-7 w-7 sm:h-8 sm:w-8 rounded-full ring-2 ring-gray-200" src="https://ui-avatars.com/api/?name=John+Doe&background=random" alt="User avatar">
-                    <span class="hidden lg:block text-sm text-gray-700">John Doe</span>
+                    <img class="h-7 w-7 sm:h-8 sm:w-8 rounded-full ring-2 ring-gray-200" src="{{.UserData.ProfilePictureURL}}" alt="{{.UserData.FirstName}} {{.UserData.LastName}}">
+                    <span class="hidden lg:block text-sm text-gray-700">{{.UserData.FirstName}} {{.UserData.LastName}}</span>
                     <svg class="w-4 h-4 text-gray-500 hidden lg:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                     </svg>

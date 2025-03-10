@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"time"
 
-	"liveClass/config"
+	"github.com/CHINMAYVIVEK/liveClass/configs"
 )
 
 type PostgresWrapper struct {
-	postgres *config.PostgresDB
+	postgres *configs.PostgresDB
 }
 
 type Tx interface {
@@ -24,7 +24,7 @@ type txWrapper struct {
 	*sql.Tx
 }
 
-func NewPostgresWrapper(postgres *config.PostgresDB) *PostgresWrapper {
+func NewPostgresWrapper(postgres *configs.PostgresDB) *PostgresWrapper {
 	return &PostgresWrapper{postgres: postgres}
 }
 

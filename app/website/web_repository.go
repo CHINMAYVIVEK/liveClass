@@ -2,8 +2,9 @@ package website
 
 import (
 	"fmt"
-	"liveClass/helper"
 	"strconv"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 type WebRepository struct {

@@ -1,4 +1,4 @@
-package config
+package configs
 
 import (
 	"context"
@@ -8,8 +8,9 @@ import (
 )
 
 type Config struct {
-	App      *AppConfig
-	Postgres *PostgresDB
+	App         *AppConfig
+	Postgres    *PostgresDB
+	OAuthConfig *OAuthConfig
 }
 
 func New(ctx context.Context) (*Config, error) {
@@ -17,27 +18,30 @@ func New(ctx context.Context) (*Config, error) {
 	// Initialize configurations
 	postgresConfig := &PSQLConfig{}
 	appConfig := &AppConfig{}
+	googleOAuthConfig := &GoogleOAuthConfig{}
 
 	opts := env.Options{RequiredIfNoDef: true}
 	if err := env.ParseWithOptions(appConfig, opts); err != nil {
 		return nil, fmt.Errorf("error parsing App config: %v", err)
 	}
+	if err := env.ParseWithOptions(googleOAuthConfig, opts); err != nil {
+		return nil, fmt.Errorf("error parsing OAuth config: %v", err)
+	}
 
 	if err := env.ParseWithOptions(postgresConfig, opts); err != nil {
 		return nil, fmt.Errorf("error parsing PostgreSQL config: %v", err)
 	}
-
 	postgres := NewPostgresDB(postgresConfig)
-
 	if err := postgres.Connect(ctx); err != nil {
-		// Close MongoDB connection if PostgreSQL connection fails
-		// mongo.Close(ctx)
 		return nil, fmt.Errorf("error connecting to PostgreSQL: %v", err)
 	}
 
 	cfg := &Config{
 		App:      appConfig,
 		Postgres: postgres,
+		OAuthConfig: &OAuthConfig{
+			Google: *googleOAuthConfig,
+		},
 	}
 
 	return cfg, nil

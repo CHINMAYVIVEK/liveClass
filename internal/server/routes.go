@@ -1,10 +1,10 @@
 package server
 
 import (
-	"liveClass/app/auth"
-	"liveClass/app/instructor"
-	"liveClass/app/student"
-	"liveClass/app/website"
+	"github.com/CHINMAYVIVEK/liveClass/app/auth"
+	"github.com/CHINMAYVIVEK/liveClass/app/instructor"
+	"github.com/CHINMAYVIVEK/liveClass/app/student"
+	"github.com/CHINMAYVIVEK/liveClass/app/website"
 )
 
 // SetupRoutes initializes all the routes for the server
@@ -38,9 +38,14 @@ func (s *Server) SetupRoutes() {
 	authRepo := auth.NewRepository(s.db)
 	authHandler := auth.NewHandler(authRepo)
 
+	// Initialize Google OAuth with config
+	googleAuth := auth.InitGoogleOAuth(s.config)
+
 	s.mux.HandleFunc("/login", authHandler.LoginPage)
 	s.mux.HandleFunc("/api/login", authHandler.Login)
 	s.mux.HandleFunc("/api/logout", authHandler.Logout)
+	s.mux.HandleFunc("/auth/oauth", googleAuth.OAuthHandler)
+	s.mux.HandleFunc("/auth/callback", googleAuth.OAuthCallbackHandler)
 
 	// instructor routes
 

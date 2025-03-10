@@ -5,9 +5,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"liveClass/helper"
 	"strings"
 	"time"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 
 	"github.com/google/uuid"
 )
@@ -193,7 +194,7 @@ func (r *StudentRepository) GetByID(ctx context.Context, id uuid.UUID) (*Student
 
 	// Rest of the code remains the same
 	if dateOfBirth.Valid {
-		student.DateOfBirth = &dateOfBirth.Time
+		student.DateOfBirth = dateOfBirth.Time
 	}
 
 	if len(socialMediaJSON) > 0 && string(socialMediaJSON) != "{}" {

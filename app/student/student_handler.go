@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	"liveClass/helper"
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 
 	"github.com/google/uuid"
 )

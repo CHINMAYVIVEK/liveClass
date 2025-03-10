@@ -3,8 +3,9 @@ package website
 // Add encoding/json to imports
 import (
 	"html/template"
-	"liveClass/helper"
 	"net/http"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 type Handler struct {
@@ -20,7 +21,7 @@ func NewHandler(repo *WebRepository) *Handler {
 }
 
 func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interface{}) {
-	tmpl, err := helper.LoadTemplate(helper.WebsiteView, name, "template/website/"+name+".html")
+	tmpl, err := helper.LoadTemplate(helper.WebsiteView, name)
 	if err != nil {
 		logger.Error("Error loading template:", err)
 		helper.NewErrorResponse(w, http.StatusInternalServerError, "Error loading template")

@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"liveClass/config"
-	"liveClass/helper"
-	"liveClass/internal/server"
+	"github.com/CHINMAYVIVEK/liveClass/configs"
+	"github.com/CHINMAYVIVEK/liveClass/helper"
+	"github.com/CHINMAYVIVEK/liveClass/internal/server"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
@@ -32,7 +32,7 @@ func main() {
 	defer cancel()
 
 	// Load configurations
-	cfg, err := config.New(ctx)
+	cfg, err := configs.New(ctx)
 	if err != nil {
 		logger.Error("Failed to load configuration: ", err)
 	}
