@@ -41,6 +41,8 @@ func (s *Server) SetupRoutes() {
 	s.mux.HandleFunc("/login", authHandler.LoginPage)
 	s.mux.HandleFunc("/api/login", authHandler.Login)
 	s.mux.HandleFunc("/api/logout", authHandler.Logout)
+	s.mux.HandleFunc("/auth/google/login", auth.HandleGoogleLogin)
+	s.mux.HandleFunc("/auth/google/callback", auth.HandleGoogleCallback)
 
 	// instructor routes
 
