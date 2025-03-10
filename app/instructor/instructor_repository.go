@@ -1,7 +1,7 @@
 package instructor
 
 import (
-	"liveClass/helper"
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 type InstructorRepository struct {

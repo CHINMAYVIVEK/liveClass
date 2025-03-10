@@ -1,8 +1,9 @@
 package server
 
 import (
-	"liveClass/helper"
 	"net/http"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 // Route handlers

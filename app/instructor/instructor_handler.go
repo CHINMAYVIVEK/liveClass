@@ -3,7 +3,8 @@ package instructor
 import (
 	"errors"
 	"html/template"
-	"liveClass/helper"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 var (

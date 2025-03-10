@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"time"
 
-	"liveClass/configs"
+	"github.com/CHINMAYVIVEK/liveClass/configs"
 )
 
 type PostgresWrapper struct {

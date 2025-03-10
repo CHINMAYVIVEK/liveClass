@@ -1,8 +1,9 @@
 package auth
 
 import (
-	"liveClass/helper"
 	"net/http"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 func (h *Handler) renderTemplate(w http.ResponseWriter, view helper.ViewType, name string, data interface{}) {

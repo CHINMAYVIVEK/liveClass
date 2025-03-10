@@ -10,8 +10,8 @@ import (
 	"syscall"
 	"time"
 
-	"liveClass/configs"
-	"liveClass/helper"
+	"github.com/CHINMAYVIVEK/liveClass/configs"
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 var logger = helper.GetLogger()

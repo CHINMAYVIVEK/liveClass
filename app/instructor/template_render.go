@@ -1,8 +1,9 @@
 package instructor
 
 import (
-	"liveClass/helper"
 	"net/http"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 func (h *Handler) renderTemplate(w http.ResponseWriter, name string, data interface{}) {

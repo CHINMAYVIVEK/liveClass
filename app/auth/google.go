@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/gob"
 	"encoding/json"
-	"liveClass/configs"
 	"net/http"
+
+	"github.com/CHINMAYVIVEK/liveClass/configs"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"

@@ -2,7 +2,8 @@ package auth
 
 import (
 	"context"
-	"liveClass/helper"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 type AuthRepository struct {

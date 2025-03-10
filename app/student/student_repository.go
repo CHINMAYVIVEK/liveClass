@@ -5,9 +5,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"liveClass/helper"
 	"strings"
 	"time"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 
 	"github.com/google/uuid"
 )

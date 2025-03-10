@@ -3,8 +3,9 @@ package website
 // Add encoding/json to imports
 import (
 	"html/template"
-	"liveClass/helper"
 	"net/http"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 type Handler struct {

@@ -2,8 +2,9 @@ package auth
 
 import (
 	"encoding/json"
-	"liveClass/helper"
 	"net/http"
+
+	"github.com/CHINMAYVIVEK/liveClass/helper"
 )
 
 type Handler struct {

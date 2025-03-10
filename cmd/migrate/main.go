@@ -4,10 +4,11 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"liveClass/internal/database"
 	"log"
 	"os"
 	"time"
+
+	"github.com/CHINMAYVIVEK/liveClass/internal/database"
 )
 
 func main() {

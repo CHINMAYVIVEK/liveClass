@@ -5,9 +5,9 @@ import (
 	"log"
 	"time"
 
-	"liveClass/configs"
-	"liveClass/helper"
-	"liveClass/internal/server"
+	"github.com/CHINMAYVIVEK/liveClass/configs"
+	"github.com/CHINMAYVIVEK/liveClass/helper"
+	"github.com/CHINMAYVIVEK/liveClass/internal/server"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"

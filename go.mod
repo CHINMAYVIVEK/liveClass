@@ -1,4 +1,4 @@
-module liveClass
+module github.com/CHINMAYVIVEK/liveClass
 
 go 1.24.0
 

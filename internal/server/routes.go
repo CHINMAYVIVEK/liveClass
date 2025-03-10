@@ -1,10 +1,10 @@
 package server
 
 import (
-	"liveClass/app/auth"
-	"liveClass/app/instructor"
-	"liveClass/app/student"
-	"liveClass/app/website"
+	"github.com/CHINMAYVIVEK/liveClass/app/auth"
+	"github.com/CHINMAYVIVEK/liveClass/app/instructor"
+	"github.com/CHINMAYVIVEK/liveClass/app/student"
+	"github.com/CHINMAYVIVEK/liveClass/app/website"
 )
 
 // SetupRoutes initializes all the routes for the server
