@@ -14,6 +14,8 @@ import (
 	"liveClass/helper"
 )
 
+var logger = helper.GetLogger()
+
 type Server struct {
 	server *http.Server
 	mux    *http.ServeMux
@@ -47,7 +49,7 @@ func NewServer(cfg *config.Config) *Server {
 
 // Start begins listening for HTTP requests
 func (s *Server) Start() error {
-	log.Printf("Starting server on %s", s.server.Addr)
+	logger.Info("Starting server on %s", s.server.Addr)
 
 	// Setup graceful shutdown
 	quit := make(chan os.Signal, 1)
@@ -58,14 +60,14 @@ func (s *Server) Start() error {
 		shutdownCtx, shutdownCancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer shutdownCancel()
 
-		log.Println("Shutting down server...")
+		logger.Info("Shutting down server...")
 		if err := s.Stop(shutdownCtx); err != nil {
-			log.Printf("Error during server shutdown: %v", err)
+			logger.Error("Error during server shutdown: %v", err)
 		}
 
-		log.Println("Closing database connections...")
+		logger.Info("Closing database connections...")
 		if err := s.config.Close(shutdownCtx); err != nil {
-			log.Printf("Error closing database connections: %v", err)
+			logger.Error("Error closing database connections: %v", err)
 		}
 
 		os.Exit(0)
