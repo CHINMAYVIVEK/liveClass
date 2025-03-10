@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"liveClass/config"
+	"liveClass/configs"
 	"liveClass/helper"
 )
 
@@ -19,12 +19,12 @@ var logger = helper.GetLogger()
 type Server struct {
 	server *http.Server
 	mux    *http.ServeMux
-	config *config.Config
+	config *configs.Config
 	db     *helper.PostgresWrapper
 }
 
 // NewServer creates and configures a new HTTP server instance
-func NewServer(cfg *config.Config) *Server {
+func NewServer(cfg *configs.Config) *Server {
 	mux := http.NewServeMux()
 	db := helper.NewPostgresWrapper(cfg.Postgres)
 	server := &http.Server{
