@@ -34,7 +34,7 @@ func (r *WebRepository) GetCourses(page, limit string) ([]Course, error) {
 
 	ctx := context.Background()
 	query := fmt.Sprintf(`
-        SELECT 
+        SELECT
             c.course_id,
             c.title,
             c.description,
@@ -63,7 +63,7 @@ func (r *WebRepository) GetCourses(page, limit string) ([]Course, error) {
 		var course Course
 		typeID := ""
 		typeName := ""
-		err := rows.Scan(
+		scanErr := rows.Scan(
 			&course.CourseID,
 			&course.Title,
 			&course.Description,
@@ -75,9 +75,9 @@ func (r *WebRepository) GetCourses(page, limit string) ([]Course, error) {
 			&typeID,
 			&typeName,
 		)
-		if err != nil {
-			logger.Error(err)
-			return nil, fmt.Errorf("failed to scan course: %w", err)
+		if scanErr != nil {
+			logger.Error(scanErr)
+			return nil, fmt.Errorf("failed to scan course: %w", scanErr)
 		}
 		course.CourseType = CourseType{
 			CourseTypeID: typeID,

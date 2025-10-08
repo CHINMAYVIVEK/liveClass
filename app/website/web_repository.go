@@ -17,7 +17,7 @@ func NewRepository(db *helper.PostgresWrapper) *WebRepository {
 
 func (r *WebRepository) GetInstructors(page, limit string) ([]Instructors, error) {
 	var (
-		limitClause = "8" // default limit
+		limitClause = "4" // default limit
 		currentPage = "1" // default page
 		offset      int
 	)

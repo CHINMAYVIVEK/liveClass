@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/CHINMAYVIVEK/liveClass/configs"
@@ -78,15 +79,16 @@ func (a *OAuth) OAuthCallbackHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	// user := UserInfo{
-	// 	ID:        jsonResp.Id,
-	// 	Email:     jsonResp.Email,
-	// 	FirstName: jsonResp.GivenName,
-	// 	LastName:  jsonResp.FamilyName,
-	// 	Picture:   jsonResp.Picture,
-	// 	Locale:    jsonResp.Locale,
-	// }
+	user := UserInfo{
+		ID:        jsonResp.Id,
+		Email:     jsonResp.Email,
+		FirstName: jsonResp.GivenName,
+		LastName:  jsonResp.FamilyName,
+		Picture:   jsonResp.Picture,
+		Locale:    jsonResp.Locale,
+	}
 
+	fmt.Printf("userInfo :==>>v ", user)
 	// Store user data in session
 
 	http.Redirect(w, r, "/student/dashboard", http.StatusTemporaryRedirect)
