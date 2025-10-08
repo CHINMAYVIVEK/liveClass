@@ -1,55 +1,44 @@
-# Build stage
+# Stage 1: Build the Go application
 FROM golang:1.24-alpine AS builder
 
-WORKDIR /app
-
-# Install build dependencies
-RUN apk add --no-cache git ca-certificates tzdata && \
-    update-ca-certificates
-
-# Copy go mod and sum files
-COPY go.mod go.sum ./
-
-# Download dependencies
-RUN go mod download
-
-# Copy source code
-COPY . .
-
-# Build the application with optimizations
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-    -ldflags="-w -s -X main.version=$(git describe --tags --always) -X main.buildTime=$(date +%FT%T%z)" \
-    -o /app/bin/liveclass ./cmd/api
-
-# Final stage
-FROM alpine:latest
-
-# Add non-root user
-RUN addgroup -S app && adduser -S app -G app
-
-# Install runtime dependencies
-RUN apk add --no-cache ca-certificates tzdata
-
-# Copy binary from builder
-COPY --from=builder /app/bin/liveclass /app/liveclass
-
-# Copy web assets and configs
-COPY --from=builder /app/web /app/web
-COPY --from=builder /app/configs /app/configs
+# Install git and certificates
+RUN apk add --no-cache git ca-certificates
 
 # Set working directory
 WORKDIR /app
 
-# Use non-root user
-USER app
+# Copy go.mod and go.sum, and download dependencies
+COPY go.mod go.sum ./
+RUN go mod download
 
-# Set environment variables
-ENV GO_ENV=production \
-    TZ=UTC
+# Copy all source code
+COPY . .
 
-# Expose port
+# Build the application
+RUN go build -o liveclass main.go
+
+# Stage 2: Create a minimal runtime container
+FROM alpine:latest
+
+# Install certificates (required for HTTPS requests)
+RUN apk --no-cache add ca-certificates
+
+# Set working directory
+WORKDIR /app
+
+# Copy binary from builder
+COPY --from=builder /app/liveclass .
+
+# Copy templates and any other needed directories
+COPY --from=builder /app/template ./template
+COPY --from=builder /app/configs ./configs
+COPY --from=builder /app/migrations ./migrations
+
+# (Optional) Copy static folders if you serve static assets like CSS/JS
+# COPY --from=builder /app/static ./static
+
+# Expose the port the app runs on
 EXPOSE 8080
 
-# Run the application
-CMD ["/app/liveclass"]
-
+# Run the binary
+CMD ["./liveclass"]
