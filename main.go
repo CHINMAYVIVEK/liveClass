@@ -24,7 +24,7 @@ func main() {
 
 	// Load .env file from root directory
 	if err := godotenv.Load(); err != nil {
-		logger.Error("error loading .env file: %v", err)
+		logger.Warn("No .env file found — using environment variables from Vault")
 	}
 
 	// Create context with cancellation
